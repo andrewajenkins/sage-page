@@ -1,0 +1,39 @@
+<mat-toolbar fxFlex class="mat-toolbar">
+  <button
+    mat-icon-button
+    mat-stroked
+    matTooltip="File"
+    [matMenuTriggerFor]="fileMenu">
+    <span class="material-symbols-outlined"> folder </span>
+  </button>
+  <mat-menu #fileMenu>
+    <button mat-menu-item>New</button>
+    <button mat-menu-item>Open</button>
+    <button mat-menu-item>Open recent</button>
+    <button mat-menu-item>Save</button>
+    <button mat-menu-item>Save as...</button>
+    <button mat-menu-item>Rename</button>
+    <button mat-menu-item>Export</button>
+  </mat-menu>
+  <button mat-icon-button matTooltip="Save" (click)="saveFile()">
+    <span class="material-symbols-outlined"> save </span>
+  </button>
+  <button mat-icon-button matTooltip="Undo">
+    <span class="material-symbols-outlined"> undo </span>
+  </button>
+  <button mat-icon-button matTooltip="Redo">
+    <span class="material-symbols-outlined"> redo </span>
+  </button>
+  <button mat-icon-button matTooltip="Select all">
+    <span class="material-symbols-outlined"> check_circle </span>
+  </button>
+  <button mat-icon-button matTooltip="Delete selected sections">
+    <span class="material-symbols-outlined"> delete </span>
+  </button>
+  <button mat-icon-button matTooltip="Lock/Unlock highlighter position">
+    <span class="material-symbols-outlined"> lock </span>
+  </button>
+  <button mat-icon-button matTooltip="Help">
+    <span class="material-symbols-outlined"> help </span>
+  </button>
+</mat-toolbar>

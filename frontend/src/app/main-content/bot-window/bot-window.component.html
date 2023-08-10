@@ -1,0 +1,94 @@
+<!-- TODO Overhaul the interface! -->
+<form [formGroup]="form">
+  <div
+    fxFill
+    fxLayout="column"
+    fxLayoutAlign="center center"
+    fxLayoutGap="20px"
+    class="bot-window-container">
+    <mat-form-field class="model-container">
+      <mat-label>ChatGPT Model Select</mat-label>
+      <mat-select formControlName="modelControl">
+        <mat-option *ngFor="let selectModel of models" [value]="selectModel.id">
+          {{ selectModel.id }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div fxFlex class="bot-text-window" #scrollMe>
+      <div *ngFor="let logEntry of log" style="margin-top: 20px">
+        <div fxFlexLayout="row" class="header-functions">
+          <div>
+            <h2 fxFlex="none">{{ logEntry.role }}</h2>
+          </div>
+          <button
+            fxFlex
+            (click)="sendSelection(logEntry)"
+            mat-stroked-button
+            color="primary"
+            class="function-button">
+            <mat-icon>keyboard_double_arrow_left</mat-icon>
+            <span>Send to PKM</span>
+          </button>
+          <button
+            fxFlex
+            (click)="selectAll(logEntry)"
+            mat-stroked-button
+            color="primary"
+            class="function-button">
+            <mat-icon>done_all</mat-icon>
+            <span>Select All</span>
+          </button>
+          <button
+            fxFlex
+            mat-stroked-button
+            (click)="clearSelection(logEntry)"
+            color="warn"
+            class="function-button">
+            <mat-icon>close</mat-icon>
+            <span>Clear All</span>
+          </button>
+        </div>
+        <mat-button-toggle-group multiple class="button-column">
+          <!-- TODO need a mat-button-toggle wrapper so we can differentiate content styling - empty text disabled vs code vs content -->
+          <mat-button-toggle
+            *ngFor="let entry of logEntry.content"
+            [value]="{ log: logEntry, entry: entry }"
+            (click)="entry.selected = !entry.selected"
+            [checked]="entry.selected">
+            <!-- TODO set highlight color on click (or unset) -->
+            <!-- TODO support drag selecting -->
+            <!-- TODO highlight.js with ngx-highlight for code syntax highlighting -->
+            <!-- TODO code blocks need to highlight as one block -->
+            <div *ngIf="entry.type == 0">
+              <p>{{ entry.text }}</p>
+            </div>
+            <div *ngIf="entry.type == 1">
+              <pre><code>{{entry.text}}</code></pre>
+            </div>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
+    <div class="bot-input-container">
+      <mat-form-field class="bot-form-wrapper">
+        <mat-label>Bot input field</mat-label>
+        <textarea
+          matInput
+          class="bot-textarea"
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          formControlName="queryControl"
+          (keydown.enter)="sendQuery($event)"
+          placeholder="How much wood could a Woodchuck chuck..."></textarea>
+        <button
+          matSuffix
+          mat-icon-button
+          class="hamburger"
+          style="padding-top: 10px"
+          (click)="sendQuery($event)">
+          <span class="material-symbols-outlined">send</span>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
+</form>

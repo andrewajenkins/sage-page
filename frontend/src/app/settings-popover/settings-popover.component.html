@@ -1,0 +1,13 @@
+<!--<p>settings-popover works!</p>-->
+<button
+  [matMenuTriggerFor]="settingsMenu"
+  style="border-width: 0px"
+  mat-stroked-button>
+  <mat-icon>menu</mat-icon>
+</button>
+<mat-menu
+  #settingsMenu="matMenu"
+  xPosition="before"
+  class="settings-menu-panel">
+  <button mat-menu-item (click)="toggleWikiRight()">Wiki side toggle</button>
+</mat-menu>

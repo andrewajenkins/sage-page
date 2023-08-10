@@ -1,0 +1,38 @@
+.file-tree ul,
+.file-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+mat-tree-node {
+  //padding-left: 20px;
+  min-height: 20px;
+  z-index: 2;
+  position: relative;
+}
+
+mat-tree-node, small-icon {
+  font-size: 12px;
+}
+
+.icon-spacing {
+  padding-right: 5px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.file-tree ul,
+.file-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+.file-tree .mat-nested-tree-node div[role=group] {
+  padding-left: 40px;
+}
+
+.current-node {
+  background-color: var(--mat-standard-button-toggle-selected-state-background-color);
+}

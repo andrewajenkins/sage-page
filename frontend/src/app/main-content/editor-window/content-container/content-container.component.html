@@ -1,0 +1,13 @@
+<div class="content-container" #scrollMe>
+  <mat-button-toggle-group multiple class="button-column">
+    <mat-button-toggle
+      *ngFor="let entry of contentSections"
+      [value]="{ log: entry, entry: entry }"
+      (mouseenter)="setPosition(entry)"
+      [ngStyle]="getStyle(entry.type)"
+      (click)="buttonClicked(entry)"
+      [checked]="entry.selected">
+      <app-content-section [entry]="entry"></app-content-section>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+</div>

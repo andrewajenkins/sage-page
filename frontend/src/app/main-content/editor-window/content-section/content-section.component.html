@@ -1,0 +1,13 @@
+<!--<mat-button-toggle-->
+<!--  [value]="{ log: entry, entry: entry }"-->
+<!--  (click)="entry.selected = !entry.selected"-->
+<!--  [checked]="entry.selected">-->
+<div *ngIf="entry.type == 0">
+  <p>{{ entry.text }}</p>
+</div>
+<div *ngIf="entry.type == 1">
+  <pre><code>{{entry.text}}</code></pre>
+</div>
+<div *ngIf="entry.type == 2 && entry.locked" class="lock-icon">
+  <span class="material-symbols-outlined"> lock </span>
+</div>

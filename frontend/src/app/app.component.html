@@ -1,0 +1,28 @@
+<!--<header>-->
+<mat-toolbar color="primary">
+  <button
+    mat-button
+    class="hamburger"
+    (click)="sidenav.toggle()"
+    style="padding-top: 10px">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+  <img
+    width="40"
+    alt="Angular Logo"
+    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==" />
+  <div style="margin-left: auto; margin-right: auto">
+    <span class="app-title">Sage Page</span>
+  </div>
+  <mat-icon>account_circle</mat-icon>
+  <span style="padding: 0px 10px 0px 10px">Andrew Jenkins</span>
+  <app-settings-popover></app-settings-popover>
+</mat-toolbar>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="side">
+    <app-file-tree-panel></app-file-tree-panel>
+  </mat-sidenav>
+  <main class="sidenav-content" style="height: 100%">
+    <router-outlet></router-outlet>
+  </main>
+</mat-sidenav-container>

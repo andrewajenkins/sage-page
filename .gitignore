@@ -1,0 +1,19 @@
+# Node
+node_modules
+package-lock.json
+
+# Angular
+/frontend/dist/
+/frontend/node_modules
+/frontend/.idea
+/frontend/.vscode
+/frontend/.angular
+.angular
+
+# Express
+/backend/node_modules
+/backend/.idea
+/backend/dist
+tmp
+.idea
+.DS_Store

@@ -1,0 +1,35 @@
+<mat-toolbar color="whitesmoke">
+  <span>My Project</span>
+  <button
+    mat-icon-button
+    auto="create-folder"
+    class="add-folder"
+    (click)="createFolder()"
+    matTooltip="Create a folder">
+    <span class="material-symbols-outlined">create_new_folder</span>
+  </button>
+  <button
+    mat-icon-button
+    auto="create-file"
+    class="add-file"
+    (click)="createFile()"
+    matTooltip="Create a file">
+    <span class="material-symbols-outlined">note_add</span>
+  </button>
+  <button
+    mat-icon-button
+    auto="edit-file"
+    class="edit-file"
+    (click)="editFile()"
+    matTooltip="Select a file/folder to edit name">
+    <span class="material-symbols-outlined">edit</span>
+  </button>
+  <button
+    mat-icon-button
+    auto="delete-file"
+    class="edit-file"
+    (click)="deleteNode()"
+    matTooltip="Delete file or folder">
+    <span class="material-symbols-outlined">delete</span>
+  </button>
+</mat-toolbar>
