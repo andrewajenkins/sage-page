@@ -24,6 +24,7 @@
             fxFlex
             (click)="sendSelection(logEntry)"
             mat-stroked-button
+            [disabled]="!fileSelected"
             color="primary"
             class="function-button">
             <mat-icon>keyboard_double_arrow_left</mat-icon>

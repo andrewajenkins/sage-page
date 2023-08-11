@@ -10,7 +10,10 @@ import { take } from 'rxjs';
 import { BotWindowService } from './bot-window.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { cloneDeep } from 'lodash';
-import { UiStateManager } from '../../common/services/ui-state-manager.service';
+import {
+  StateAction,
+  UiStateManager,
+} from '../../common/services/ui-state-manager.service';
 import { ComponentLogger } from '../../common/logger/loggers';
 import { ContentBridgeService } from '../../common/services/content-bridge.service';
 
@@ -49,11 +52,13 @@ export class BotWindowComponent {
   form!: FormGroup;
   log: ChatLogEntry[] = [];
   private isMouseDown = false;
+  fileSelected!: boolean;
 
   constructor(
     private _ngZone: NgZone,
     private botWindowService: BotWindowService,
     private formBuilder: FormBuilder,
+    private uiStateManager: UiStateManager,
     private cdRef: ChangeDetectorRef, // TODO need this cdref?
     private contentBridgeService: ContentBridgeService
   ) {}
@@ -61,10 +66,17 @@ export class BotWindowComponent {
   ngOnInit() {
     this.form = this.formBuilder.group({
       modelControl: ['gpt-3.5-turbo-16k-0613'],
-      queryControl: ['Can you explain and show hello world in java?'],
+      // queryControl: ['Can you explain and show hello world in java?'],
+      queryControl: [
+        'Lets write a low-level/reference wiki for Angular 10 api. Can you give me 10 sections, no details, that we can use for the table of contents? Just need the section headlines. Needs to be from the api so things like core, testing, common, etc. Needs to be in markdown and lets ignore animation and routing',
+      ],
     });
     this.botWindowService.getModels().subscribe((models) => {
       this.models = models.filter((model) => model.id.indexOf('gpt') !== -1);
+    });
+    this.uiStateManager.uiState$.subscribe((uiState) => {
+      if (uiState.action === StateAction.SET_FILE_SELECTED)
+        this.fileSelected = uiState.flag as boolean;
     });
     this.scrollDown();
     this.sendQuery(); // TODO remove

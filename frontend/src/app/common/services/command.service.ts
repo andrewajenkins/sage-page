@@ -25,6 +25,7 @@ export interface Command<T> {
   id?: number;
   value?: string;
   content?: ContentSection[];
+  flag?: boolean;
 }
 
 @Injectable({

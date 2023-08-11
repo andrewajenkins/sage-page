@@ -50,6 +50,10 @@ export class DataService {
       .pipe(this.assembleTree);
   }
 
+  updateNode(node: FileTreeNode) {
+    return this.http.put<ApiResponse>(url + '/node', node);
+  }
+
   deleteNode(node: FileTreeNode) {
     return this.http
       .delete<ApiResponse>(url + '/node?id=' + node.id + '&type=' + node.type, {
@@ -71,7 +75,14 @@ export class DataService {
   }
 
   getFile(fileID: number): Observable<FileTreeFile> {
-    return this.getNode(fileID) as Observable<FileTreeFile>;
+    return this.getNode(fileID).pipe(
+      map((newNode) => {
+        const node: FileTreeNode = newNode as FileTreeFile;
+        // get node content
+        (node as FileTreeFile).content = [];
+        return node;
+      })
+    );
   }
 
   getFolder(folderID: number): Observable<FileTreeFolder> {

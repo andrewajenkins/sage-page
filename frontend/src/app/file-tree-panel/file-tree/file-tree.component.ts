@@ -9,7 +9,10 @@ import {
 import { DataService } from '../../common/services/data.service';
 import { ContentSection } from '../../main-content/bot-window/bot-window.component';
 import { ComponentLogger } from '../../common/logger/loggers';
-import { UiStateManager } from '../../common/services/ui-state-manager.service';
+import {
+  StateAction,
+  UiStateManager,
+} from '../../common/services/ui-state-manager.service';
 
 export interface NodeType {
   FILE;
@@ -72,7 +75,8 @@ export class FileTreeComponent {
   set currentNode(node) {
     this._currentNode = node;
     this.uiService.uiStateSubject.next({
-      nodeSelected: true,
+      action: StateAction.SET_NODE_SELECTED,
+      flag: true,
     });
   }
   get currentNode() {
@@ -182,7 +186,11 @@ export class FileTreeComponent {
 
     if (isFile(node)) {
       this.commandService.loadFile(node.id as number);
+      this.uiService.fileSelected(true);
     }
+    // else {
+    //   this.uiService.nodeSelected(true);
+    // }
   }
 
   nodeUnHighlight($event: MouseEvent, previousNode: FileTreeNode) {

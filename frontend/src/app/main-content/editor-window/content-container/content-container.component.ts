@@ -20,6 +20,7 @@ import {
   ContentAction,
   ContentBridgeService,
 } from '../../../common/services/content-bridge.service';
+import { UiStateManager } from '../../../common/services/ui-state-manager.service';
 
 @Component({
   selector: 'app-content-container',
@@ -46,16 +47,18 @@ export class ContentContainerComponent {
   constructor(
     private commandService: CommandService,
     private contentBridgeService: ContentBridgeService,
+    private uiStateManager: UiStateManager,
     private dataService: DataService,
     private cdRef: ChangeDetectorRef
   ) {
-    this.contentSections = [];
-    this.contentSections.push(this.positionHighlighter);
+    // this.contentSections = [];
+    // this.contentSections.push(this.positionHighlighter);
     this.selectionsSubscription = this.contentBridgeService.content$.subscribe(
       (state) => {
         if (state.action === ContentAction.ADD_SECTIONS) {
           const content = state.content as ContentSection[];
-          this.contentSections.splice(this.position, 0, ...content);
+          this.file?.content.push(...content);
+          // this.contentSections.splice(this.position, 0, ...content);
           this.position = this.position + content.length;
           this.scrollDown();
         }
@@ -64,37 +67,26 @@ export class ContentContainerComponent {
     this.fileTreeSubscription = this.commandService.action$.subscribe((cmd) => {
       if (cmd.action === Action.LOAD_FILE) {
         this.dataService.getFile(cmd.id as number).subscribe((file) => {
-          this.contentSections = file.content;
-          this.position = file.content.length;
-          // add highlighter if there is none
-          const result = this.contentSections.findIndex(
-            (content: ContentSection) =>
-              content.type === ContentSectionType.HIGHLIGHT
-          );
-          if (result >= 0) {
-            this.position = result;
-          } else {
-            this.contentSections.push(this.positionHighlighter);
-          }
+          this.file = file;
+          // this.contentSections = file.content;
+          // this.position = file.content.length;
+          // // add highlighter if there is none
+          // const result = this.contentSections.findIndex(
+          //   (content: ContentSection) =>
+          //     content.type === ContentSectionType.HIGHLIGHT
+          // );
+          // if (result >= 0) {
+          //   this.position = result;
+          // } else {
+          //   this.contentSections.push(this.positionHighlighter);
+          // }
           this.scrollDown();
         });
       }
     });
     this.commandService.action$.subscribe((data) => {
       if (data.action === Action.SAVE_FILE) {
-        // TODO reimplement SAVE with dataService
-        // const parent = findInTree(
-        //
-        //   this.fileTreeService.getFileTree(),
-        //   this.file.parentUID
-        // );
-        // console.log('parent:', parent);
-        // parent.subNodes.forEach((node: FileTreeNode) => {
-        //   if (isFile(node) && node.uid === this.file.uid) {
-        //     node.content = this.contentSections;
-        //     this.fileTreeService.setFileTree();
-        //   }
-        // });
+        this.dataService.updateNode(this.file).subscribe();
       }
     });
   }

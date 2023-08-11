@@ -24,9 +24,6 @@ export class EditorWindowComponent {
           // TODO resolve this redundant request
           this.wikiTitle = file.name;
         });
-      if (cmd.action === Action.SAVE_FILE) {
-        // this.dataService.setNode(cmd.id as number).subscribe();
-      }
     });
   }
   ngOnDestroy() {

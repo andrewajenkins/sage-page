@@ -21,9 +21,9 @@ class DatabaseService {
       });
   }
 
-  public async getNode(node) {
+  public async getNode(id) {
     if (!this.db) throw new Error("Database not initialized");
-    await this.db.get("select * from treenodes where id = ?", [node.id]);
+    return await this.db.get("select * from treenodes where id = ?", [id]);
   }
 
   public async createNode(node: any) {
