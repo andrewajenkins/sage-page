@@ -19,3 +19,29 @@ pre, p {
   line-height: 20px;
   padding-top: 5px;
 }
+//.content-text {
+//  display: inline-flex;
+//  align-items: flex-start;
+//  white-space: normal;
+//  text-align: left;
+//  line-height: normal;
+//}
+//.content-menu-button {
+//  align-self: flex-end;
+//  display: inline;
+//}
+.content-section  {
+  display: inline;
+  flex-direction: row;
+}
+.content-text {
+  display: inline;
+  white-space: normal;
+  line-height: normal;
+  text-align: left;
+}
+.content-menu-button {
+  flex: none;
+  display: inline;
+  align-self: flex-end;
+}
