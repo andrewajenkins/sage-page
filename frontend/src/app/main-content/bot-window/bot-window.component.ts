@@ -10,7 +10,8 @@ import { take } from 'rxjs';
 import { BotWindowService } from './bot-window.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { cloneDeep } from 'lodash';
-import { EditorCommandService } from '../../common/services/editor-command.service';
+import { UiStateManager } from '../../common/services/ui-state-manager.service';
+import { ComponentLogger } from '../../common/logger/loggers';
 
 export const enum ContentSectionType {
   STRING,
@@ -38,6 +39,7 @@ export interface ChatLogEntry {
   templateUrl: './bot-window.component.html',
   styleUrls: ['./bot-window.component.scss'],
 })
+@ComponentLogger()
 export class BotWindowComponent {
   @ViewChild('scrollMe') private botLogWindow!: ElementRef;
   @ViewChild('autosize') autosize!: CdkTextareaAutosize;
@@ -52,7 +54,7 @@ export class BotWindowComponent {
     private botWindowService: BotWindowService,
     private formBuilder: FormBuilder,
     private cdRef: ChangeDetectorRef, // TODO need this cdref?
-    private editorCommandService: EditorCommandService
+    private editorCommandService: UiStateManager
   ) {}
 
   ngOnInit() {

@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
 import { CommandService } from '../../../common/services/command.service';
-import { EditorCommandService } from '../../../common/services/editor-command.service';
+import { UiStateManager } from '../../../common/services/ui-state-manager.service';
+import { ComponentLogger } from '../../../common/logger/loggers';
 
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
 })
+@ComponentLogger()
 export class ToolbarComponent {
-  constructor(private editorCommandService: EditorCommandService) {}
+  constructor(private commandService: CommandService) {}
   saveFile() {
-    this.editorCommandService.saveFile();
+    this.commandService.saveFile();
   }
 }

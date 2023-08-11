@@ -22,14 +22,16 @@ import {
 } from '../../../common/services/command.service';
 import {
   EditorAction,
-  EditorCommandService,
-} from '../../../common/services/editor-command.service';
+  UiStateManager,
+} from '../../../common/services/ui-state-manager.service';
+import { ComponentLogger } from '../../../common/logger/loggers';
 
 @Component({
   selector: 'app-content-container',
   templateUrl: './content-container.component.html',
   styleUrls: ['./content-container.component.scss'],
 })
+@ComponentLogger()
 export class ContentContainerComponent {
   @ViewChild('scrollMe') private wikiWindow!: ElementRef;
 
@@ -48,21 +50,22 @@ export class ContentContainerComponent {
 
   constructor(
     private commandService: CommandService,
-    private editorCommandService: EditorCommandService,
+    private editorCommandService: UiStateManager,
     private dataService: DataService,
     private cdRef: ChangeDetectorRef
   ) {
     this.contentSections = [];
     this.contentSections.push(this.positionHighlighter);
-    this.selectionsSubscription =
-      this.editorCommandService.editorAction$.subscribe((editorCommand) => {
+    this.selectionsSubscription = this.editorCommandService.uiState$.subscribe(
+      (editorCommand) => {
         if (editorCommand.action === EditorAction.ADD_SECTIONS) {
           const content = editorCommand.content as ContentSection[];
           this.contentSections.splice(this.position, 0, ...content);
           this.position = this.position + content.length;
           this.scrollDown();
         }
-      });
+      }
+    );
     this.fileTreeSubscription = this.commandService.action$.subscribe((cmd) => {
       if (cmd.action === Action.LOAD_FILE) {
         this.dataService.getFile(cmd.id as number).subscribe((file) => {
@@ -82,7 +85,7 @@ export class ContentContainerComponent {
         });
       }
     });
-    this.editorCommandService.editorAction$.subscribe((data) => {
+    this.editorCommandService.uiState$.subscribe((data) => {
       if (data.action === EditorAction.SAVE) {
         // TODO reimplement SAVE with dataService
         // const parent = findInTree(

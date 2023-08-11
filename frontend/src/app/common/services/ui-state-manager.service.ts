@@ -16,16 +16,14 @@ export enum EditorAction {
 @Injectable({
   providedIn: 'root',
 })
-export class EditorCommandService {
-  private editorCommandSubject = new Subject<Command<EditorAction>>();
-  editorAction$ = this.editorCommandSubject.asObservable();
+export class UiStateManager {
+  private uiStateSubject = new Subject<Command<EditorAction>>();
+  uiState$ = this.uiStateSubject.asObservable();
 
   constructor() {}
-  saveFile() {
-    this.editorCommandSubject.next({ action: EditorAction.SAVE });
-  }
+
   sendSelection(contents: ContentSection[]) {
-    this.editorCommandSubject.next({
+    this.uiStateSubject.next({
       action: EditorAction.ADD_SECTIONS,
       content: contents,
     });

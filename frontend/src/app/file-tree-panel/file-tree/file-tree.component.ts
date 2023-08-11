@@ -8,7 +8,7 @@ import {
 } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { ContentSection } from '../../main-content/bot-window/bot-window.component';
-import { Loggers } from '../../common/logger/loggers';
+import { ComponentLogger } from '../../common/logger/loggers';
 
 export interface NodeType {
   FILE;
@@ -47,7 +47,7 @@ export function isFile(node: FileTreeNode): node is FileTreeFile {
   templateUrl: './file-tree.component.html',
   styleUrls: ['./file-tree.component.scss'],
 })
-@Loggers()
+@ComponentLogger()
 export class FileTreeComponent {
   treeControl = new NestedTreeControl<FileTreeNode>(
     (node) => (node as FileTreeFolder).subNodes
@@ -82,7 +82,7 @@ export class FileTreeComponent {
           parent_id: this.currentNode?.id as number,
           parent_type: this.currentNode?.type as string,
         };
-        this.dataService.setNode(newNode).subscribe((resp) => {
+        this.dataService.createNode(newNode).subscribe((resp) => {
           this.refreshTree(resp);
         });
       } else if (action === Action.CREATE_FILE) {
@@ -100,7 +100,7 @@ export class FileTreeComponent {
             : this.currentNode.parent_type,
           content: [],
         };
-        this.dataService.setNode(newNode).subscribe((resp) => {
+        this.dataService.createNode(newNode).subscribe((resp) => {
           this.refreshTree(resp);
         });
       } else if (action === Action.EDIT_NODE_NAME) {

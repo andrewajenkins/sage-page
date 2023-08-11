@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { FileTreeNode } from '../../file-tree-panel/file-tree/file-tree.component';
 import { ContentSection } from '../../main-content/bot-window/bot-window.component';
-import { EditorAction } from './editor-command.service';
+import { EditorAction } from './ui-state-manager.service';
 
 export enum Action {
   CREATE_FOLDER,
   CREATE_FILE,
   EDIT_NODE_NAME,
   DELETE_NODE,
+  SAVE_FILE,
   LOAD_FILE,
   ADD_CONTENT,
 }
@@ -52,6 +53,10 @@ export class CommandService {
     this.actionSubject.next({
       action: Action.DELETE_NODE,
     });
+  }
+
+  saveFile() {
+    this.actionSubject.next({ action: Action.SAVE_FILE });
   }
 
   loadFile(id: number) {

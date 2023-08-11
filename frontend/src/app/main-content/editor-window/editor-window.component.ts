@@ -3,12 +3,14 @@ import { Subscription } from 'rxjs';
 import { FileTreeNode } from '../../file-tree-panel/file-tree/file-tree.component';
 import { Action, CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
+import { ComponentLogger } from '../../common/logger/loggers';
 
 @Component({
   selector: 'app-editor-window',
   templateUrl: './editor-window.component.html',
   styleUrls: ['./editor-window.component.scss'],
 })
+@ComponentLogger()
 export class EditorWindowComponent {
   private fileTreeSubscription: Subscription;
   wikiTitle = 'Untitled';
@@ -22,6 +24,9 @@ export class EditorWindowComponent {
           // TODO resolve this redundant request
           this.wikiTitle = file.name;
         });
+      if (cmd.action === Action.SAVE_FILE) {
+        // this.dataService.setNode(cmd.id as number).subscribe();
+      }
     });
   }
   ngOnDestroy() {

@@ -9,10 +9,11 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ServiceLogger } from '../logger/loggers';
+import { ContentSection } from '../../main-content/bot-window/bot-window.component';
 
 const url = 'http://localhost:4200/api';
 
-export interface ApiRespone {
+export interface ApiResponse {
   id: number;
   tree: FileTreeNode[];
   node: FileTreeFile;
@@ -33,13 +34,13 @@ export class DataService {
 
   getNode(sub: number): Observable<FileTreeNode> {
     return this.http
-      .get<ApiRespone>(url + '/node?id=' + sub)
+      .get<ApiResponse>(url + '/node?id=' + sub)
       .pipe(map((res) => res.node));
   }
 
-  setNode(node: FileTreeNode) {
+  createNode(node: FileTreeNode) {
     return this.http
-      .post<ApiRespone>(url + '/node', node)
+      .post<ApiResponse>(url + '/node', node)
       .pipe(
         map((response) => {
           console.log('setNode', response);
@@ -51,7 +52,7 @@ export class DataService {
 
   deleteNode(node: FileTreeNode) {
     return this.http
-      .delete<ApiRespone>(url + '/node?id=' + node.id + '&type=' + node.type, {
+      .delete<ApiResponse>(url + '/node?id=' + node.id + '&type=' + node.type, {
         body: {
           id: node.id,
         },
@@ -65,6 +66,10 @@ export class DataService {
       .pipe(this.assembleTree);
   }
 
+  saveContent(contents: ContentSection[]) {
+    return this.http.post<ApiResponse>(url + '/content', contents);
+  }
+
   getFile(fileID: number): Observable<FileTreeFile> {
     return this.getNode(fileID) as Observable<FileTreeFile>;
   }
@@ -74,7 +79,7 @@ export class DataService {
   }
 
   assembleTree = map((nodes: FileTreeNode[]) => {
-    const debug = true;
+    const debug = false;
     const nodeMap = new Map<number, FileTreeNode>();
     const rootNodes: FileTreeNode[] = [];
     console.log('assembleTree: nodes:', nodes);
@@ -88,7 +93,7 @@ export class DataService {
     });
     if (debug) console.log('assembleTree: map:', map);
     nodes.forEach((node) => {
-      const findDebug = true;
+      const findDebug = false;
       if (!node.parent_id) {
         if (findDebug)
           console.log('assembleTree: fine: pushing root node:', node);

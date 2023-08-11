@@ -1,8 +1,13 @@
-export function Loggers() {
+export function ComponentLogger() {
   return function (constructor: Function) {
     for (const key of Object.getOwnPropertyNames(constructor.prototype)) {
       const originalMethod = constructor.prototype[key];
-      const ignoreList = ['getClass', 'nodeHighlight', 'nodeUnHighlight'];
+      const ignoreList = [
+        'getStyle',
+        'getClass',
+        'nodeHighlight',
+        'nodeUnHighlight',
+      ];
       if (
         typeof originalMethod === 'function' &&
         ignoreList.indexOf(key) === -1
