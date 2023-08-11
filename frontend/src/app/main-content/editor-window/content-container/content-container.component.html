@@ -5,9 +5,6 @@
       [value]="{ log: entry, entry: entry }"
       (click)="buttonClicked(entry)"
       [checked]="entry.selected">
-<!--      *ngFor="let entry of contentSections"-->
-<!--      (mouseenter)="setPosition(entry)"-->
-<!--      [ngStyle]="getStyle(entry.type)"V-->
       <app-content-section [entry]="entry"></app-content-section>
     </mat-button-toggle>
   </mat-button-toggle-group>
