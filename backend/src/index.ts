@@ -1,10 +1,11 @@
 import express from "express";
+import DatabaseService from "../database/db-manager.ts";
 
 const app = express();
 const port = 3000;
 app.use(express.json());
 
-import db from "../database/db-manager.ts";
+let db = await new DatabaseService();
 
 app.get("/api/node", async (req: any, res: any) => {
   console.log(req.query);
@@ -14,7 +15,6 @@ app.get("/api/node", async (req: any, res: any) => {
   console.log("1 record retrieved: res data:", data);
   res.send(data);
 });
-
 app.post("/api/node", async (req: any, res: any) => {
   console.log(req.body);
   const data = {

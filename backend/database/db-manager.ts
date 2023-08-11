@@ -5,9 +5,7 @@ import * as sqlite from "sqlite";
 
 class DatabaseService {
   private db: Database | undefined;
-  constructor() {}
-
-  public async init() {
+  constructor() {
     sqlite
       .open({
         filename: "./database/sqlite3.db",
@@ -15,6 +13,7 @@ class DatabaseService {
       })
       .then((db) => {
         console.log("Opened database successfully");
+        this.db = db;
         db.exec(
           "create table if not exists treenodes (id integer primary key autoincrement , name text, parent_id int references treenodes(id), type text, parent_type text);"
         );
@@ -63,4 +62,4 @@ WHERE id IN (SELECT id FROM delete_tree);
     return this.getFileTree();
   }
 }
-export default new DatabaseService();
+export default DatabaseService;
