@@ -12,6 +12,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { cloneDeep } from 'lodash';
 import { UiStateManager } from '../../common/services/ui-state-manager.service';
 import { ComponentLogger } from '../../common/logger/loggers';
+import { ContentBridgeService } from '../../common/services/content-bridge.service';
 
 export const enum ContentSectionType {
   STRING,
@@ -54,7 +55,7 @@ export class BotWindowComponent {
     private botWindowService: BotWindowService,
     private formBuilder: FormBuilder,
     private cdRef: ChangeDetectorRef, // TODO need this cdref?
-    private editorCommandService: UiStateManager
+    private contentBridgeService: ContentBridgeService
   ) {}
 
   ngOnInit() {
@@ -164,6 +165,6 @@ export class BotWindowComponent {
     selected.forEach((content) => {
       content.selected = false;
     });
-    this.editorCommandService.sendSelection(selected);
+    this.contentBridgeService.sendSelection(selected);
   }
 }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NodeNameDialog } from '../dialogs/create-file/node-name-dialog.component';
+import { UiStateManager } from '../../common/services/ui-state-manager.service';
 
 @Component({
   selector: 'app-file-tree-menu',
@@ -9,10 +10,20 @@ import { NodeNameDialog } from '../dialogs/create-file/node-name-dialog.componen
   styleUrls: ['./file-tree-menu.component.scss'],
 })
 export class FileTreeMenuComponent {
+  nodeNotSelected: boolean = true;
   constructor(
     private toolbarService: CommandService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public uiStateService: UiStateManager
   ) {}
+
+  ngOnInit() {
+    this.uiStateService.uiState$.subscribe((state) => {
+      if (state.nodeSelected) {
+        this.nodeNotSelected = false;
+      }
+    });
+  }
 
   // TODO move dialog stuff to dialog service
   createFolder() {

@@ -9,6 +9,7 @@ import {
 import { DataService } from '../../common/services/data.service';
 import { ContentSection } from '../../main-content/bot-window/bot-window.component';
 import { ComponentLogger } from '../../common/logger/loggers';
+import { UiStateManager } from '../../common/services/ui-state-manager.service';
 
 export interface NodeType {
   FILE;
@@ -58,13 +59,24 @@ export class FileTreeComponent {
   highlightElement!: HTMLElement | undefined;
   highlightNode!: FileTreeNode | undefined;
   currentElement!: HTMLElement;
-  currentNode!: FileTreeNode;
+
+  _currentNode!: FileTreeNode;
+  set currentNode(node) {
+    this._currentNode = node;
+    this.uiService.uiStateSubject.next({
+      nodeSelected: true,
+    });
+  }
+  get currentNode() {
+    return this._currentNode;
+  }
 
   // TODO temp remove
   fileIndex = 0;
   constructor(
     private commandService: CommandService,
-    private dataService: DataService
+    private dataService: DataService,
+    private uiService: UiStateManager
   ) {}
 
   ngOnInit() {

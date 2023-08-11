@@ -2,7 +2,6 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  Input,
   ViewChild,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
@@ -10,21 +9,17 @@ import {
   ContentSection,
   ContentSectionType,
 } from '../../bot-window/bot-window.component';
-import {
-  FileTreeFile,
-  FileTreeNode,
-  isFile,
-} from '../../../file-tree-panel/file-tree/file-tree.component';
+import { FileTreeFile } from '../../../file-tree-panel/file-tree/file-tree.component';
 import { DataService } from '../../../common/services/data.service';
 import {
   CommandService,
   Action,
 } from '../../../common/services/command.service';
-import {
-  EditorAction,
-  UiStateManager,
-} from '../../../common/services/ui-state-manager.service';
 import { ComponentLogger } from '../../../common/logger/loggers';
+import {
+  ContentAction,
+  ContentBridgeService,
+} from '../../../common/services/content-bridge.service';
 
 @Component({
   selector: 'app-content-container',
@@ -50,16 +45,16 @@ export class ContentContainerComponent {
 
   constructor(
     private commandService: CommandService,
-    private editorCommandService: UiStateManager,
+    private contentBridgeService: ContentBridgeService,
     private dataService: DataService,
     private cdRef: ChangeDetectorRef
   ) {
     this.contentSections = [];
     this.contentSections.push(this.positionHighlighter);
-    this.selectionsSubscription = this.editorCommandService.uiState$.subscribe(
-      (editorCommand) => {
-        if (editorCommand.action === EditorAction.ADD_SECTIONS) {
-          const content = editorCommand.content as ContentSection[];
+    this.selectionsSubscription = this.contentBridgeService.content$.subscribe(
+      (state) => {
+        if (state.action === ContentAction.ADD_SECTIONS) {
+          const content = state.content as ContentSection[];
           this.contentSections.splice(this.position, 0, ...content);
           this.position = this.position + content.length;
           this.scrollDown();
@@ -85,8 +80,8 @@ export class ContentContainerComponent {
         });
       }
     });
-    this.editorCommandService.uiState$.subscribe((data) => {
-      if (data.action === EditorAction.SAVE) {
+    this.commandService.action$.subscribe((data) => {
+      if (data.action === Action.SAVE_FILE) {
         // TODO reimplement SAVE with dataService
         // const parent = findInTree(
         //

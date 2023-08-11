@@ -1,31 +1,22 @@
 import { Subject } from 'rxjs';
-import { Command } from './command.service';
+import { Command, EditorAction } from './command.service';
 import { Injectable } from '@angular/core';
-import { ContentSection } from '../../main-content/bot-window/bot-window.component';
 
-export enum EditorAction {
-  SAVE,
-  UNDO,
-  REDO,
-  SELECT_ALL,
-  DELETE_SELECTED,
-  TOGGLE_HIGHLIGHT,
-  ADD_SECTIONS,
-  NONE,
+export interface StateAction {
+  nodeSelected: boolean;
 }
 @Injectable({
   providedIn: 'root',
 })
 export class UiStateManager {
-  private uiStateSubject = new Subject<Command<EditorAction>>();
+  uiStateSubject = new Subject<StateAction>();
   uiState$ = this.uiStateSubject.asObservable();
 
   constructor() {}
 
-  sendSelection(contents: ContentSection[]) {
+  nodeSelected(value: boolean) {
     this.uiStateSubject.next({
-      action: EditorAction.ADD_SECTIONS,
-      content: contents,
+      nodeSelected: value,
     });
   }
 }

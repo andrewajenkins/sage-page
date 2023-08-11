@@ -12,6 +12,7 @@
     mat-icon-button
     auto="create-file"
     class="add-file"
+    [disabled]="nodeNotSelected"
     (click)="createFile()"
     matTooltip="Create a file">
     <span class="material-symbols-outlined">note_add</span>
@@ -20,6 +21,7 @@
     mat-icon-button
     auto="edit-file"
     class="edit-file"
+    [disabled]="nodeNotSelected"
     (click)="editFile()"
     matTooltip="Select a file/folder to edit name">
     <span class="material-symbols-outlined">edit</span>
@@ -28,6 +30,7 @@
     mat-icon-button
     auto="delete-file"
     class="edit-file"
+    [disabled]="nodeNotSelected"
     (click)="deleteNode()"
     matTooltip="Delete file or folder">
     <span class="material-symbols-outlined">delete</span>

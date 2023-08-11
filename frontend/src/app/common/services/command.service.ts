@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { FileTreeNode } from '../../file-tree-panel/file-tree/file-tree.component';
 import { ContentSection } from '../../main-content/bot-window/bot-window.component';
-import { EditorAction } from './ui-state-manager.service';
 
+export enum EditorAction {
+  SAVE,
+  UNDO,
+  REDO,
+  SELECT_ALL,
+  DELETE_SELECTED,
+  TOGGLE_HIGHLIGHT,
+  NONE,
+}
 export enum Action {
   CREATE_FOLDER,
   CREATE_FILE,
