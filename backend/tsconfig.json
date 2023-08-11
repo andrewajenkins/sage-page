@@ -21,6 +21,8 @@
     "useDefineForClassFields": false,
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "lib": ["ES2022", "dom"]
+    "lib": ["ES2022", "dom"],
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true
   }
 }

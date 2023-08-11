@@ -2,7 +2,7 @@
   "name": "sage-page-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/out-tsc/index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p tsconfig.json",
