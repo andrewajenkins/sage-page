@@ -65,7 +65,7 @@ export class ContentContainerComponent {
       });
     this.fileTreeSubscription = this.commandService.action$.subscribe((cmd) => {
       if (cmd.action === Action.LOAD_FILE) {
-        this.dataService.getFile(cmd.value as string).subscribe((file) => {
+        this.dataService.getFile(cmd.id as number).subscribe((file) => {
           this.contentSections = file.content;
           this.position = file.content.length;
           // add highlighter if there is none

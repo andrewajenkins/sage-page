@@ -23,8 +23,24 @@ const db = require("sqlite")
     db.close();
   });
 
-app.get("/api/node", (req: any, res: any) => {
-  res.send("Hello World!");
+app.get("/api/node", async (req: any, res: any) => {
+  console.log(req.query);
+
+  const db = await require("sqlite").open({
+    filename: "./database/sqlite3.db",
+    driver: sqlite3.Database,
+  });
+
+  const node = await db.get("select * from treenodes where id = ?", [
+    req.query.id,
+  ]);
+
+  const data = {
+    node: node,
+  };
+  console.log("1 record retrieved: res data:", data);
+  res.send(data);
+  db.close();
 });
 
 app.post("/api/node", async (req: any, res: any) => {

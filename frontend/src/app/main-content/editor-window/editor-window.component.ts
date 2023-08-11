@@ -18,7 +18,7 @@ export class EditorWindowComponent {
   ) {
     this.fileTreeSubscription = this.commandService.action$.subscribe((cmd) => {
       if (cmd.action === Action.LOAD_FILE)
-        this.dataService.getFile(cmd.value as string).subscribe((file) => {
+        this.dataService.getFile(cmd.id as number).subscribe((file) => {
           // TODO resolve this redundant request
           this.wikiTitle = file.name;
         });

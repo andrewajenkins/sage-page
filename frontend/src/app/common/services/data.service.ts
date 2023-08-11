@@ -15,6 +15,7 @@ const url = 'http://localhost:4200/api';
 export interface ApiRespone {
   id: number;
   tree: FileTreeNode[];
+  node: FileTreeFile;
 }
 
 @Injectable({
@@ -30,8 +31,10 @@ export class DataService {
       .pipe(this.assembleTree);
   }
 
-  getNode(sub: string): Observable<FileTreeNode> {
-    return this.http.get<FileTreeNode>(url + '/node?id=' + sub);
+  getNode(sub: number): Observable<FileTreeNode> {
+    return this.http
+      .get<ApiRespone>(url + '/node?id=' + sub)
+      .pipe(map((res) => res.node));
   }
 
   setNode(node: FileTreeNode) {
@@ -62,11 +65,11 @@ export class DataService {
       .pipe(this.assembleTree);
   }
 
-  getFile(fileID: string): Observable<FileTreeFile> {
+  getFile(fileID: number): Observable<FileTreeFile> {
     return this.getNode(fileID) as Observable<FileTreeFile>;
   }
 
-  getFolder(folderID: string): Observable<FileTreeFolder> {
+  getFolder(folderID: number): Observable<FileTreeFolder> {
     return this.getNode(folderID) as Observable<FileTreeFolder>;
   }
 
