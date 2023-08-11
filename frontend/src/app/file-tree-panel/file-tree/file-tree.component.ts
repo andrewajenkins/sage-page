@@ -15,7 +15,6 @@ export interface NodeType {
   FILE;
   FOLDER;
 }
-
 export interface FileTreeFolder extends Object {
   id?: number;
   name: string;
@@ -32,6 +31,15 @@ export interface FileTreeFile {
   type: string;
   content: ContentSection[];
 }
+
+export const dummyNode = {
+  name: '',
+  parent_id: 0,
+  parent_type: '',
+  type: '',
+  content: [],
+  subNodes: [],
+};
 
 export type FileTreeNode = FileTreeFolder | FileTreeFile;
 
@@ -116,12 +124,16 @@ export class FileTreeComponent {
           this.refreshTree(resp);
         });
       } else if (action === Action.EDIT_NODE_NAME) {
-        if (this.currentNode) {
+        if (this.currentNode?.id) {
           this.currentNode.name = command.value || '' + this.fileIndex++;
           this.refreshTree();
         }
       } else if (action === Action.DELETE_NODE) {
         this.dataService.deleteNode(this.currentNode).subscribe((resp) => {
+          if (!this.currentNode.parent_id) {
+            this.currentNode = dummyNode;
+          }
+          this.uiService.nodeSelected(false);
           this.refreshTree(resp);
         });
       }

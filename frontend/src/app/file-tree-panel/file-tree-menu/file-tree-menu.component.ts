@@ -19,9 +19,7 @@ export class FileTreeMenuComponent {
 
   ngOnInit() {
     this.uiStateService.uiState$.subscribe((state) => {
-      if (state.nodeSelected) {
-        this.nodeNotSelected = false;
-      }
+      this.nodeNotSelected = !state.nodeSelected;
     });
   }
 
