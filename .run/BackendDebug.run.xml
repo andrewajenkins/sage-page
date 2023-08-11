@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BackendDebug" type="NodeJSConfigurationType" path-to-node="$PROJECT_DIR$/backend/node_modules/.bin/nodemon" node-parameters="--require ts-node/register --inspect" path-to-js-file="src/index.ts" working-dir="$PROJECT_DIR$/backend">
+    <method v="2" />
+  </configuration>
+</component>

@@ -82,7 +82,9 @@ export class FileTreeComponent {
           parent_id: this.currentNode?.id as number,
           parent_type: this.currentNode?.type as string,
         };
-        this.dataService.setNode(newNode).subscribe((resp) => {});
+        this.dataService.setNode(newNode).subscribe((resp) => {
+          this.refreshTree(resp);
+        });
       } else if (action === Action.CREATE_FILE) {
         const targetNode = isFolder(this.currentNode)
           ? this.currentNode
