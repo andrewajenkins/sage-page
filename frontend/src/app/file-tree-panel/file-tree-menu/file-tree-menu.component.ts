@@ -2,10 +2,8 @@ import { Component } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NodeNameDialog } from '../dialogs/create-file/node-name-dialog.component';
-import {
-  StateAction,
-  UiStateManager,
-} from '../../common/services/ui-state-manager.service';
+import { UiStateManager } from '../../common/services/ui-state-manager.service';
+import { isFlagCommand, StateAction } from '../../common/models/command.model';
 
 @Component({
   selector: 'app-file-tree-menu',
@@ -21,9 +19,9 @@ export class FileTreeMenuComponent {
   ) {}
 
   ngOnInit() {
-    this.uiStateService.uiState$.subscribe((state) => {
-      if (state.action === StateAction.SET_NODE_SELECTED) {
-        this.nodeNotSelected = !state.flag;
+    this.uiStateService.uiState$.subscribe((cmd) => {
+      if (isFlagCommand(cmd) && cmd.action === StateAction.SET_NODE_SELECTED) {
+        this.nodeNotSelected = !cmd.flag;
       }
     });
   }

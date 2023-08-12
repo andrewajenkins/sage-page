@@ -1,15 +1,7 @@
 import { Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Command, EditorAction } from '../models/command.model';
+import { Command, StateAction } from '../models/command.model';
 
-// export interface StateAction {
-//   setNodeSelected?: boolean;
-//   setFileSelected?: boolean;
-// }
-export enum StateAction {
-  SET_NODE_SELECTED,
-  SET_FILE_SELECTED,
-}
 @Injectable({
   providedIn: 'root',
 })

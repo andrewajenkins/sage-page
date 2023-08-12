@@ -4,10 +4,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { ComponentLogger } from '../../common/logger/loggers';
-import {
-  StateAction,
-  UiStateManager,
-} from '../../common/services/ui-state-manager.service';
+import { UiStateManager } from '../../common/services/ui-state-manager.service';
 import {
   FileTreeFolder,
   FileTreeNode,
@@ -15,6 +12,7 @@ import {
   isFolder,
 } from '../../common/models/file-tree.model';
 import { FileTreeActionHandler } from './file-tree-action-handler';
+import { StateAction } from '../../common/models/command.model';
 
 @Component({
   selector: 'app-file-tree',

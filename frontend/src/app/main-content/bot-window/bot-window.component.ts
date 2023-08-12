@@ -11,12 +11,10 @@ import { take } from 'rxjs';
 import { BotWindowService } from './bot-window.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { cloneDeep } from 'lodash';
-import {
-  StateAction,
-  UiStateManager,
-} from '../../common/services/ui-state-manager.service';
+import { UiStateManager } from '../../common/services/ui-state-manager.service';
 import { ComponentLogger } from '../../common/logger/loggers';
 import { ContentBridgeService } from '../../common/services/content-bridge.service';
+import { isFlagCommand, StateAction } from '../../common/models/command.model';
 
 export const enum ContentSectionType {
   STRING,
@@ -84,9 +82,10 @@ export class BotWindowComponent implements OnInit {
     this.botWindowService.getModels().subscribe((models) => {
       this.models = models.filter((model) => model.id.indexOf('gpt') !== -1);
     });
-    this.uiStateManager.uiState$.subscribe((uiState) => {
-      if (uiState.action === StateAction.SET_FILE_SELECTED)
-        this.fileSelected = uiState.flag as boolean;
+    this.uiStateManager.uiState$.subscribe((cmd) => {
+      if (isFlagCommand(cmd) && cmd.action === StateAction.SET_FILE_SELECTED) {
+        this.fileSelected = cmd.flag as boolean;
+      }
     });
     this.scrollDown();
     this.sendQuery(); // TODO remove

@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ContentSection } from '../../main-content/bot-window/bot-window.component';
-import { Command } from '../models/command.model';
-export enum ContentAction {
-  ADD_SECTIONS,
-}
+import { Command, ContentAction } from '../models/command.model';
+
 @Injectable({
   providedIn: 'root',
 })

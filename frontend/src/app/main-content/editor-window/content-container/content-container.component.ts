@@ -12,11 +12,13 @@ import {
 import { DataService } from '../../../common/services/data.service';
 import { CommandService } from '../../../common/services/command.service';
 import { ComponentLogger } from '../../../common/logger/loggers';
+import { ContentBridgeService } from '../../../common/services/content-bridge.service';
 import {
   ContentAction,
-  ContentBridgeService,
-} from '../../../common/services/content-bridge.service';
-import { NodeAction } from '../../../common/models/command.model';
+  isContentsCommand,
+  isIdCommand,
+  NodeAction,
+} from '../../../common/models/command.model';
 import { FileTreeFile } from '../../../common/models/file-tree.model';
 
 @Component({
@@ -38,19 +40,20 @@ export class ContentContainerComponent {
     private dataService: DataService,
     private cdRef: ChangeDetectorRef
   ) {
-    // this.contentSections = [];
-    // this.contentSections.push(this.positionHighlighter);
-    this.selectionsSubscription = this.contentBridgeService.content$.subscribe(
-      (state) => {
-        if (state.action === ContentAction.ADD_SECTIONS) {
-          const content = state.contents as ContentSection[];
+    this.selectionsSubscription = this.commandService.action$.subscribe(
+      (cmd) => {
+        if (
+          isContentsCommand(cmd) &&
+          cmd.action === ContentAction.ADD_SECTIONS
+        ) {
+          const content = cmd.contents as ContentSection[];
           this.file?.content.push(...content);
           this.scrollDown();
         }
       }
     );
     this.fileTreeSubscription = this.commandService.action$.subscribe((cmd) => {
-      if (cmd.action === NodeAction.LOAD_FILE) {
+      if (isIdCommand(cmd) && cmd.action === NodeAction.LOAD_FILE) {
         this.dataService.getFile(cmd.id as number).subscribe((file) => {
           this.file = file;
           this.scrollDown();

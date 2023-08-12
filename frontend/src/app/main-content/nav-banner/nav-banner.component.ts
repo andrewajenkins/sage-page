@@ -1,8 +1,13 @@
 import { Component } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
-import { filter, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { DataService } from '../../common/services/data.service';
-import { NodeAction, Command } from '../../common/models/command.model';
+import {
+  NodeAction,
+  Command,
+  isContentCommand,
+  isIdCommand,
+} from '../../common/models/command.model';
 
 @Component({
   selector: 'app-nav-banner',
@@ -18,18 +23,12 @@ export class NavBannerComponent {
     private dataService: DataService
   ) {}
   ngOnInit() {
-    this.commandService.action$
-      .pipe(
-        filter(
-          (cmd: Command<NodeAction>) =>
-            cmd.action === NodeAction.CREATE_SUBSECTION
-        )
-      )
-      .subscribe((cmd: Command<NodeAction>) => {
+    this.commandService.action$.subscribe((cmd) => {
+      if (isContentCommand(cmd) && cmd.action === NodeAction.CREATE_SUBSECTION)
         this.task = 'Create "' + cmd.content?.text + '" section outline';
-      });
+    });
     this.fileTreeSubscription = this.commandService.action$.subscribe((cmd) => {
-      if (cmd.action === NodeAction.LOAD_FILE)
+      if (isIdCommand(cmd) && cmd.action === NodeAction.LOAD_FILE)
         this.dataService.getFile(cmd.id as number).subscribe((file) => {
           // TODO resolve this redundant request
           this.wikiTitle = file.name;
