@@ -48,6 +48,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { LoggingInterceptorService } from './common/services/interceptor.service';
 import { ContentSectionDirective } from './main-content/content-section/content-section.directive';
 import { NavBannerComponent } from './main-content/nav-banner/nav-banner.component';
+import { FileTreeActionHandler } from './file-tree-panel/file-tree/file-tree-action-handler';
 
 @NgModule({
   declarations: [
@@ -111,6 +112,7 @@ import { NavBannerComponent } from './main-content/nav-banner/nav-banner.compone
       useClass: LoggingInterceptorService,
       multi: true,
     },
+    FileTreeActionHandler,
   ],
   bootstrap: [AppComponent],
 })

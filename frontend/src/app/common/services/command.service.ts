@@ -21,6 +21,10 @@ export class CommandService implements OnInit {
     });
   }
 
+  perform(command: Command<NodeAction>) {
+    this.actionSubject.next(command);
+  }
+
   createFolder(name: string) {
     this.actionSubject.next({
       action: NodeAction.CREATE_FOLDER,

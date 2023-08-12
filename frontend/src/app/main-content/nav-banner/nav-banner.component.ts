@@ -26,7 +26,7 @@ export class NavBannerComponent {
         )
       )
       .subscribe((cmd: Command<NodeAction>) => {
-        this.task = 'Create "' + cmd.content?.text + '" table of contents';
+        this.task = 'Create "' + cmd.content?.text + '" section outline';
       });
     this.fileTreeSubscription = this.commandService.action$.subscribe((cmd) => {
       if (cmd.action === NodeAction.LOAD_FILE)

@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { map, Observable } from 'rxjs';
+import { ServiceLogger } from '../logger/loggers';
+import { ContentSection } from '../../main-content/bot-window/bot-window.component';
 import {
   FileTreeFile,
   FileTreeFolder,
   FileTreeNode,
   isFile,
   isFolder,
-} from '../../file-tree-panel/file-tree/file-tree.component';
-import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
-import { ServiceLogger } from '../logger/loggers';
-import { ContentSection } from '../../main-content/bot-window/bot-window.component';
+} from '../models/file-tree.model';
 
 const url = 'http://localhost:4200/api';
 

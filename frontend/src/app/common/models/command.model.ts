@@ -1,5 +1,7 @@
 import { ContentSection } from '../../main-content/bot-window/bot-window.component';
 
+import { FileTreeNode } from './file-tree.model';
+
 export enum EditorAction {
   SAVE,
   UNDO,
@@ -27,6 +29,7 @@ export interface Command<T> {
   value?: string;
   contents?: ContentSection[];
   content?: ContentSection;
+  node?: FileTreeNode;
   flag?: boolean;
 }
 

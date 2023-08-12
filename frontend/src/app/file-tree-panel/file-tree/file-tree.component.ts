@@ -3,53 +3,18 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
-import { ContentSection } from '../../main-content/bot-window/bot-window.component';
 import { ComponentLogger } from '../../common/logger/loggers';
 import {
   StateAction,
   UiStateManager,
 } from '../../common/services/ui-state-manager.service';
-import { NodeAction, Command } from '../../common/models/command.model';
-
-export interface NodeType {
-  FILE;
-  FOLDER;
-}
-export interface FileTreeFolder extends Object {
-  id?: number;
-  name: string;
-  parent_id: number;
-  parent_type: string;
-  type: string;
-  subNodes: FileTreeNode[]; // uid's of sub-nodes
-}
-export interface FileTreeFile {
-  id?: number;
-  name: string;
-  parent_id: number;
-  parent_type: string;
-  type: string;
-  content: ContentSection[];
-}
-
-export const dummyNode = {
-  name: '',
-  parent_id: 0,
-  parent_type: '',
-  type: '',
-  content: [],
-  subNodes: [],
-};
-
-export type FileTreeNode = FileTreeFolder | FileTreeFile;
-
-export function isFolder(node: FileTreeNode): node is FileTreeFolder {
-  return node && node.type === 'folder';
-}
-
-export function isFile(node: FileTreeNode): node is FileTreeFile {
-  return node && node.type === 'file';
-}
+import {
+  FileTreeFolder,
+  FileTreeNode,
+  isFile,
+  isFolder,
+} from '../../common/models/file-tree.model';
+import { FileTreeActionHandler } from './file-tree-action-handler';
 
 @Component({
   selector: 'app-file-tree',
@@ -73,6 +38,7 @@ export class FileTreeComponent {
     this._currentNode = node;
     this.uiService.uiStateSubject.next({
       action: StateAction.SET_NODE_SELECTED,
+      node: node,
       flag: true,
     });
   }
@@ -81,65 +47,23 @@ export class FileTreeComponent {
   }
 
   // TODO temp remove
-  fileIndex = 0;
   constructor(
     private commandService: CommandService,
     private dataService: DataService,
-    private uiService: UiStateManager
-  ) {}
+    private uiService: UiStateManager,
+    private actionHandler: FileTreeActionHandler
+  ) {
+    this.actionHandler.registerComponent(this);
+  }
 
   ngOnInit() {
     this.dataService.getFileTree().subscribe((fileTree) => {
       this.refreshTree(fileTree);
       this.treeControl.dataNodes = this.dataSource.data;
     });
-    this.commandService.action$.subscribe((command: Command<NodeAction>) => {
-      const action = command.action;
-      if (action === NodeAction.CREATE_FOLDER) {
-        const newNode: FileTreeFolder = {
-          name: command.value || '' + this.fileIndex++,
-          subNodes: [],
-          type: 'folder',
-          parent_id: this.currentNode?.id as number,
-          parent_type: this.currentNode?.type as string,
-        };
-        this.dataService.createNode(newNode).subscribe((resp) => {
-          this.refreshTree(resp);
-        });
-      } else if (action === NodeAction.CREATE_FILE) {
-        const targetNode = isFolder(this.currentNode)
-          ? this.currentNode
-          : this.currentNode?.parent_id;
-        const newNode: FileTreeFile = {
-          type: 'file',
-          name: command.value || '' + this.fileIndex++,
-          parent_id: isFolder(this.currentNode)
-            ? (this.currentNode.id as number)
-            : (this.currentNode.parent_id as number),
-          parent_type: isFolder(this.currentNode)
-            ? this.currentNode.type
-            : this.currentNode.parent_type,
-          content: [],
-        };
-        this.dataService.createNode(newNode).subscribe((resp) => {
-          this.refreshTree(resp);
-        });
-      } else if (action === NodeAction.EDIT_NODE_NAME) {
-        if (this.currentNode?.id) {
-          this.currentNode.name = command.value || '' + this.fileIndex++;
-          this.refreshTree();
-        }
-      } else if (action === NodeAction.DELETE_NODE) {
-        this.dataService.deleteNode(this.currentNode).subscribe((resp) => {
-          if (!this.currentNode.parent_id) {
-            this.currentNode = dummyNode;
-          }
-          this.uiService.nodeSelected(false);
-          this.refreshTree(resp);
-        });
-      }
-    });
   }
+
+  hasSub = (_: number, node: FileTreeFolder) => isFolder(node);
 
   refreshTree(data?) {
     console.log('refreshTree:', data);
@@ -149,8 +73,6 @@ export class FileTreeComponent {
     this.dataSource.data = [];
     this.dataSource.data = data;
   }
-
-  hasSub = (_: number, node: FileTreeFolder) => isFolder(node);
 
   nodeHighlight(event: MouseEvent, newNode: FileTreeNode) {
     const previousNode = this.highlightNode;

@@ -9,7 +9,6 @@ import {
   ContentSection,
   ContentSectionType,
 } from '../../bot-window/bot-window.component';
-import { FileTreeFile } from '../../../file-tree-panel/file-tree/file-tree.component';
 import { DataService } from '../../../common/services/data.service';
 import { CommandService } from '../../../common/services/command.service';
 import { ComponentLogger } from '../../../common/logger/loggers';
@@ -18,6 +17,7 @@ import {
   ContentBridgeService,
 } from '../../../common/services/content-bridge.service';
 import { NodeAction } from '../../../common/models/command.model';
+import { FileTreeFile } from '../../../common/models/file-tree.model';
 
 @Component({
   selector: 'app-content-container',
