@@ -1,10 +1,10 @@
-<div appContentSection fxLayout="row" class="content-section">
-  <!--  [isSelected]="entry.selected">-->
-  <div
-    fxLayoutAlign="start center"
-    class="content-text"
-    (click)="toggleSelection(entry)">
-    <!--    <span [innerHTML]="entry.text"></span>-->
+<div
+  appContentSection
+  fxLayout="row"
+  class="content-section"
+  (click)="toggleSelection(entry)"
+  [isSelected]="entry.selected">
+  <div fxLayoutAlign="start center" class="content-text">
     <ng-container *ngIf="entry.type == 0">
       <span [innerHTML]="entry.text"></span>
     </ng-container>
@@ -17,18 +17,3 @@
     <span class="material-symbols-outlined">more_vert</span>
   </button>
 </div>
-<!--<mat-button-toggle-->
-<!--  [value]="{ log: entry, entry: entry }"-->
-<!--  (click)="entry.selected = !entry.selected"-->
-<!--  [checked]="entry.selected">-->
-<!--<div *ngIf="entry.type == 0" fxLayoutAlign="space-between center">-->
-<!--  <div class="content-text">-->
-<!--    <span>{{ entry.text }}</span>-->
-<!--  </div>-->
-<!--  <div class="content-menu-button">-->
-<!--    <app-content-toolbar></app-content-toolbar>-->
-<!--  </div>-->
-<!--</div>-->
-<!--<div *ngIf="entry.type == 1">-->
-<!--  <code>{{ entry.text }}</code>-->
-<!--</div>-->

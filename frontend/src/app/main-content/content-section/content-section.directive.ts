@@ -10,10 +10,9 @@ import { ComponentLogger } from '../../common/logger/loggers';
 @Directive({
   selector: '[appContentSection]',
 })
-@ComponentLogger()
+// @ComponentLogger()
 export class ContentSectionDirective implements OnChanges {
-  // @Input()
-  isSelected = false;
+  @Input() isSelected = false;
   defaultColor = 'var(--mat-standard-button-toggle-background-color)';
   @HostBinding('style.backgroundColor') backgroundColor;
 
@@ -27,10 +26,10 @@ export class ContentSectionDirective implements OnChanges {
   ngOnChanges() {
     console.log('gibberish');
   }
-  @HostListener('mouseover') onMouseEnter() {
+  @HostListener('mouseenter') onMouseEnter() {
     this.backgroundColor = this.hoveredColor;
   }
-  @HostListener('mouseout') onMouseLeave() {
+  @HostListener('mouseleave') onMouseLeave() {
     this.backgroundColor = this.isSelected
       ? this.selectedColor
       : this.notHoveredColor;
@@ -42,9 +41,7 @@ export class ContentSectionDirective implements OnChanges {
   }
   @HostListener('mouseup') onMouseUp() {
     // add is hovered stays hovered
-    this.backgroundColor = this.isSelected
-      ? this.selectedColor
-      : this.notHoveredColor;
+    this.backgroundColor = this.selectedColor;
   }
   ngOnInit() {
     this.backgroundColor = this.notHoveredColor;

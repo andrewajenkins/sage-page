@@ -153,7 +153,7 @@ export class BotWindowComponent implements OnInit {
         // scroll down bot chat
         this.scrollDown();
         // TODO remove below selectall and send selection
-        this.selectAll(this.log[this.log.length - 1]);
+        // this.selectAll(this.log[this.log.length - 1]);
         // this.sendSelection(this.log[this.log.length - 1]);
       });
   }
