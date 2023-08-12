@@ -1,11 +1,14 @@
-<div class="content-container" #scrollMe>
-  <mat-button-toggle-group multiple class="button-column">
-    <mat-button-toggle
-      *ngFor="let entry of file?.content"
-      [value]="{ log: entry, entry: entry }"
-      (click)="buttonClicked(entry)"
-      [checked]="entry.selected">
-      <app-content-section [entry]="entry"></app-content-section>
-    </mat-button-toggle>
-  </mat-button-toggle-group>
+<!--<div class="content-container" #scrollMe>-->
+<!--  <mat-button-toggle-group multiple class="button-column">-->
+<!--    <mat-button-toggle-->
+<!--      *ngFor="let entry of file?.content"-->
+<!--      [value]="{ log: entry, entry: entry }"-->
+<!--      (click)="buttonClicked(entry)"-->
+<!--      [checked]="entry.selected">-->
+<!--      <app-content-section [entry]="entry"></app-content-section>-->
+<!--    </mat-button-toggle>-->
+<!--  </mat-button-toggle-group>-->
+<!--</div>-->
+<div class="content-container" *ngFor="let section of file?.content">
+  <app-content-section [entry]="section"></app-content-section>
 </div>

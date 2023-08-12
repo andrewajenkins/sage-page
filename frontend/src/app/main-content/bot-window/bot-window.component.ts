@@ -71,8 +71,11 @@ export class BotWindowComponent implements OnInit {
       // queryControl: [
       //   'Lets write a low-level/reference wiki for Angular 10 api. Can you give me 10 sections, no details, that we can use for the table of contents? Just need the section headlines. Needs to be from the api so things like core, testing, common, etc. Needs to be in markdown and lets ignore animation and routing',
       // ],
+      // queryControl: [
+      //   'Can you give me one short paragraph about roses and then also a hello world function in java?',
+      // ],
       queryControl: [
-        'Can you give me one short paragraph about roses and then also a hello world function in java?',
+        'Can you me about roses and then also a hello world function in java?',
       ],
     });
     this.botWindowService.getModels().subscribe((models) => {
@@ -115,7 +118,7 @@ export class BotWindowComponent implements OnInit {
           ],
         });
         const contentArray = response.choices[0].message.content.split('\n');
-        const contents = [...contentArray, ...contentArray, ...contentArray];
+        const contents = [...contentArray];
         const newContents: ContentSection[] = [];
         let isCode = false;
         for (let i = 0; i < contents.length; i++) {

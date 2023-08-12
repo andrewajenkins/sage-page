@@ -1,13 +1,9 @@
 :host, .content-container {
-  //height: 95% ;
-  //margin: 20px 20px;
-  //flex-grow: 1;
-  //overflow-y: auto;
-  //font-weight: bold;
   overflow-x: auto;
 }
 .content-container {
   background-color: whitesmoke;
+  padding: 5px 10px;
 }
 mat-button-toggle {
   line-height: 20px;

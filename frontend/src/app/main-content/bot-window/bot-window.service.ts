@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { OPENAI_API_KEY, OPENAI_ORG } from '../../../../../tmp/creds';
+import { ServiceLogger } from '../../common/logger/loggers';
 
 interface Model {
   id: string;
@@ -40,6 +41,7 @@ interface Options {
 @Injectable({
   providedIn: 'root',
 })
+@ServiceLogger()
 export class BotWindowService {
   options: Options = {
     headers: {
