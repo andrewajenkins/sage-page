@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Command, EditorAction } from './command.service';
 import { ContentSection } from '../../main-content/bot-window/bot-window.component';
+import { Command } from '../models/command.model';
 export enum ContentAction {
   ADD_SECTIONS,
 }
@@ -17,7 +17,7 @@ export class ContentBridgeService {
   sendSelection(contents: ContentSection[]) {
     this.contentBridgeSubject.next({
       action: ContentAction.ADD_SECTIONS,
-      content: contents,
+      contents: contents,
     });
   }
 }

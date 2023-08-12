@@ -75,7 +75,7 @@ export class BotWindowComponent implements OnInit {
       //   'Can you give me one short paragraph about roses and then also a hello world function in java?',
       // ],
       queryControl: [
-        'Can you me about roses and then also a hello world function in java?',
+        "Can you give me a table of contents for a wiki i'm writing about the Angular API? Include all the different libraries like core, common, http, routing, testing, etc.",
       ],
     });
     this.botWindowService.getModels().subscribe((models) => {

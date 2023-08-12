@@ -11,15 +11,13 @@ import {
 } from '../../bot-window/bot-window.component';
 import { FileTreeFile } from '../../../file-tree-panel/file-tree/file-tree.component';
 import { DataService } from '../../../common/services/data.service';
-import {
-  CommandService,
-  Action,
-} from '../../../common/services/command.service';
+import { CommandService } from '../../../common/services/command.service';
 import { ComponentLogger } from '../../../common/logger/loggers';
 import {
   ContentAction,
   ContentBridgeService,
 } from '../../../common/services/content-bridge.service';
+import { NodeAction } from '../../../common/models/command.model';
 
 @Component({
   selector: 'app-content-container',
@@ -45,14 +43,14 @@ export class ContentContainerComponent {
     this.selectionsSubscription = this.contentBridgeService.content$.subscribe(
       (state) => {
         if (state.action === ContentAction.ADD_SECTIONS) {
-          const content = state.content as ContentSection[];
+          const content = state.contents as ContentSection[];
           this.file?.content.push(...content);
           this.scrollDown();
         }
       }
     );
     this.fileTreeSubscription = this.commandService.action$.subscribe((cmd) => {
-      if (cmd.action === Action.LOAD_FILE) {
+      if (cmd.action === NodeAction.LOAD_FILE) {
         this.dataService.getFile(cmd.id as number).subscribe((file) => {
           this.file = file;
           this.scrollDown();
@@ -60,7 +58,7 @@ export class ContentContainerComponent {
       }
     });
     this.commandService.action$.subscribe((data) => {
-      if (data.action === Action.SAVE_FILE) {
+      if (data.action === NodeAction.SAVE_FILE) {
         this.dataService.updateNode(this.file).subscribe();
       }
     });

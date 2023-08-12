@@ -1,11 +1,7 @@
 import { Component } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import {
-  Action,
-  Command,
-  CommandService,
-} from '../../common/services/command.service';
+import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { ContentSection } from '../../main-content/bot-window/bot-window.component';
 import { ComponentLogger } from '../../common/logger/loggers';
@@ -13,6 +9,7 @@ import {
   StateAction,
   UiStateManager,
 } from '../../common/services/ui-state-manager.service';
+import { NodeAction, Command } from '../../common/models/command.model';
 
 export interface NodeType {
   FILE;
@@ -96,9 +93,9 @@ export class FileTreeComponent {
       this.refreshTree(fileTree);
       this.treeControl.dataNodes = this.dataSource.data;
     });
-    this.commandService.action$.subscribe((command: Command<Action>) => {
+    this.commandService.action$.subscribe((command: Command<NodeAction>) => {
       const action = command.action;
-      if (action === Action.CREATE_FOLDER) {
+      if (action === NodeAction.CREATE_FOLDER) {
         const newNode: FileTreeFolder = {
           name: command.value || '' + this.fileIndex++,
           subNodes: [],
@@ -109,7 +106,7 @@ export class FileTreeComponent {
         this.dataService.createNode(newNode).subscribe((resp) => {
           this.refreshTree(resp);
         });
-      } else if (action === Action.CREATE_FILE) {
+      } else if (action === NodeAction.CREATE_FILE) {
         const targetNode = isFolder(this.currentNode)
           ? this.currentNode
           : this.currentNode?.parent_id;
@@ -127,12 +124,12 @@ export class FileTreeComponent {
         this.dataService.createNode(newNode).subscribe((resp) => {
           this.refreshTree(resp);
         });
-      } else if (action === Action.EDIT_NODE_NAME) {
+      } else if (action === NodeAction.EDIT_NODE_NAME) {
         if (this.currentNode?.id) {
           this.currentNode.name = command.value || '' + this.fileIndex++;
           this.refreshTree();
         }
-      } else if (action === Action.DELETE_NODE) {
+      } else if (action === NodeAction.DELETE_NODE) {
         this.dataService.deleteNode(this.currentNode).subscribe((resp) => {
           if (!this.currentNode.parent_id) {
             this.currentNode = dummyNode;

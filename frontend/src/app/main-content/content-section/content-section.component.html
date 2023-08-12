@@ -2,18 +2,16 @@
   appContentSection
   fxLayout="row"
   class="content-section"
-  (click)="toggleSelection(entry)"
-  [isSelected]="entry.selected">
+  (click)="toggleSelection()"
+  [isSelected]="contentSection.selected">
   <div fxLayoutAlign="start center" class="content-text">
-    <ng-container *ngIf="entry.type == 0">
-      <span [innerHTML]="entry.text"></span>
+    <ng-container *ngIf="contentSection.type == 0">
+      <span [innerHTML]="contentSection.text"></span>
     </ng-container>
-    <ng-container *ngIf="entry.type == 1">
-      <span>{{ entry.text }}</span>
+    <ng-container *ngIf="contentSection.type == 1">
+      <span>{{ contentSection.text }}</span>
     </ng-container>
   </div>
-  <button mat-menu-item fxLayoutAlign="end center" class="menu-button">
-    <!--              (click)="openMenu($event, section)"-->
-    <span class="material-symbols-outlined">more_vert</span>
-  </button>
+
+  <app-content-toolbar [contentSection]="contentSection"></app-content-toolbar>
 </div>

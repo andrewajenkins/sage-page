@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
-import { Command, EditorAction } from './command.service';
 import { Injectable } from '@angular/core';
+import { Command, EditorAction } from '../models/command.model';
 
 // export interface StateAction {
 //   setNodeSelected?: boolean;

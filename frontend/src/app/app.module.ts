@@ -47,6 +47,7 @@ import { NodeNameDialog } from './file-tree-panel/dialogs/create-file/node-name-
 import { MatDialogModule } from '@angular/material/dialog';
 import { LoggingInterceptorService } from './common/services/interceptor.service';
 import { ContentSectionDirective } from './main-content/content-section/content-section.directive';
+import { NavBannerComponent } from './main-content/nav-banner/nav-banner.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { ContentSectionDirective } from './main-content/content-section/content-
     FileTreeMenuComponent,
     NodeNameDialog,
     ContentSectionDirective,
+    NavBannerComponent,
   ],
   imports: [
     BrowserModule,

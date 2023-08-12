@@ -17,16 +17,20 @@ export class ContentSectionDirective implements OnChanges {
 
   private readonly notHoveredColor =
     'var(--mat-standard-button-toggle-background-color)';
-  private readonly hoveredColor = '#f0f0f0';
+  private readonly hoveredColor = '#ededed';
   private readonly selectedColor =
     'var(--mat-standard-button-toggle-selected-state-background-color)';
   private readonly notSelectedMouseDownColor = '#d0d0d0';
-
+  private readonly selectedAndHoveredColor = '#f0f0f0';
   ngOnChanges(changes) {
-    console.log('gibberish', this.isSelected, changes);
+    this.backgroundColor = this.isSelected
+      ? this.selectedColor
+      : this.hoveredColor;
   }
   @HostListener('mouseenter') onMouseEnter() {
-    if (!this.isSelected) this.backgroundColor = this.hoveredColor;
+    this.backgroundColor = this.isSelected
+      ? this.selectedAndHoveredColor
+      : this.hoveredColor;
   }
   @HostListener('mouseleave') onMouseLeave() {
     this.backgroundColor = this.isSelected
@@ -37,14 +41,10 @@ export class ContentSectionDirective implements OnChanges {
     this.backgroundColor = this.notSelectedMouseDownColor;
   }
   @HostListener('mouseup') onMouseUp() {
-    // add is hovered stays hovered
-    console.log('mouseUp:', this.isSelected);
     this.backgroundColor = this.isSelected
       ? this.hoveredColor
       : this.selectedColor;
   }
-  selected() {}
-  unselected() {}
   ngOnInit() {
     this.backgroundColor = this.notHoveredColor;
   }

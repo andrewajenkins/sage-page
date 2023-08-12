@@ -7,10 +7,9 @@ import { ContentSection } from '../bot-window/bot-window.component';
   styleUrls: ['./content-section.component.scss'],
 })
 export class ContentSectionComponent {
-  @Input() entry!: ContentSection;
+  @Input() contentSection!: ContentSection;
 
-  toggleSelection(entry: ContentSection) {
-    entry.selected = !entry.selected;
-    console.log('selected:', entry.selected);
+  toggleSelection() {
+    this.contentSection.selected = !this.contentSection.selected;
   }
 }
