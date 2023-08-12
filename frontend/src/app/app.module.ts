@@ -35,8 +35,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SettingsService } from './settings-popover/settings.service';
 import { ToolbarComponent } from './main-content/editor-window/toolbar/toolbar.component';
 import { ContentContainerComponent } from './main-content/editor-window/content-container/content-container.component';
-import { ContentSectionComponent } from './main-content/editor-window/content-section/content-section.component';
-import { ContentToolbarComponent } from './main-content/editor-window/content-toolbar/content-toolbar.component';
+import { ContentSectionComponent } from './main-content/content-section/content-section.component';
+import { ContentToolbarComponent } from './main-content/content-section/content-toolbar/content-toolbar.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTreeModule } from '@angular/material/tree';
@@ -46,6 +46,7 @@ import { DataService } from './common/services/data.service';
 import { NodeNameDialog } from './file-tree-panel/dialogs/create-file/node-name-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { LoggingInterceptorService } from './common/services/interceptor.service';
+import { ContentSectionDirective } from './main-content/content-section/content-section.directive';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { LoggingInterceptorService } from './common/services/interceptor.service
     FileTreeComponent,
     FileTreeMenuComponent,
     NodeNameDialog,
+    ContentSectionDirective,
   ],
   imports: [
     BrowserModule,

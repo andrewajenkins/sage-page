@@ -3,9 +3,9 @@
   <div
     fxFill
     fxLayout="column"
-    fxLayoutAlign="center center"
-    fxLayoutGap="20px"
+    fxLayoutAlign="center"
     class="bot-window-container">
+    <!--    fxLayoutGap="20px"-->
     <mat-form-field class="model-container">
       <mat-label>ChatGPT Model Select</mat-label>
       <mat-select formControlName="modelControl">
@@ -16,7 +16,7 @@
     </mat-form-field>
     <div fxFlex class="bot-text-window" #scrollMe>
       <div *ngFor="let logEntry of log" style="margin-top: 20px">
-        <div fxFlexLayout="row" class="header-functions">
+        <div fxFlexLayout="row" fxLayoutGap="5px" class="header-functions">
           <div>
             <h2 fxFlex="none">{{ logEntry.role }}</h2>
           </div>
@@ -49,25 +49,9 @@
             <span>Clear All</span>
           </button>
         </div>
-        <mat-button-toggle-group multiple class="button-column">
-          <!-- TODO need a mat-button-toggle wrapper so we can differentiate content styling - empty text disabled vs code vs content -->
-          <mat-button-toggle
-            *ngFor="let entry of logEntry.content"
-            [value]="{ log: logEntry, entry: entry }"
-            (click)="entry.selected = !entry.selected"
-            [checked]="entry.selected">
-            <!-- TODO set highlight color on click (or unset) -->
-            <!-- TODO support drag selecting -->
-            <!-- TODO highlight.js with ngx-highlight for code syntax highlighting -->
-            <!-- TODO code blocks need to highlight as one block -->
-            <div *ngIf="entry.type == 0">
-              <p>{{ entry.text }}</p>
-            </div>
-            <div *ngIf="entry.type == 1">
-              <pre><code>{{entry.text}}</code></pre>
-            </div>
-          </mat-button-toggle>
-        </mat-button-toggle-group>
+        <div class="content-container" *ngFor="let section of logEntry.content">
+          <app-content-section [entry]="section"></app-content-section>
+        </div>
       </div>
     </div>
     <div class="bot-input-container">

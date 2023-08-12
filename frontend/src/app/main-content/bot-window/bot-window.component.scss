@@ -1,65 +1,26 @@
 :host {
   display: flex;
-  justify-content: center;
-  height: 100%;
+  height: calc(100vh - 64px);
+  width: 100%;
 }
 .bot-window-container {
-  padding: 0 80px;
-}
-
-.bot-title {
-  padding-top: 20px;
-  flex-shrink: 0;
-  font-size: large;
-}
-
-.bot-text-window {
   width: 100%;
-  flex-grow: 1;
-  overflow-y: auto;
-  font-weight: bold;
-  background-color: whitesmoke;
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
 }
-
-.bot-input-container {
-  flex-shrink: 0;
+.bot-text-window {
+  height: 100%;
+  overflow: auto;
+  margin: 5px 10px;
+}
+.content-container {
+  height: 100%;
+  overflow: auto;
+}
+form {
   width: 100%
 }
-
-::ng-deep .mat-button-toggle-label-content, .bot-form-wrapper, .bot-text-area, .model-container, form {
-  width: 100%;
-}
-
-.button-column {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  & mat-button-toggle, p, code {
-    width: 100%;
-    text-align: left;
-  }
-  & p {
-    white-space: normal;
-    line-height: 20px;
-  }
-  & code {
-    display: inline-flex;
-  }
-  & pre, p {
-    margin: 0 0px;
-  }
-  & mat-button-toggle {
-    padding: 5px 0px 5px 0px;
-  }
-}
-
-.function-button {
-  margin: 0 10px;
-}
-
-.header-functions {
-  align-items: baseline;
-}
-mat-button-toggle, pre {
-  line-height: 20px;
+.bot-form-wrapper {
+  width: 100%
 }

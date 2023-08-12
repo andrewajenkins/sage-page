@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   NgZone,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
@@ -44,7 +45,7 @@ export interface ChatLogEntry {
   styleUrls: ['./bot-window.component.scss'],
 })
 @ComponentLogger()
-export class BotWindowComponent {
+export class BotWindowComponent implements OnInit {
   @ViewChild('scrollMe') private botLogWindow!: ElementRef;
   @ViewChild('autosize') autosize!: CdkTextareaAutosize;
   botText!: ChatLogEntry[];
@@ -67,8 +68,11 @@ export class BotWindowComponent {
     this.form = this.formBuilder.group({
       modelControl: ['gpt-3.5-turbo-16k-0613'],
       // queryControl: ['Can you explain and show hello world in java?'],
+      // queryControl: [
+      //   'Lets write a low-level/reference wiki for Angular 10 api. Can you give me 10 sections, no details, that we can use for the table of contents? Just need the section headlines. Needs to be from the api so things like core, testing, common, etc. Needs to be in markdown and lets ignore animation and routing',
+      // ],
       queryControl: [
-        'Lets write a low-level/reference wiki for Angular 10 api. Can you give me 10 sections, no details, that we can use for the table of contents? Just need the section headlines. Needs to be from the api so things like core, testing, common, etc. Needs to be in markdown and lets ignore animation and routing',
+        'Can you give me one short paragraph about roses and then also a hello world function in java?',
       ],
     });
     this.botWindowService.getModels().subscribe((models) => {
@@ -110,7 +114,8 @@ export class BotWindowComponent {
             },
           ],
         });
-        const contents = [...response.choices[0].message.content.split('\n')];
+        const contentArray = response.choices[0].message.content.split('\n');
+        const contents = [...contentArray, ...contentArray, ...contentArray];
         const newContents: ContentSection[] = [];
         let isCode = false;
         for (let i = 0; i < contents.length; i++) {

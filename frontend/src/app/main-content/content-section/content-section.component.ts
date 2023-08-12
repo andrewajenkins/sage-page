@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ContentSection } from '../../bot-window/bot-window.component';
+import { ContentSection } from '../bot-window/bot-window.component';
 
 @Component({
   selector: 'app-content-section',
@@ -8,4 +8,10 @@ import { ContentSection } from '../../bot-window/bot-window.component';
 })
 export class ContentSectionComponent {
   @Input() entry!: ContentSection;
+
+  isSelected = false;
+
+  toggleSelection(entry: ContentSection) {
+    // this.isSelected = !this.isSelected;
+  }
 }

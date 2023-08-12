@@ -84,7 +84,7 @@ export class ContentContainerComponent {
   }
 
   buttonClicked(entry: ContentSection) {
-    entry.selected = !entry.selected;
+    // entry.selected = !entry.selected;
   }
 
   ngOnDestroy() {
