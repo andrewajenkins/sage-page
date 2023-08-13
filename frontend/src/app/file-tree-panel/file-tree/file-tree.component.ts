@@ -4,7 +4,6 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { ComponentLogger } from '../../common/logger/loggers';
-import { UiStateManager } from '../../common/services/ui-state-manager.service';
 import {
   FileTreeFolder,
   FileTreeNode,
@@ -34,9 +33,8 @@ export class FileTreeComponent {
   _currentNode!: FileTreeNode;
   set currentNode(node) {
     this._currentNode = node;
-    this.uiService.uiStateSubject.next({
+    this.commandService.perform({
       action: StateAction.SET_NODE_SELECTED,
-      node: node,
       flag: true,
     });
   }
@@ -48,7 +46,6 @@ export class FileTreeComponent {
   constructor(
     private commandService: CommandService,
     private dataService: DataService,
-    private uiService: UiStateManager,
     private actionHandler: FileTreeActionHandler
   ) {
     this.actionHandler.registerComponent(this);
@@ -103,11 +100,11 @@ export class FileTreeComponent {
 
     if (isFile(node)) {
       this.commandService.loadFile(node.id as number);
-      this.uiService.fileSelected(true);
+      this.commandService.perform({
+        action: StateAction.SET_FILE_SELECTED,
+        flag: true,
+      });
     }
-    // else {
-    //   this.uiService.nodeSelected(true);
-    // }
   }
 
   nodeUnHighlight($event: MouseEvent, previousNode: FileTreeNode) {

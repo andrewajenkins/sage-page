@@ -1,4 +1,3 @@
-import { UiStateManager } from '../../common/services/ui-state-manager.service';
 import {
   BaseAction,
   Command,
@@ -34,7 +33,6 @@ export class FileTreeActionHandler {
   private component!: FileTreeComponent;
 
   constructor(
-    private uiService: UiStateManager,
     private commandService: CommandService,
     private dataService: DataService
   ) {
@@ -85,7 +83,11 @@ export class FileTreeActionHandler {
           if (!this.currentNode.parent_id) {
             this.currentNode = dummyNode;
           }
-          this.uiService.nodeSelected(false);
+          this.commandService.perform({
+            action: StateAction.SET_NODE_SELECTED,
+            node: this.currentNode,
+            flag: false,
+          });
           this.refreshTree(resp);
         });
       }

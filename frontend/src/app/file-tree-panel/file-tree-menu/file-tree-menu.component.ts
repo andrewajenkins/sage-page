@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NodeNameDialog } from '../dialogs/create-file/node-name-dialog.component';
-import { UiStateManager } from '../../common/services/ui-state-manager.service';
 import { isFlagCommand, StateAction } from '../../common/models/command.model';
 
 @Component({
@@ -13,13 +12,12 @@ import { isFlagCommand, StateAction } from '../../common/models/command.model';
 export class FileTreeMenuComponent {
   nodeNotSelected: boolean = true;
   constructor(
-    private toolbarService: CommandService,
-    public dialog: MatDialog,
-    public uiStateService: UiStateManager
+    private commandService: CommandService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
-    this.uiStateService.uiState$.subscribe((cmd) => {
+    this.commandService.action$.subscribe((cmd) => {
       if (isFlagCommand(cmd) && cmd.action === StateAction.SET_NODE_SELECTED) {
         this.nodeNotSelected = !cmd.flag;
       }
@@ -35,7 +33,7 @@ export class FileTreeMenuComponent {
     })
       .afterClosed()
       .subscribe((name) => {
-        this.toolbarService.createFolder(name);
+        this.commandService.createFolder(name);
       });
   }
 
@@ -47,7 +45,7 @@ export class FileTreeMenuComponent {
     })
       .afterClosed()
       .subscribe((name) => {
-        this.toolbarService.createFile(name);
+        this.commandService.createFile(name);
       });
   }
 
@@ -59,7 +57,7 @@ export class FileTreeMenuComponent {
     })
       .afterClosed()
       .subscribe((name) => {
-        this.toolbarService.editFileName(name);
+        this.commandService.editFileName(name);
       });
   }
 
@@ -71,6 +69,6 @@ export class FileTreeMenuComponent {
   }
 
   deleteNode() {
-    this.toolbarService.deleteNode();
+    this.commandService.deleteNode();
   }
 }

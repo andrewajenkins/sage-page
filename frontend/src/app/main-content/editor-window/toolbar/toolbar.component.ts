@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CommandService } from '../../../common/services/command.service';
-import { UiStateManager } from '../../../common/services/ui-state-manager.service';
 import { ComponentLogger } from '../../../common/logger/loggers';
 
 @Component({

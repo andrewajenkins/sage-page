@@ -27,7 +27,7 @@ export class CommandService implements OnInit {
     });
   }
 
-  perform(command: Command<NodeAction>) {
+  perform(command: Command<BaseAction>) {
     this.actionSubject.next(command);
   }
 

@@ -12,7 +12,6 @@ import {
 import { DataService } from '../../../common/services/data.service';
 import { CommandService } from '../../../common/services/command.service';
 import { ComponentLogger } from '../../../common/logger/loggers';
-import { ContentBridgeService } from '../../../common/services/content-bridge.service';
 import {
   ContentAction,
   isContentsCommand,
@@ -36,7 +35,6 @@ export class ContentContainerComponent {
 
   constructor(
     private commandService: CommandService,
-    private contentBridgeService: ContentBridgeService,
     private dataService: DataService,
     private cdRef: ChangeDetectorRef
   ) {
