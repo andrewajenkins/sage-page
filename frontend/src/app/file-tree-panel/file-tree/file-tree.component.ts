@@ -11,7 +11,7 @@ import {
   isFolder,
 } from '../../common/models/file-tree.model';
 import { FileTreeActionHandler } from './file-tree-action-handler';
-import { StateAction } from '../../common/models/command.model';
+import { NodeAction, StateAction } from '../../common/models/command.model';
 
 @Component({
   selector: 'app-file-tree',
@@ -99,7 +99,10 @@ export class FileTreeComponent {
       'var(--mat-standard-button-toggle-selected-state-background-color)';
 
     if (isFile(node)) {
-      this.commandService.loadFile(node.id as number);
+      this.commandService.perform({
+        action: NodeAction.LOAD_FILE,
+        id: node.id,
+      });
       this.commandService.perform({
         action: StateAction.SET_FILE_SELECTED,
         flag: true,

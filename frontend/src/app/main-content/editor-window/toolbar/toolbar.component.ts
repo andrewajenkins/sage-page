@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommandService } from '../../../common/services/command.service';
 import { ComponentLogger } from '../../../common/logger/loggers';
+import { NodeAction } from '../../../common/models/command.model';
 
 @Component({
   selector: 'app-toolbar',
@@ -11,6 +12,6 @@ import { ComponentLogger } from '../../../common/logger/loggers';
 export class ToolbarComponent {
   constructor(private commandService: CommandService) {}
   saveFile() {
-    this.commandService.saveFile();
+    this.commandService.perform({ action: NodeAction.SAVE_FILE });
   }
 }

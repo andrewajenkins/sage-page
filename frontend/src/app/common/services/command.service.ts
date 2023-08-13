@@ -30,49 +30,4 @@ export class CommandService implements OnInit {
   perform(command: Command<BaseAction>) {
     this.actionSubject.next(command);
   }
-
-  createFolder(name: string) {
-    this.actionSubject.next({
-      action: NodeAction.CREATE_FOLDER,
-      value: name,
-    });
-  }
-
-  createFile(name: string) {
-    this.actionSubject.next({
-      action: NodeAction.CREATE_FILE,
-      value: name,
-    });
-  }
-
-  editFileName(uid: string) {
-    this.actionSubject.next({
-      action: NodeAction.EDIT_NODE_NAME,
-      value: uid,
-    });
-  }
-
-  deleteNode() {
-    this.actionSubject.next({
-      action: NodeAction.DELETE_NODE,
-    });
-  }
-
-  saveFile() {
-    this.actionSubject.next({ action: NodeAction.SAVE_FILE });
-  }
-
-  loadFile(id: number) {
-    this.actionSubject.next({
-      action: NodeAction.LOAD_FILE,
-      id: id,
-    });
-  }
-
-  createSubsection(contentSection: ContentSection) {
-    this.actionSubject.next({
-      action: NodeAction.CREATE_SUBSECTION,
-      content: contentSection,
-    });
-  }
 }

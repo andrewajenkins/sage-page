@@ -2,7 +2,11 @@ import { Component } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NodeNameDialog } from '../dialogs/create-file/node-name-dialog.component';
-import { isFlagCommand, StateAction } from '../../common/models/command.model';
+import {
+  isFlagCommand,
+  NodeAction,
+  StateAction,
+} from '../../common/models/command.model';
 
 @Component({
   selector: 'app-file-tree-menu',
@@ -33,7 +37,10 @@ export class FileTreeMenuComponent {
     })
       .afterClosed()
       .subscribe((name) => {
-        this.commandService.createFolder(name);
+        this.commandService.perform({
+          action: NodeAction.CREATE_FOLDER,
+          value: name,
+        });
       });
   }
 
@@ -45,7 +52,10 @@ export class FileTreeMenuComponent {
     })
       .afterClosed()
       .subscribe((name) => {
-        this.commandService.createFile(name);
+        this.commandService.perform({
+          action: NodeAction.CREATE_FILE,
+          value: name,
+        });
       });
   }
 
@@ -57,7 +67,10 @@ export class FileTreeMenuComponent {
     })
       .afterClosed()
       .subscribe((name) => {
-        this.commandService.editFileName(name);
+        this.commandService.perform({
+          action: NodeAction.EDIT_NODE_NAME,
+          value: name,
+        });
       });
   }
 
@@ -69,6 +82,8 @@ export class FileTreeMenuComponent {
   }
 
   deleteNode() {
-    this.commandService.deleteNode();
+    this.commandService.perform({
+      action: NodeAction.DELETE_NODE,
+    });
   }
 }
