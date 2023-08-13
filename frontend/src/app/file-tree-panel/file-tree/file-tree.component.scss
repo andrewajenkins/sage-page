@@ -12,8 +12,15 @@ mat-tree-node {
   position: relative;
 }
 
-mat-tree-node, small-icon {
-  font-size: 12px;
+.small-icon {
+  font-size: 18px;
+}
+
+.mat-tree-node,
+::ng-deep .mat-mdc-focus-indicator,
+::ng-deep .mat-mdc-button-touch-target {
+  height: 24px !important;
+  min-height: 24px !important;
 }
 
 .icon-spacing {
@@ -29,10 +36,12 @@ mat-tree-node, small-icon {
   list-style-type: none;
 }
 
-.file-tree .mat-nested-tree-node div[role=group] {
-  padding-left: 40px;
+.file-tree .mat-nested-tree-node div[role="group"] {
+  padding-left: 20px;
 }
 
 .current-node {
-  background-color: var(--mat-standard-button-toggle-selected-state-background-color);
+  background-color: var(
+    --mat-standard-button-toggle-selected-state-background-color
+  );
 }
