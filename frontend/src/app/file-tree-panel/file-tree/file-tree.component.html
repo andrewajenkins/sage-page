@@ -12,9 +12,14 @@
         (mouseleave)="nodeUnHighlight($event, node)"
         (click)="nodeSelect($event, node)"
         [ngClass]="{ 'current-node': getClass(node) }">
-        <button mat-icon-button>
-          <span class="material-symbols-outlined">description</span>
+        <button mat-button>
+          <span
+            class="small-icon material-symbols-outlined"
+            style="font-size: 18px">
+            {{ treeControl.isExpanded(node) ? "chevron_right" : "expand_more" }}
+          </span>
         </button>
+        <span class="material-symbols-outlined icon-spacing">description</span>
         {{ node.name }}
       </div>
     </mat-tree-node>
@@ -27,9 +32,11 @@
         (mouseleave)="nodeUnHighlight($event, node)"
         (click)="nodeSelect($event, node)"
         [ngClass]="{ 'current-node': getClass(node) }">
-        <button mat-icon-button matTreeNodeToggle>
-          <span class="material-symbols-outlined">
-            {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
+        <button mat-button matTreeNodeToggle>
+          <span
+            class="small-icon material-symbols-outlined"
+            style="font-size: 18px">
+            {{ treeControl.isExpanded(node) ? "chevron_right" : "expand_more" }}
           </span>
         </button>
         <span class="material-symbols-outlined icon-spacing">folder</span>
