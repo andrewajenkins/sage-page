@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommandService } from '../../../common/services/command.service';
-import { ContentSection } from '../../bot-window/bot-window.component';
 import { NodeAction } from '../../../common/models/command.model';
+import { ContentSection } from '../../../common/models/section.model';
 
 @Component({
   selector: 'app-content-toolbar',
@@ -15,7 +15,7 @@ export class ContentToolbarComponent {
 
   createSubsection() {
     this.commandService.perform({
-      action: NodeAction.CREATE_SUBSECTION,
+      action: NodeAction.CREATE_SECTION,
       content: this.contentSection,
     });
   }

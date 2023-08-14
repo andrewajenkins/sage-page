@@ -7,11 +7,10 @@
   [matMenuTriggerFor]="contentMenu"
   fxLayoutAlign="end center"
   class="menu-button">
-  <!--              (click)="openMenu($event, section)"-->
   <span class="material-symbols-outlined">more_vert</span>
 </button>
 <mat-menu #contentMenu="matMenu">
-  <button mat-menu-item (click)="createSubsection()">Create Subsection</button>
+  <button mat-menu-item (click)="createSubsection()">Create Subsections</button>
   <button mat-menu-item (click)="createContent()">Create Content</button>
   <button mat-menu-item (click)="editSection()">Edit Section</button>
   <button mat-menu-item (click)="deleteSection()">Delete Section</button>

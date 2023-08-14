@@ -17,7 +17,7 @@ class DatabaseService {
         db.exec(
           "create table if not exists treenodes (id integer primary key autoincrement , name text, parent_id int references treenodes(id), type text, parent_type text);"
         );
-        // db.exec("delete from treenodes;");
+        db.exec("delete from treenodes;");
       });
   }
 
@@ -28,12 +28,18 @@ class DatabaseService {
 
   public async createNode(node: any) {
     if (!this.db) throw new Error("Database not initialized");
-    await this.db.run(
-      "insert into treenodes (name, parent_id, type, parent_type) values (?,?,?,?)",
-      [node.name, node.parent_id, node.type, node.parent_type]
+    console.log(
+      "create result:",
+      await this.db.run(
+        "insert into treenodes (name, parent_id, type, parent_type) values (?,?,?,?)",
+        [node.name, node.parent_id, node.type, node.parent_type]
+      )
     );
-
-    return this.getFileTree();
+    const lastId = await this.db.get("select last_insert_rowid();");
+    return {
+      tree: await this.getFileTree(),
+      id: lastId["last_insert_rowid()"],
+    };
   }
 
   public async getFileTree() {

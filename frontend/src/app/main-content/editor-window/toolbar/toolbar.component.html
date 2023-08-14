@@ -15,7 +15,10 @@
     <button mat-menu-item>Rename</button>
     <button mat-menu-item>Export</button>
   </mat-menu>
-  <button mat-icon-button matTooltip="Save" (click)="saveFile()">
+  <button
+    mat-icon-button
+    matTooltip="Save: Warning, saving will do file generation"
+    (click)="saveFile()">
     <span class="material-symbols-outlined"> save </span>
   </button>
   <button mat-icon-button matTooltip="Undo">

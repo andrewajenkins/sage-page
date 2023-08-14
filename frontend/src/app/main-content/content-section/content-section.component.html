@@ -3,12 +3,12 @@
   fxLayout="row"
   class="content-section"
   (click)="toggleSelection()"
-  [isSelected]="contentSection.selected">
+  [isSelected]="!!contentSection?.selected">
   <div fxLayoutAlign="start center" class="content-text">
-    <ng-container *ngIf="contentSection.type == 0">
+    <ng-container *ngIf="contentSection?.contentType == 'CONTENT_TYPE_STRING'">
       <span [innerHTML]="contentSection.text"></span>
     </ng-container>
-    <ng-container *ngIf="contentSection.type == 1">
+    <ng-container *ngIf="contentSection?.contentType == 'CONTENT_TYPE_CODE'">
       <span>{{ contentSection.text }}</span>
     </ng-container>
   </div>

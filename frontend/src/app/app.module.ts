@@ -49,6 +49,7 @@ import { LoggingInterceptorService } from './common/services/interceptor.service
 import { ContentSectionDirective } from './main-content/content-section/content-section.directive';
 import { NavBannerComponent } from './main-content/nav-banner/nav-banner.component';
 import { FileTreeActionHandler } from './file-tree-panel/file-tree/file-tree-action-handler';
+import { ReadablePipe } from './common/pipes/readable.pipe';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { FileTreeActionHandler } from './file-tree-panel/file-tree/file-tree-act
     NodeNameDialog,
     ContentSectionDirective,
     NavBannerComponent,
+    ReadablePipe,
   ],
   imports: [
     BrowserModule,

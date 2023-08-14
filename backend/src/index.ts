@@ -7,8 +7,12 @@ app.use(express.json());
 
 let db = await new DatabaseService();
 
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} ${JSON.stringify(req?.body)}`);
+  next();
+});
+
 app.get("/api/node", async (req: any, res: any) => {
-  console.log(req.query);
   const data = {
     node: await db.getNode(req.query.id),
   };
@@ -16,10 +20,12 @@ app.get("/api/node", async (req: any, res: any) => {
   res.send(data);
 });
 app.post("/api/node", async (req: any, res: any) => {
-  console.log(req.body);
-  const data = {
-    tree: await db.createNode(req.body),
-  };
+  const data = await db.createNode(req.body);
+  console.log("1 record inserted: res data:", data);
+  res.send(data);
+});
+app.post("/api/section", async (req: any, res: any) => {
+  const data = await db.createNode(req.body);
   console.log("1 record inserted: res data:", data);
   res.send(data);
 });

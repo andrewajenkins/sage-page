@@ -1,5 +1,5 @@
-import { ContentSection } from '../../main-content/bot-window/bot-window.component';
-import { FileTreeNode } from './file-tree.model';
+import { FileTreeFile, FileTreeNode } from './file-tree.model';
+import { ContentSection } from './section.model';
 
 interface BaseCommand<TAction> {
   action: TAction;
@@ -17,16 +17,18 @@ export enum EditorAction {
   DELETE_SELECTED = 'EDITOR_DELETE_SELECTED',
   TOGGLE_HIGHLIGHT = 'EDITOR_TOGGLE_HIGHLIGHT',
   NONE = 'EDITOR_NONE',
+  CREATE_SUBSECTION = 'NODE_CREATE_SUBSECTION',
 }
 export enum NodeAction {
   CREATE_FOLDER = 'NODE_CREATE_FOLDER',
   CREATE_FILE = 'NODE_CREATE_FILE',
+  CREATE_SECTION = 'NODE_CREATE_SECTION',
   EDIT_NODE_NAME = 'NODE_EDIT_NODE_NAME',
   DELETE_NODE = 'NODE_DELETE_NODE',
   SAVE_FILE = 'NODE_SAVE_FILE',
   LOAD_FILE = 'NODE_LOAD_FILE',
   ADD_CONTENT = 'NODE_ADD_CONTENT',
-  CREATE_SUBSECTION = 'NODE_CREATE_SUBSECTION',
+  GENERATE_FILE_SECTIONS = 'NODE_GENERATE_FILE_SECTIONS',
 }
 export enum StateAction {
   SET_NODE_SELECTED = 'STATE_SET_NODE_SELECTED',
@@ -41,8 +43,8 @@ export interface IdCommand<TAction> extends BaseCommand<TAction> {
 export interface ValueCommand<TAction> extends BaseCommand<TAction> {
   value: string;
 }
-export interface ContentsCommand<TAction> extends BaseCommand<TAction> {
-  contents: ContentSection[];
+export interface SectionsCommand<TAction> extends BaseCommand<TAction> {
+  sections: ContentSection[];
 }
 export interface ContentCommand<TAction> extends BaseCommand<TAction> {
   content: ContentSection;
@@ -53,6 +55,18 @@ export interface NodeCommand<TAction> extends BaseCommand<TAction> {
 export interface FlagCommand<TAction> extends BaseCommand<TAction> {
   flag: boolean;
 }
+export interface FileCommand<TAction> extends BaseCommand<TAction> {
+  file: FileTreeFile;
+}
+export type Command<TAction> =
+  | BaseCommand<TAction>
+  | IdCommand<TAction>
+  | ValueCommand<TAction>
+  | SectionsCommand<TAction>
+  | ContentCommand<TAction>
+  | NodeCommand<TAction>
+  | FlagCommand<TAction>
+  | FileCommand<TAction>;
 // type guards
 export function isIdCommand(
   cmd: Command<BaseAction>
@@ -64,10 +78,10 @@ export function isValueCommand(
 ): cmd is ValueCommand<BaseAction> {
   return !!cmd.hasOwnProperty('value');
 }
-export function isContentsCommand(
+export function isSectionsCommand(
   cmd: Command<BaseAction>
-): cmd is ContentsCommand<BaseAction> {
-  return !!cmd.hasOwnProperty('contents');
+): cmd is SectionsCommand<BaseAction> {
+  return !!cmd.hasOwnProperty('sections');
 }
 export function isContentCommand(
   cmd: Command<BaseAction>
@@ -84,11 +98,8 @@ export function isFlagCommand(
 ): cmd is FlagCommand<BaseAction> {
   return !!cmd.hasOwnProperty('flag');
 }
-export type Command<TAction> =
-  | BaseCommand<TAction>
-  | IdCommand<TAction>
-  | ValueCommand<TAction>
-  | ContentsCommand<TAction>
-  | ContentCommand<TAction>
-  | NodeCommand<TAction>
-  | FlagCommand<TAction>;
+export function isFileCommand(
+  cmd: Command<BaseAction>
+): cmd is FileCommand<BaseAction> {
+  return !!cmd.hasOwnProperty('file');
+}

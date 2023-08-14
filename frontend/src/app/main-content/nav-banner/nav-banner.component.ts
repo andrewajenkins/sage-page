@@ -7,6 +7,7 @@ import {
   Command,
   isContentCommand,
   isIdCommand,
+  isNodeCommand,
 } from '../../common/models/command.model';
 
 @Component({
@@ -17,19 +18,20 @@ import {
 export class NavBannerComponent {
   private fileTreeSubscription!: Subscription;
   wikiTitle = 'Untitled';
-  task = 'Create Angular 10 table of contents';
+  task = 'table of contents';
   constructor(
     private commandService: CommandService,
     private dataService: DataService
   ) {}
   ngOnInit() {
     this.commandService.action$.subscribe((cmd) => {
-      if (isContentCommand(cmd) && cmd.action === NodeAction.CREATE_SUBSECTION)
-        this.task = 'Create "' + cmd.content?.text + '" section outline';
+      if (isContentCommand(cmd) && cmd.action === NodeAction.CREATE_SECTION) {
+        this.task = cmd.content?.name;
+      }
     });
     this.fileTreeSubscription = this.commandService.action$.subscribe((cmd) => {
-      if (isIdCommand(cmd) && cmd.action === NodeAction.LOAD_FILE)
-        this.dataService.getFile(cmd.id as number).subscribe((file) => {
+      if (isNodeCommand(cmd) && cmd.action === NodeAction.LOAD_FILE)
+        this.dataService.getFile(cmd.node.id as number).subscribe((file) => {
           // TODO resolve this redundant request
           this.wikiTitle = file.name;
         });

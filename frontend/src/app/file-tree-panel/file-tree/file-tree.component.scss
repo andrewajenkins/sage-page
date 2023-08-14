@@ -25,18 +25,7 @@ mat-tree-node {
 ::ng-deep .mat-mdc-button-touch-target {
   width: 24px !important;
 }
-mat-tree-node {
-  z-index: 2;
-}
-.no-select {
-  -webkit-user-select: none; /* Safari, Chrome, Opera */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer, Edge */
-  user-select: none; /* Standard Syntax */
-}
 ::ng-deep button {
-  z-index: 3;
-
   height: 24px;
   width: 24px;
 }

@@ -5,20 +5,17 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import {
-  ContentSection,
-  ContentSectionType,
-} from '../../bot-window/bot-window.component';
 import { DataService } from '../../../common/services/data.service';
 import { CommandService } from '../../../common/services/command.service';
 import { ComponentLogger } from '../../../common/logger/loggers';
 import {
   ContentAction,
-  isContentsCommand,
-  isIdCommand,
+  isFileCommand,
+  isSectionsCommand,
   NodeAction,
 } from '../../../common/models/command.model';
-import { FileTreeFile } from '../../../common/models/file-tree.model';
+import { ContentSection } from '../../../common/models/section.model';
+import { NodeService } from '../../../common/services/node.service';
 
 @Component({
   selector: 'app-content-container',
@@ -28,39 +25,40 @@ import { FileTreeFile } from '../../../common/models/file-tree.model';
 @ComponentLogger()
 export class ContentContainerComponent {
   @ViewChild('scrollMe') private wikiWindow!: ElementRef;
-
+  sections: ContentSection[] = [];
   private selectionsSubscription: Subscription;
-  file!: FileTreeFile;
-  private fileTreeSubscription: Subscription;
 
   constructor(
     private commandService: CommandService,
     private dataService: DataService,
+    private nodeService: NodeService,
     private cdRef: ChangeDetectorRef
   ) {
     this.selectionsSubscription = this.commandService.action$.subscribe(
       (cmd) => {
         if (
-          isContentsCommand(cmd) &&
+          isSectionsCommand(cmd) &&
           cmd.action === ContentAction.ADD_SECTIONS
         ) {
-          const content = cmd.contents as ContentSection[];
-          this.file?.content.push(...content);
+          const content = cmd.sections as ContentSection[];
+          this.nodeService.currentFile?.sections.push(...content);
+          this.sections = cmd.sections || [];
           this.scrollDown();
         }
       }
     );
-    this.fileTreeSubscription = this.commandService.action$.subscribe((cmd) => {
-      if (isIdCommand(cmd) && cmd.action === NodeAction.LOAD_FILE) {
-        this.dataService.getFile(cmd.id as number).subscribe((file) => {
-          this.file = file;
-          this.scrollDown();
+    this.commandService.action$.subscribe((cmd) => {
+      if (cmd.action === NodeAction.SAVE_FILE) {
+        // this.dataService.updateNode(this.file).subscribe();
+        this.commandService.perform({
+          action: NodeAction.GENERATE_FILE_SECTIONS,
         });
       }
     });
-    this.commandService.action$.subscribe((data) => {
-      if (data.action === NodeAction.SAVE_FILE) {
-        this.dataService.updateNode(this.file).subscribe();
+    this.commandService.action$.subscribe((cmd) => {
+      if (isFileCommand(cmd) && cmd.action === NodeAction.LOAD_FILE) {
+        this.nodeService.currentFile.sections = cmd.file?.sections || [];
+        this.sections = cmd.file?.sections || [];
       }
     });
   }
@@ -72,22 +70,11 @@ export class ContentContainerComponent {
     } catch (e) {}
   }
 
-  getStyle(type: ContentSectionType) {
-    if (type == ContentSectionType.HIGHLIGHT) {
-      return {
-        'background-color': 'yellow',
-        padding: 'unset',
-      };
-    }
-    return {};
-  }
-
   buttonClicked(entry: ContentSection) {
     // entry.selected = !entry.selected;
   }
 
   ngOnDestroy() {
     this.selectionsSubscription.unsubscribe();
-    this.fileTreeSubscription.unsubscribe();
   }
 }

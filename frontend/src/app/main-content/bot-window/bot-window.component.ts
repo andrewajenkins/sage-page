@@ -18,27 +18,12 @@ import {
   StateAction,
 } from '../../common/models/command.model';
 import { CommandService } from '../../common/services/command.service';
-
-export const enum ContentSectionType {
-  STRING,
-  CODE,
-  HIGHLIGHT,
-}
-
-export interface ContentSection {
-  locked?: Boolean;
-  type: ContentSectionType;
-  text: string;
-  botID: number;
-  uid?: string; // for duplicates in wiki-editor
-  selected: boolean;
-}
-
-export interface ChatLogEntry {
-  role: string;
-  content: ContentSection[];
-  id: number;
-}
+import { DataService } from '../../common/services/data.service';
+import {
+  ChatLogEntry,
+  ContentSection,
+  ContentSectionType,
+} from '../../common/models/section.model';
 
 @Component({
   selector: 'app-bot-window',
@@ -49,11 +34,10 @@ export interface ChatLogEntry {
 export class BotWindowComponent implements OnInit {
   @ViewChild('scrollMe') private botLogWindow!: ElementRef;
   @ViewChild('autosize') autosize!: CdkTextareaAutosize;
-  botText!: ChatLogEntry[];
+
   models: any;
   form!: FormGroup;
   log: ChatLogEntry[] = [];
-  private isMouseDown = false;
   fileSelected!: boolean;
 
   constructor(
@@ -61,22 +45,17 @@ export class BotWindowComponent implements OnInit {
     private botWindowService: BotWindowService,
     private formBuilder: FormBuilder,
     private cdRef: ChangeDetectorRef, // TODO need this cdref?
-    private commandService: CommandService
+    private commandService: CommandService,
+    private dataService: DataService
   ) {}
 
   ngOnInit() {
     this.form = this.formBuilder.group({
       modelControl: ['gpt-3.5-turbo-16k-0613'],
-      // queryControl: ['Can you explain and show hello world in java?'],
-      // queryControl: [
-      //   'Lets write a low-level/reference wiki for Angular 10 api. Can you give me 10 sections, no details, that we can use for the table of contents? Just need the section headlines. Needs to be from the api so things like core, testing, common, etc. Needs to be in markdown and lets ignore animation and routing',
-      // ],
-      // queryControl: [
-      //   'Can you give me one short paragraph about roses and then also a hello world function in java?',
-      // ],
       queryControl: [
         [
           'If giving a list please respond in markdown with non-numbered headings.',
+          'Please only give outputs with these markdown tags #, ##, ###, -',
           "Can you give me a table of contents for a wiki i'm writing about the Angular API? Include all the different libraries like core, common, http, routing, testing, etc.",
         ].join('\n'),
       ],
@@ -114,9 +93,11 @@ export class BotWindowComponent implements OnInit {
           role: 'Query:',
           content: [
             {
-              type: ContentSectionType.STRING,
-              text: query,
-              botID: 1,
+              parent_id: -1,
+              parent_type: 'log',
+              contentType: ContentSectionType.STRING,
+              type: 'section',
+              name: query,
               selected: false,
             },
           ],
@@ -134,16 +115,22 @@ export class BotWindowComponent implements OnInit {
           }
           if (isCode) {
             newContents.push({
+              parent_id: -1,
+              parent_type: 'log',
+              contentType: ContentSectionType.STRING,
               type: ContentSectionType.CODE,
+              name: content,
               text: content,
-              botID: i,
               selected: false,
             });
           } else {
             newContents.push({
-              type: ContentSectionType.STRING,
+              parent_id: -1,
+              parent_type: 'log',
+              contentType: ContentSectionType.STRING,
+              type: 'section',
+              name: content,
               text: content,
-              botID: i,
               selected: false,
             });
           }
@@ -191,7 +178,7 @@ export class BotWindowComponent implements OnInit {
     });
     this.commandService.perform({
       action: ContentAction.ADD_SECTIONS,
-      contents: selected,
+      sections: selected,
     });
   }
 }

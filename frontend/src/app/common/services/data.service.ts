@@ -2,14 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ServiceLogger } from '../logger/loggers';
-import { ContentSection } from '../../main-content/bot-window/bot-window.component';
 import {
+  dummyNode,
   FileTreeFile,
   FileTreeFolder,
   FileTreeNode,
   isFile,
   isFolder,
 } from '../models/file-tree.model';
+import {
+  ChatLogEntry,
+  ContentSection,
+  isSection,
+} from '../models/section.model';
+import { MatTreeService } from './mat-tree.service';
 
 const url = 'http://localhost:4200/api';
 
@@ -29,7 +35,7 @@ export class DataService {
   getFileTree(): Observable<any> {
     return this.http
       .get<FileTreeNode[]>(url + '/filetree')
-      .pipe(this.assembleTree);
+      .pipe(MatTreeService.assembleTree);
   }
 
   getNode(sub: number): Observable<FileTreeNode> {
@@ -43,11 +49,20 @@ export class DataService {
       .post<ApiResponse>(url + '/node', node)
       .pipe(
         map((response) => {
-          console.log('setNode', response);
+          console.log('done - createNode', response);
           return response.tree;
         })
       )
-      .pipe(this.assembleTree);
+      .pipe(MatTreeService.assembleTree);
+  }
+
+  createSection(node: FileTreeNode) {
+    return this.http.post<ApiResponse>(url + '/node', node).pipe(
+      map((response) => {
+        console.log('done - createSection: id:', response.id);
+        return response.id;
+      })
+    );
   }
 
   updateNode(node: FileTreeNode) {
@@ -67,7 +82,7 @@ export class DataService {
           return response.tree;
         })
       )
-      .pipe(this.assembleTree);
+      .pipe(MatTreeService.assembleTree);
   }
 
   saveContent(contents: ContentSection[]) {
@@ -77,10 +92,10 @@ export class DataService {
   getFile(fileID: number): Observable<FileTreeFile> {
     return this.getNode(fileID).pipe(
       map((newNode) => {
-        const node: FileTreeNode = newNode as FileTreeFile;
-        // get node content
-        (node as FileTreeFile).content = [];
-        return node;
+        if (isFile(newNode)) {
+          newNode.sections = [];
+          return newNode;
+        } else return dummyNode;
       })
     );
   }
@@ -89,33 +104,7 @@ export class DataService {
     return this.getNode(folderID) as Observable<FileTreeFolder>;
   }
 
-  assembleTree = map((nodes: FileTreeNode[]) => {
-    const debug = false;
-    const nodeMap = new Map<number, FileTreeNode>();
-    const rootNodes: FileTreeNode[] = [];
-    console.log('assembleTree: nodes:', nodes);
-    nodes.forEach((node) => {
-      if (isFolder(node)) {
-        node.subNodes = [];
-      } else if (isFile(node)) {
-        node.content = [];
-      }
-      nodeMap.set(node.id as number, node);
-    });
-    if (debug) console.log('assembleTree: map:', map);
-    nodes.forEach((node) => {
-      const findDebug = false;
-      if (!node.parent_id) {
-        if (findDebug)
-          console.log('assembleTree: fine: pushing root node:', node);
-        rootNodes.push(node);
-      } else {
-        console.log('assembleTree: fine: pushing subNode:', node);
-        const parent = nodeMap.get(node.parent_id) as FileTreeFolder;
-        parent.subNodes.push(node);
-      }
-    });
-    console.log('assembleTree: final tree:', rootNodes);
-    return rootNodes;
-  });
+  saveConversation(log: ChatLogEntry[]) {
+    return this.http.post<ApiResponse>(url + '/conversation', log);
+  }
 }

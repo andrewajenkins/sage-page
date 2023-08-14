@@ -19,7 +19,7 @@
             {{ treeControl.isExpanded(node) ? "chevron_right" : "expand_more" }}
           </span>
         </button>
-        <span class="material-symbols-outlined icon-spacing">description</span>
+        <span class="material-symbols-outlined icon-spacing">article</span>
         {{ node.name }}
       </div>
     </mat-tree-node>
@@ -39,7 +39,9 @@
             {{ treeControl.isExpanded(node) ? "chevron_right" : "expand_more" }}
           </span>
         </button>
-        <span class="material-symbols-outlined icon-spacing">folder</span>
+        <span class="material-symbols-outlined icon-spacing">{{
+          node.type == "folder" ? "folder" : "description"
+        }}</span>
         {{ node.name }}
       </div>
       <div *ngIf="!treeControl.isExpanded(node)" role="group">
