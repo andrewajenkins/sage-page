@@ -5,17 +5,21 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { DataService } from '../../../common/services/data.service';
 import { CommandService } from '../../../common/services/command.service';
 import { ComponentLogger } from '../../../common/logger/loggers';
 import {
   ContentAction,
   isFileCommand,
+  isSectionCommand,
   isSectionsCommand,
   NodeAction,
 } from '../../../common/models/command.model';
 import { ContentSection } from '../../../common/models/section.model';
 import { NodeService } from '../../../common/services/node.service';
+import {
+  FileTreeFile,
+  isContentNode,
+} from '../../../common/models/file-tree.model';
 
 @Component({
   selector: 'app-content-container',
@@ -25,12 +29,11 @@ import { NodeService } from '../../../common/services/node.service';
 @ComponentLogger()
 export class ContentContainerComponent {
   @ViewChild('scrollMe') private wikiWindow!: ElementRef;
-  sections: ContentSection[] = [];
+  section!: ContentSection | FileTreeFile;
   private selectionsSubscription: Subscription;
 
   constructor(
     private commandService: CommandService,
-    private dataService: DataService,
     private nodeService: NodeService,
     private cdRef: ChangeDetectorRef
   ) {
@@ -40,9 +43,9 @@ export class ContentContainerComponent {
           isSectionsCommand(cmd) &&
           cmd.action === ContentAction.ADD_SECTIONS
         ) {
-          const content = cmd.sections as ContentSection[];
-          this.nodeService.currentFile?.sections.push(...content);
-          this.sections = cmd.sections || [];
+          if (isContentNode(this.nodeService.currentNode)) {
+            this.nodeService.currentNode.sections.push(...cmd.sections);
+          }
           this.scrollDown();
         }
       }
@@ -58,7 +61,12 @@ export class ContentContainerComponent {
     this.commandService.action$.subscribe((cmd) => {
       if (isFileCommand(cmd) && cmd.action === NodeAction.LOAD_FILE) {
         this.nodeService.currentFile.sections = cmd.file?.sections || [];
-        this.sections = cmd.file?.sections || [];
+        this.section = cmd.file;
+      } else if (
+        isSectionCommand(cmd) &&
+        cmd.action === NodeAction.LOAD_SECTION
+      ) {
+        this.section = cmd.section;
       }
     });
   }
@@ -68,10 +76,6 @@ export class ContentContainerComponent {
       this.wikiWindow.nativeElement.scrollTop =
         this.wikiWindow.nativeElement.scrollHeight;
     } catch (e) {}
-  }
-
-  buttonClicked(entry: ContentSection) {
-    // entry.selected = !entry.selected;
   }
 
   ngOnDestroy() {

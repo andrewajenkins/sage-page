@@ -29,6 +29,7 @@ export enum NodeAction {
   LOAD_FILE = 'NODE_LOAD_FILE',
   ADD_CONTENT = 'NODE_ADD_CONTENT',
   GENERATE_FILE_SECTIONS = 'NODE_GENERATE_FILE_SECTIONS',
+  LOAD_SECTION = 'NODE_LOAD_SECTION',
 }
 export enum StateAction {
   SET_NODE_SELECTED = 'STATE_SET_NODE_SELECTED',
@@ -43,8 +44,8 @@ export interface IdCommand<TAction> extends BaseCommand<TAction> {
 export interface ValueCommand<TAction> extends BaseCommand<TAction> {
   value: string;
 }
-export interface SectionsCommand<TAction> extends BaseCommand<TAction> {
-  sections: ContentSection[];
+export interface SectionCommand<TAction> extends BaseCommand<TAction> {
+  section: ContentSection;
 }
 export interface ContentCommand<TAction> extends BaseCommand<TAction> {
   content: ContentSection;
@@ -58,10 +59,14 @@ export interface FlagCommand<TAction> extends BaseCommand<TAction> {
 export interface FileCommand<TAction> extends BaseCommand<TAction> {
   file: FileTreeFile;
 }
+export interface SectionsCommand<TAction> extends BaseCommand<TAction> {
+  sections: ContentSection[];
+}
 export type Command<TAction> =
   | BaseCommand<TAction>
   | IdCommand<TAction>
   | ValueCommand<TAction>
+  | SectionCommand<TAction>
   | SectionsCommand<TAction>
   | ContentCommand<TAction>
   | NodeCommand<TAction>
@@ -77,6 +82,11 @@ export function isValueCommand(
   cmd: Command<BaseAction>
 ): cmd is ValueCommand<BaseAction> {
   return !!cmd.hasOwnProperty('value');
+}
+export function isSectionCommand(
+  cmd: Command<BaseAction>
+): cmd is SectionCommand<BaseAction> {
+  return !!cmd.hasOwnProperty('section');
 }
 export function isSectionsCommand(
   cmd: Command<BaseAction>

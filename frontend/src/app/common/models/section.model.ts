@@ -13,10 +13,10 @@ export interface ContentSection {
   type: string;
   contentType: ContentSectionType;
   selected: boolean;
-  content?: ContentSection;
-  sections?: ContentSection[];
+  content: ContentSection[]; // section text that goes between the name and subsections
+  sections: ContentSection[]; // subsections to be created
   path?: string[];
-  text?: string;
+  text?: string[]; // store the raw input strings
   textType?: string;
 }
 export interface ChatLogEntry {
@@ -28,9 +28,11 @@ export function isSection(node: FileTreeNode): node is ContentSection {
   return node && node.type === 'section';
 }
 export const dummySection: ContentSection = {
+  sections: [],
   name: '',
   parent_id: -1,
   parent_type: '',
+  content: [],
   type: '',
   contentType: ContentSectionType.NONE,
   selected: false,

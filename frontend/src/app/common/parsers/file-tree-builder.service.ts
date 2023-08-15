@@ -61,11 +61,11 @@ export class FileTreeBuilderService {
         case 'section':
           this.logStart('section', currentH1, currentH2, currentH3, section);
           if (currentH3) {
-            currentH3.content = section.text;
+            this.appendContent(currentH3, section.text);
           } else if (currentH2) {
-            currentH2.content = section.text;
+            this.appendContent(currentH2, section.text);
           } else if (currentH1) {
-            currentH1.content = section.text;
+            this.appendContent(currentH1, section.text);
           }
           // send content to backend
           this.logEnd('section', currentH1, currentH2, currentH3, section);
@@ -74,22 +74,37 @@ export class FileTreeBuilderService {
           this.logStart('bullet', currentH1, currentH2, currentH3, section);
           let parentId;
           if (currentH3) {
-            // currentH3.children.push({ type, content });
-            parentId = currentH3.id;
+            this.appendContent(currentH3, section.text);
           } else if (currentH2) {
-            // currentH2.children.push({ type, content });
-            parentId = currentH2.id;
+            this.appendContent(currentH2, section.text);
           } else if (currentH1) {
-            // currentH1.children.push({ type, content });
-            parentId = currentH1.id;
+            this.appendContent(currentH1, section.text);
           }
           this.logEnd('bullet', currentH1, currentH2, currentH3, section);
+          break;
+        case 'link':
+          // this.logStart('link', currentH1, currentH2, currentH3, section);
+          // section.parent_id = currentH2.id as number;
+          // section.parent_type = 'section';
+          // section.id = await this.dataService
+          //   .createSection(section)
+          //   .toPromise();
+          // if (!section.sections) section.sections = [];
+          // currentH2.sections.push(currentH3);
+          // this.logEnd('link', currentH1, currentH2, currentH3, section);
           break;
         default:
           this.logStart('default', currentH1, currentH2, currentH3, section);
           this.logEnd('default', currentH1, currentH2, currentH3, section);
           break;
       }
+    }
+  }
+  appendContent(src, content) {
+    if (src.content) {
+      src.content += '\n' + content;
+    } else {
+      src.content = content;
     }
   }
   logStart(el, h1, h2, h3, node) {

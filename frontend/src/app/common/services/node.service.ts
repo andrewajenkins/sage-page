@@ -2,21 +2,25 @@ import { Injectable, OnInit } from '@angular/core';
 import { CommandService } from './command.service';
 import {
   isFileCommand,
+  isNodeCommand,
   NodeAction,
   StateAction,
 } from '../models/command.model';
 import { FileTreeFile, FileTreeNode, isFile } from '../models/file-tree.model';
 import { FileTreeBuilderService } from '../parsers/file-tree-builder.service';
 import { MatTreeService } from './mat-tree.service';
+import { isSection } from '../models/section.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NodeService {
+  private _currentNode!: FileTreeNode;
   get currentNode(): FileTreeNode {
+    if (!this._currentNode) {
+    }
     return this._currentNode;
   }
-
   set currentNode(value: FileTreeNode) {
     this._currentNode = value;
     if (isFile(this._currentNode)) {
@@ -28,15 +32,24 @@ export class NodeService {
       flag: true,
     });
   }
-  private _currentNode!: FileTreeNode;
+  acceptsContent() {
+    return (
+      isFile(this._currentNode) ||
+      isSection(this._currentNode) ||
+      !!this._currentFile
+    );
+  }
+  private _currentFile!: FileTreeFile;
   get currentFile(): FileTreeFile {
     return this._currentFile;
   }
-
   set currentFile(value: FileTreeFile) {
     this._currentFile = value;
+    this.commandService.perform({
+      action: StateAction.SET_FILE_SELECTED,
+      flag: true,
+    });
   }
-  private _currentFile!: FileTreeFile;
   constructor(
     private fileTreeBuilder: FileTreeBuilderService,
     private commandService: CommandService,
@@ -53,6 +66,11 @@ export class NodeService {
     this.commandService.action$.subscribe((cmd) => {
       if (isFileCommand(cmd) && cmd.action == NodeAction.LOAD_FILE) {
         this._currentFile = cmd.file!;
+      }
+    });
+    this.commandService.action$.subscribe((cmd) => {
+      if (isNodeCommand(cmd) && cmd.action == StateAction.SET_NODE_SELECTED) {
+        this._currentNode = cmd.node!;
       }
     });
   }

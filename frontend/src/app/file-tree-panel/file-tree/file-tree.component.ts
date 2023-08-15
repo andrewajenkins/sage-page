@@ -85,14 +85,16 @@ export class FileTreeComponent {
     this.currentElement.style.backgroundColor =
       'var(--mat-standard-button-toggle-selected-state-background-color)';
 
+    if (isSection(node)) {
+      this.commandService.perform({
+        action: NodeAction.LOAD_SECTION,
+        section: node,
+      });
+    }
     if (isFile(node)) {
       this.commandService.perform({
         action: NodeAction.LOAD_FILE,
-        node: node,
-      });
-      this.commandService.perform({
-        action: StateAction.SET_FILE_SELECTED,
-        flag: true,
+        file: node,
       });
     }
   }
@@ -109,9 +111,6 @@ export class FileTreeComponent {
   }
 
   getClass(node: FileTreeNode) {
-    if (!node.id) console.log('get', node);
-    if (!this.nodeService?.currentNode?.id)
-      console.log('cur:', this.nodeService?.currentNode);
     return this.currentElement && node.id === this.nodeService.currentNode.id;
   }
   hasSub = (_: number, node: FileTreeFolder) =>

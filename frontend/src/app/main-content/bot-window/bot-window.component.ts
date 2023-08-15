@@ -54,9 +54,10 @@ export class BotWindowComponent implements OnInit {
       modelControl: ['gpt-3.5-turbo-16k-0613'],
       queryControl: [
         [
-          'If giving a list please respond in markdown with non-numbered headings.',
-          'Please only give outputs with these markdown tags #, ##, ###, -',
-          "Can you give me a table of contents for a wiki i'm writing about the Angular API? Include all the different libraries like core, common, http, routing, testing, etc.",
+          // 'If giving a list please respond in markdown with non-numbered headings.',
+          // 'Please only give outputs with these markdown tags #, ##, ###, - and please add a few markdown links',
+          // "Can you give me a table of contents for a wiki i'm writing about the Angular API? Include all the different libraries like core, common, http, routing, testing, etc.",
+          'Can you echo the following? # Header1\n- Bullet content\n## Header2\n- Bullet content\n## Header3\n- Some bullet right here\n### Header 4',
         ].join('\n'),
       ],
     });
@@ -96,7 +97,10 @@ export class BotWindowComponent implements OnInit {
               parent_id: -1,
               parent_type: 'log',
               contentType: ContentSectionType.STRING,
+              text: [],
+              content: [],
               type: 'section',
+              sections: [],
               name: query,
               selected: false,
             },
@@ -120,7 +124,9 @@ export class BotWindowComponent implements OnInit {
               contentType: ContentSectionType.STRING,
               type: ContentSectionType.CODE,
               name: content,
-              text: content,
+              text: [content],
+              sections: [],
+              content: [],
               selected: false,
             });
           } else {
@@ -130,7 +136,9 @@ export class BotWindowComponent implements OnInit {
               contentType: ContentSectionType.STRING,
               type: 'section',
               name: content,
-              text: content,
+              text: [content],
+              sections: [],
+              content: [],
               selected: false,
             });
           }

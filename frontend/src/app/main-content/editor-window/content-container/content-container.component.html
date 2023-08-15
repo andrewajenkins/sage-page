@@ -1,14 +1,3 @@
-<!--<div class="content-container" #scrollMe>-->
-<!--  <mat-button-toggle-group multiple class="button-column">-->
-<!--    <mat-button-toggle-->
-<!--      *ngFor="let entry of file?.content"-->
-<!--      [value]="{ log: entry, entry: entry }"-->
-<!--      (click)="buttonClicked(entry)"-->
-<!--      [checked]="entry.selected">-->
-<!--      <app-content-section [entry]="entry"></app-content-section>-->
-<!--    </mat-button-toggle>-->
-<!--  </mat-button-toggle-group>-->
-<!--</div>-->
-<div class="content-container" *ngFor="let section of sections">
-  <app-content-section [contentSection]="section"></app-content-section>
+<div class="content-container" *ngFor="let subSection of section?.sections">
+  <app-content-section [contentSection]="subSection"></app-content-section>
 </div>

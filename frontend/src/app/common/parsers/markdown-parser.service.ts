@@ -9,10 +9,8 @@ export class MarkdownParserService {
   constructor() {}
 
   static parse(node) {
-    let type = '';
-    let content = '';
-    const md = node.text;
-    // node.text = md;
+    if (!node.text) return (node.text = node.name);
+    const md = node.text[0];
     if (md.startsWith('#### ')) {
       node.textType = 'h4';
       node.name = md.substring(5);
@@ -25,6 +23,9 @@ export class MarkdownParserService {
     } else if (md.startsWith('# ')) {
       node.textType = 'h1';
       node.name = md.substring(2);
+    } else if (md.startsWith('- [')) {
+      node.textType = 'link';
+      node.name = md.replace(/.*\[(.*?)\.*]/g, '$1');
     } else if (md.startsWith('- ')) {
       node.textType = 'bullet';
       node.name = md.substring(2);

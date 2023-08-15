@@ -48,6 +48,7 @@ export class FileTreeActionHandler {
         const newNode: FileTreeFile = {
           type: 'file',
           name: cmd.value || '' + this.fileIndex++,
+          text: [cmd.value || '' + this.fileIndex++],
           parent_id: isFolder(currentNode)
             ? (currentNode.id as number)
             : (currentNode.parent_id as number),
@@ -59,15 +60,6 @@ export class FileTreeActionHandler {
         this.dataService.createNode(newNode).subscribe((resp) => {
           this.matTreeService.refreshTree(resp);
         });
-      } else if (isNodeCommand(cmd) && action === NodeAction.EDIT_NODE_NAME) {
-        this.dataService.createSection(cmd.node).subscribe((resp) => {
-          this.matTreeService.refreshTree(resp);
-        });
-      } else if (isValueCommand(cmd) && action === NodeAction.EDIT_NODE_NAME) {
-        if (currentNode?.id) {
-          currentNode.name = cmd.value || 'DEFAULT_NAME_' + this.fileIndex++;
-          this.matTreeService.refreshTree();
-        }
       } else if (action === NodeAction.DELETE_NODE) {
         this.dataService.deleteNode(currentNode).subscribe((resp) => {
           if (!currentNode.parent_id) {

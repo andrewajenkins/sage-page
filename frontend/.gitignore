@@ -44,3 +44,5 @@ package-lock.json
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+backend/database/sqlite3.db
