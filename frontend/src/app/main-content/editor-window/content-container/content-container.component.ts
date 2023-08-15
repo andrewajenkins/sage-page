@@ -43,7 +43,10 @@ export class ContentContainerComponent {
           isSectionsCommand(cmd) &&
           cmd.action === ContentAction.ADD_SECTIONS
         ) {
-          if (isContentNode(this.nodeService.currentNode)) {
+          if (
+            this.nodeService.hasCurrent() &&
+            isContentNode(this.nodeService.currentNode)
+          ) {
             this.nodeService.currentNode.sections.push(...cmd.sections);
           }
           this.scrollDown();

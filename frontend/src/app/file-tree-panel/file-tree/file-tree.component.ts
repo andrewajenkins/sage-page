@@ -58,7 +58,9 @@ export class FileTreeComponent {
   }
   nodeHighlight(event: MouseEvent, newNode: FileTreeNode) {
     const previousNode = this.highlightNode;
-    const currentNode = this.nodeService.currentNode;
+    const currentNode = this.nodeService.hasCurrent()
+      ? this.nodeService.currentNode
+      : undefined;
 
     if (newNode.id === previousNode?.id) return;
 
@@ -111,7 +113,7 @@ export class FileTreeComponent {
   }
 
   getClass(node: FileTreeNode) {
-    return this.currentElement && node.id === this.nodeService.currentNode.id;
+    return this.currentElement && node.id === this.nodeService.currentNode?.id;
   }
   hasSub = (_: number, node: FileTreeFolder) =>
     isFolder(node) || isFile(node) || isSection(node);

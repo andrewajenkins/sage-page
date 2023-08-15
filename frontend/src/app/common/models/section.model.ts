@@ -24,8 +24,15 @@ export interface ChatLogEntry {
   content: ContentSection[];
   id: number;
 }
-export function isSection(node: FileTreeNode): node is ContentSection {
-  return node && node.type === 'section';
+export function isSection(
+  node: FileTreeNode | undefined
+): node is ContentSection {
+  return !!node && node.type === 'section';
+}
+export function isContent(
+  node: FileTreeNode | undefined
+): node is ContentSection {
+  return !!node && node.type === 'content';
 }
 export const dummySection: ContentSection = {
   sections: [],

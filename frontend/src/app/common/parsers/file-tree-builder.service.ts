@@ -4,6 +4,7 @@ import { cloneDeep } from 'lodash';
 import { DataService } from '../services/data.service';
 import { ServiceLogger } from '../logger/loggers';
 import { MarkdownParserService } from './markdown-parser.service';
+import { ContentSection } from '../models/section.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +14,12 @@ export class FileTreeBuilderService {
   constructor(private dataService: DataService) {}
 
   async generateNodes(file: FileTreeFile) {
-    const contents = cloneDeep(file.sections);
-    file.sections = [];
     let currentH1, currentH2, currentH3;
-
-    for (const section of contents) {
+    function getParent() {
+      return currentH3 || currentH2 || currentH1;
+    }
+    for (const section of file.sections) {
+      if (section.parent_id !== -1) continue; // skip existing sections
       MarkdownParserService.parse(section);
       switch (section.textType) {
         case 'h1':
@@ -55,31 +57,32 @@ export class FileTreeBuilderService {
             .createSection(section)
             .toPromise();
           if (!section.sections) section.sections = [];
-          currentH2.sections.push(currentH3);
+          currentH2.sections.push(section);
           this.logEnd('h3', currentH1, currentH2, currentH3, section);
           break;
-        case 'section':
-          this.logStart('section', currentH1, currentH2, currentH3, section);
-          if (currentH3) {
-            this.appendContent(currentH3, section.text);
-          } else if (currentH2) {
-            this.appendContent(currentH2, section.text);
-          } else if (currentH1) {
-            this.appendContent(currentH1, section.text);
-          }
-          // send content to backend
-          this.logEnd('section', currentH1, currentH2, currentH3, section);
-          break;
+        // case 'section':
+        //   this.logStart('section', currentH1, currentH2, currentH3, section);
+        //   if (currentH3) {
+        //     currentH3.text.push(section.text);
+        //   } else if (currentH2) {
+        //     currentH2.text.push(section.text);
+        //   } else if (currentH1) {
+        //     currentH1.text.push(section.text);
+        //   }
+        //   // send content to backend
+        //   this.logEnd('section', currentH1, currentH2, currentH3, section);
+        //   break;
         case 'bullet':
           this.logStart('bullet', currentH1, currentH2, currentH3, section);
           let parentId;
-          if (currentH3) {
-            this.appendContent(currentH3, section.text);
-          } else if (currentH2) {
-            this.appendContent(currentH2, section.text);
-          } else if (currentH1) {
-            this.appendContent(currentH1, section.text);
-          }
+          section.type = 'content';
+          section.parent_id = getParent().id;
+          section.parent_type = 'section';
+          section.id = await this.dataService
+            .createSection(section)
+            .toPromise();
+          if (!section.sections) section.sections = [];
+          getParent().content.push(section);
           this.logEnd('bullet', currentH1, currentH2, currentH3, section);
           break;
         case 'link':
@@ -95,17 +98,12 @@ export class FileTreeBuilderService {
           break;
         default:
           this.logStart('default', currentH1, currentH2, currentH3, section);
+          throw new Error('Failed to parse section:' + JSON.stringify(section));
           this.logEnd('default', currentH1, currentH2, currentH3, section);
           break;
       }
     }
-  }
-  appendContent(src, content) {
-    if (src.content) {
-      src.content += '\n' + content;
-    } else {
-      src.content = content;
-    }
+    return file;
   }
   logStart(el, h1, h2, h3, node) {
     console.log('start: el:', el);

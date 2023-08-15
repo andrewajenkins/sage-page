@@ -6,13 +6,11 @@
   [isSelected]="!!contentSection?.selected">
   <div fxLayoutAlign="start center" class="content-text">
     <span>{{ contentSection.name }}</span>
-    <ng-container *ngFor="let content of contentSection.content">
-      <span>{{ content }}</span>
-    </ng-container>
-    <ng-container *ngIf="contentSection?.contentType == 'CONTENT_TYPE_CODE'">
-      <span>{{ contentSection.text }}</span>
-    </ng-container>
+    <!--    <ng-container *ngFor="let content of contentSection.content">-->
+    <!--      <span>{{ content }}</span>-->
+    <!--    </ng-container>-->
   </div>
 
   <app-content-toolbar [contentSection]="contentSection"></app-content-toolbar>
 </div>
+<pre>cs:{{ contentSection | json }}</pre>

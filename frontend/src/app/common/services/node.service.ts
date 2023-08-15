@@ -15,13 +15,11 @@ import { isSection } from '../models/section.model';
   providedIn: 'root',
 })
 export class NodeService {
-  private _currentNode!: FileTreeNode;
-  get currentNode(): FileTreeNode {
-    if (!this._currentNode) {
-    }
+  private _currentNode!: FileTreeNode | undefined;
+  get currentNode(): FileTreeNode | undefined {
     return this._currentNode;
   }
-  set currentNode(value: FileTreeNode) {
+  set currentNode(value: FileTreeNode | undefined) {
     this._currentNode = value;
     if (isFile(this._currentNode)) {
       this.currentFile = this._currentNode;
@@ -33,6 +31,9 @@ export class NodeService {
     });
   }
   acceptsContent() {
+    if (!this._currentNode) {
+      return false;
+    }
     return (
       isFile(this._currentNode) ||
       isSection(this._currentNode) ||
@@ -73,5 +74,13 @@ export class NodeService {
         this._currentNode = cmd.node!;
       }
     });
+  }
+
+  unsetCurrentNode() {
+    this._currentNode = undefined as any;
+  }
+
+  hasCurrent(): boolean {
+    return !!this._currentNode;
   }
 }

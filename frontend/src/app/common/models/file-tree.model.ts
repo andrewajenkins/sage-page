@@ -22,10 +22,11 @@ export interface FileTreeFile {
   text: string[];
   type: string;
   sections: ContentSection[];
+  content: ContentSection[];
 }
 export const dummyNode = {
   name: 'DEFAULT_NAME',
-  parent_id: 0,
+  parent_id: -1,
   parent_type: 'DEFAULT_PARENT_TYPE',
   type: 'DEFAULT_TYPE',
   text: ['DEFAULT_TEXT'],
@@ -34,14 +35,16 @@ export const dummyNode = {
   subNodes: [],
 };
 export type FileTreeNode = FileTreeFolder | FileTreeFile | ContentSection;
-export function isFolder(node: FileTreeNode): node is FileTreeFolder {
-  return node && node.type === 'folder';
+export function isFolder(
+  node: FileTreeNode | undefined
+): node is FileTreeFolder {
+  return !!node && node.type === 'folder';
 }
-export function isFile(node: FileTreeNode): node is FileTreeFile {
-  return node && node.type === 'file';
+export function isFile(node: FileTreeNode | undefined): node is FileTreeFile {
+  return !!node && node.type === 'file';
 }
 export function isContentNode(
-  node: FileTreeNode
+  node: FileTreeNode | undefined
 ): node is FileTreeFile | ContentSection {
   return isFile(node) || isSection(node);
 }

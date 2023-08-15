@@ -31,9 +31,11 @@ export class FileTreeActionHandler {
   init() {
     this.commandService.action$.subscribe((cmd) => {
       const action = cmd.action;
-      const currentNode = this.nodeService.currentNode;
+
       if (isValueCommand(cmd) && action === NodeAction.CREATE_FOLDER) {
-        const currentNode = this.nodeService.currentNode;
+        const currentNode = this.nodeService.hasCurrent()
+          ? this.nodeService.currentNode
+          : undefined;
         const newNode: FileTreeFolder = {
           name: cmd.value || '' + this.fileIndex++,
           subNodes: [],
@@ -45,6 +47,8 @@ export class FileTreeActionHandler {
           this.matTreeService.refreshTree(resp);
         });
       } else if (isValueCommand(cmd) && action === NodeAction.CREATE_FILE) {
+        const currentNode = this.nodeService.currentNode;
+        if (!currentNode) return;
         const newNode: FileTreeFile = {
           type: 'file',
           name: cmd.value || '' + this.fileIndex++,
@@ -56,18 +60,21 @@ export class FileTreeActionHandler {
             ? currentNode.type
             : currentNode.parent_type,
           sections: [],
+          content: [],
         };
         this.dataService.createNode(newNode).subscribe((resp) => {
           this.matTreeService.refreshTree(resp);
         });
       } else if (action === NodeAction.DELETE_NODE) {
+        const currentNode = this.nodeService.currentNode;
+        if (!currentNode) return;
         this.dataService.deleteNode(currentNode).subscribe((resp) => {
-          if (!currentNode.parent_id) {
-            this.nodeService.currentNode = dummyNode;
-          }
+          // if (!currentNode.parent_id) {
+          this.nodeService.currentNode = undefined;
+          // }
           this.commandService.perform({
             action: StateAction.SET_NODE_SELECTED,
-            node: currentNode,
+            // node: currentNode,
             flag: false,
           });
           this.matTreeService.refreshTree(resp);

@@ -15,4 +15,7 @@ export class ContentSectionComponent {
   toggleSelection() {
     this.contentSection.selected = !this.contentSection.selected;
   }
+  ngOnChanges() {
+    console.log(this.contentSection);
+  }
 }

@@ -1,3 +1,7 @@
+<div *ngFor="let content of section?.content">
+  <app-content-section [contentSection]="content"></app-content-section>
+</div>
 <div class="content-container" *ngFor="let subSection of section?.sections">
   <app-content-section [contentSection]="subSection"></app-content-section>
 </div>
+<!--<pre>section:{{ section | json }}</pre>-->

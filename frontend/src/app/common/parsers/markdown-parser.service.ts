@@ -9,7 +9,7 @@ export class MarkdownParserService {
   constructor() {}
 
   static parse(node) {
-    if (!node.text) return (node.text = node.name);
+    if (!node.text) return (node.text = [node.name]);
     const md = node.text[0];
     if (md.startsWith('#### ')) {
       node.textType = 'h4';

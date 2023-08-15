@@ -20,34 +20,43 @@
           <div>
             <h2 fxFlex="none">{{ logEntry.role }}</h2>
           </div>
-          <button
+          <div
             fxFlex
-            (click)="sendSelection(logEntry)"
-            mat-stroked-button
-            [disabled]="!fileSelected"
-            color="primary"
-            class="function-button">
-            <mat-icon>keyboard_double_arrow_left</mat-icon>
-            <span>Send to PKM</span>
-          </button>
-          <button
-            fxFlex
-            (click)="selectAll(logEntry)"
-            mat-stroked-button
-            color="primary"
-            class="function-button">
-            <mat-icon>done_all</mat-icon>
-            <span>Select All</span>
-          </button>
-          <button
-            fxFlex
-            mat-stroked-button
-            (click)="clearSelection(logEntry)"
-            color="warn"
-            class="function-button">
-            <mat-icon>close</mat-icon>
-            <span>Clear All</span>
-          </button>
+            class="function-button"
+            [matTooltip]="!fileSelected ? 'Please select a file' : ''">
+            <button
+              fxFlex
+              (click)="sendSelection(logEntry)"
+              mat-stroked-button
+              [disabled]="!fileSelected"
+              color="primary"
+              class="function-button">
+              <mat-icon>keyboard_double_arrow_left</mat-icon>
+              <span>Send to PKM</span>
+            </button>
+          </div>
+          <div fxFlex class="function-button">
+            <button
+              fxFlex
+              (click)="selectAll(logEntry)"
+              mat-stroked-button
+              color="primary"
+              class="function-button">
+              <mat-icon>done_all</mat-icon>
+              <span>Select All</span>
+            </button>
+          </div>
+          <div fxFlex class="function-button">
+            <button
+              fxFlex
+              mat-stroked-button
+              (click)="clearSelection(logEntry)"
+              color="warn"
+              class="function-button">
+              <mat-icon>close</mat-icon>
+              <span>Clear All</span>
+            </button>
+          </div>
         </div>
         <div class="content-container" *ngFor="let section of logEntry.content">
           <app-content-section [contentSection]="section"></app-content-section>
