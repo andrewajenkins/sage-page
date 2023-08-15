@@ -15,6 +15,7 @@ import { ComponentLogger } from '../../common/logger/loggers';
 import {
   ContentAction,
   isFlagCommand,
+  isNodeCommand,
   StateAction,
 } from '../../common/models/command.model';
 import { CommandService } from '../../common/services/command.service';
@@ -23,7 +24,9 @@ import {
   ChatLogEntry,
   ContentSection,
   ContentSectionType,
+  isSection,
 } from '../../common/models/section.model';
+import { NodeFactory } from '../../common/utils/node.factory';
 
 @Component({
   selector: 'app-bot-window',
@@ -38,15 +41,14 @@ export class BotWindowComponent implements OnInit {
   models: any;
   form!: FormGroup;
   log: ChatLogEntry[] = [];
-  fileSelected!: boolean;
+  contentSectionSelected!: boolean;
 
   constructor(
     private _ngZone: NgZone,
     private botWindowService: BotWindowService,
     private formBuilder: FormBuilder,
     private cdRef: ChangeDetectorRef, // TODO need this cdref?
-    private commandService: CommandService,
-    private dataService: DataService
+    private commandService: CommandService
   ) {}
 
   ngOnInit() {
@@ -57,7 +59,7 @@ export class BotWindowComponent implements OnInit {
           // 'If giving a list please respond in markdown with non-numbered headings.',
           // 'Please only give outputs with these markdown tags #, ##, ###, - and please add a few markdown links',
           // "Can you give me a table of contents for a wiki i'm writing about the Angular API? Include all the different libraries like core, common, http, routing, testing, etc.",
-          'Can you echo the following? # Header1\n- Bullet content\n## Header2\n- Bullet content\n## Header3\n- Some bullet right here\n### Header 4',
+          'Can you something like the following, but not exactly? # Header1\n- Bullet content\n## Header2\n- Bullet content\n## Header3\n- Some bullet right here\n### Header 4',
         ].join('\n'),
       ],
     });
@@ -66,7 +68,15 @@ export class BotWindowComponent implements OnInit {
     });
     this.commandService.action$.subscribe((cmd) => {
       if (isFlagCommand(cmd) && cmd.action === StateAction.SET_FILE_SELECTED) {
-        this.fileSelected = cmd.flag as boolean;
+        this.contentSectionSelected = cmd.flag as boolean;
+      } else if (
+        isNodeCommand(cmd) &&
+        isFlagCommand(cmd) &&
+        cmd.action === StateAction.SET_NODE_SELECTED
+      ) {
+        if (isSection(cmd.node)) {
+          this.contentSectionSelected = cmd.flag as boolean;
+        }
       }
     });
     this.scrollDown();
@@ -93,9 +103,7 @@ export class BotWindowComponent implements OnInit {
           id: this.log.length,
           role: 'Query:',
           content: [
-            {
-              parent_id: -1,
-              parent_type: 'log',
+            NodeFactory.createSection({
               contentType: ContentSectionType.STRING,
               text: [],
               content: [],
@@ -103,7 +111,7 @@ export class BotWindowComponent implements OnInit {
               sections: [],
               name: query,
               selected: false,
-            },
+            }),
           ],
         });
         const contentArray = response.choices[0].message.content.split('\n');
@@ -118,29 +126,24 @@ export class BotWindowComponent implements OnInit {
             continue;
           }
           if (isCode) {
-            newContents.push({
-              parent_id: -1,
-              parent_type: 'log',
-              contentType: ContentSectionType.STRING,
-              type: ContentSectionType.CODE,
-              name: content,
-              text: [content],
-              sections: [],
-              content: [],
-              selected: false,
-            });
+            newContents.push(
+              NodeFactory.createSection({
+                contentType: ContentSectionType.STRING,
+                type: ContentSectionType.CODE,
+                name: content,
+                text: [content],
+              })
+            );
           } else {
-            newContents.push({
-              parent_id: -1,
-              parent_type: 'log',
-              contentType: ContentSectionType.STRING,
-              type: 'section',
-              name: content,
-              text: [content],
-              sections: [],
-              content: [],
-              selected: false,
-            });
+            newContents.push(
+              NodeFactory.createSection({
+                contentType: ContentSectionType.STRING,
+                type: 'section',
+                name: content,
+                text: [content],
+                selected: false,
+              })
+            );
           }
         }
         this.log.push({

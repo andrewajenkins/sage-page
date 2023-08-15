@@ -3,7 +3,6 @@ import { ServiceLogger } from '../logger/loggers';
 import { FileTreeComponent } from '../../file-tree-panel/file-tree/file-tree.component';
 import { map } from 'rxjs';
 import {
-  dummyNode,
   FileTreeFolder,
   FileTreeNode,
   isFile,
@@ -42,9 +41,7 @@ export class MatTreeService {
         node.subNodes = [];
       } else if (isFile(node) || isSection(node) || isContent(node)) {
         node.sections = [];
-        if (typeof node.content == 'string') {
-          node.content = JSON.parse(node.content);
-        }
+        node.content = [];
       }
       nodeMap.set(node.id as number, node);
     });

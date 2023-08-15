@@ -17,7 +17,7 @@ export interface ContentSection {
   sections: ContentSection[]; // subsections to be created
   path?: string[];
   text?: string[]; // store the raw input strings
-  textType?: string;
+  textType: number;
 }
 export interface ChatLogEntry {
   role: string;
@@ -43,4 +43,5 @@ export const dummySection: ContentSection = {
   type: '',
   contentType: ContentSectionType.NONE,
   selected: false,
+  textType: 0,
 };

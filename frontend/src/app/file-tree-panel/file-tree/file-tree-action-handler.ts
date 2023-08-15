@@ -5,7 +5,6 @@ import {
   StateAction,
 } from '../../common/models/command.model';
 import {
-  dummyNode,
   FileTreeFile,
   FileTreeFolder,
   isFolder,
@@ -15,6 +14,7 @@ import { DataService } from '../../common/services/data.service';
 import { Injectable } from '@angular/core';
 import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
+import { NodeFactory } from '../../common/utils/node.factory';
 
 @Injectable({
   providedIn: 'root',
@@ -49,8 +49,7 @@ export class FileTreeActionHandler {
       } else if (isValueCommand(cmd) && action === NodeAction.CREATE_FILE) {
         const currentNode = this.nodeService.currentNode;
         if (!currentNode) return;
-        const newNode: FileTreeFile = {
-          type: 'file',
+        const newNode: FileTreeFile = NodeFactory.createFile({
           name: cmd.value || '' + this.fileIndex++,
           text: [cmd.value || '' + this.fileIndex++],
           parent_id: isFolder(currentNode)
@@ -59,9 +58,7 @@ export class FileTreeActionHandler {
           parent_type: isFolder(currentNode)
             ? currentNode.type
             : currentNode.parent_type,
-          sections: [],
-          content: [],
-        };
+        });
         this.dataService.createNode(newNode).subscribe((resp) => {
           this.matTreeService.refreshTree(resp);
         });

@@ -60,7 +60,14 @@ export class NodeService {
   init() {
     this.commandService.action$.subscribe(async (cmd) => {
       if (cmd.action == NodeAction.GENERATE_FILE_SECTIONS) {
-        await this.fileTreeBuilder.generateNodes(this.currentFile);
+        if (
+          this._currentNode &&
+          (isFile(this._currentNode) || isSection(this._currentNode))
+        ) {
+          await this.fileTreeBuilder.generateNodes(this._currentNode);
+        } else {
+          await this.fileTreeBuilder.generateNodes(this.currentFile);
+        }
         this.matTreeService.refreshTree();
       }
     });
@@ -75,11 +82,6 @@ export class NodeService {
       }
     });
   }
-
-  unsetCurrentNode() {
-    this._currentNode = undefined as any;
-  }
-
   hasCurrent(): boolean {
     return !!this._currentNode;
   }

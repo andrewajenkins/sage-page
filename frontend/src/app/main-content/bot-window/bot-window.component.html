@@ -23,12 +23,14 @@
           <div
             fxFlex
             class="function-button"
-            [matTooltip]="!fileSelected ? 'Please select a file' : ''">
+            [matTooltip]="
+              !contentSectionSelected ? 'Please select a file or section' : ''
+            ">
             <button
               fxFlex
               (click)="sendSelection(logEntry)"
               mat-stroked-button
-              [disabled]="!fileSelected"
+              [disabled]="!contentSectionSelected"
               color="primary"
               class="function-button">
               <mat-icon>keyboard_double_arrow_left</mat-icon>

@@ -3,19 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ServiceLogger } from '../logger/loggers';
 import {
-  dummyNode,
   FileTreeFile,
   FileTreeFolder,
   FileTreeNode,
   isFile,
-  isFolder,
 } from '../models/file-tree.model';
-import {
-  ChatLogEntry,
-  ContentSection,
-  isSection,
-} from '../models/section.model';
+import { ChatLogEntry, ContentSection } from '../models/section.model';
 import { MatTreeService } from './mat-tree.service';
+import { dummyFile } from '../utils/node.factory';
 
 const url = 'http://localhost:4200/api';
 
@@ -95,7 +90,7 @@ export class DataService {
         if (isFile(newNode)) {
           newNode.sections = [];
           return newNode;
-        } else return dummyNode;
+        } else return dummyFile;
       })
     );
   }

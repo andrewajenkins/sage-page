@@ -29,7 +29,7 @@ import {
 @ComponentLogger()
 export class ContentContainerComponent {
   @ViewChild('scrollMe') private wikiWindow!: ElementRef;
-  section!: ContentSection | FileTreeFile;
+  section!: ContentSection | FileTreeFile | undefined;
   private selectionsSubscription: Subscription;
 
   constructor(
@@ -70,6 +70,11 @@ export class ContentContainerComponent {
         cmd.action === NodeAction.LOAD_SECTION
       ) {
         this.section = cmd.section;
+      }
+    });
+    this.commandService.action$.subscribe((cmd) => {
+      if (cmd.action === NodeAction.DELETE_NODE) {
+        this.section = undefined;
       }
     });
   }

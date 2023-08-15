@@ -6,6 +6,14 @@ import { ServiceLogger } from '../logger/loggers';
 import { MarkdownParserService } from './markdown-parser.service';
 import { ContentSection } from '../models/section.model';
 
+export const enum Token {
+  CONTENT,
+  H4,
+  H3,
+  H2,
+  H1,
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -13,18 +21,25 @@ import { ContentSection } from '../models/section.model';
 export class FileTreeBuilderService {
   constructor(private dataService: DataService) {}
 
-  async generateNodes(file: FileTreeFile) {
-    let currentH1, currentH2, currentH3;
+  async generateNodes(file: FileTreeFile | ContentSection) {
+    let currentH1, currentH2, currentH3, parent;
     function getParent() {
-      return currentH3 || currentH2 || currentH1;
+      return currentH3 || currentH2 || currentH1 || file;
     }
-    for (const section of file.sections) {
-      if (section.parent_id !== -1) continue; // skip existing sections
+    const sections = cloneDeep(file.sections);
+    file.sections = [];
+    for (const section of sections) {
+      console.log('sections:', file.sections);
+      if (section.parent_id !== -1) {
+        // already exists
+        file.sections.push(section);
+        continue;
+      } // skip existing sections
       MarkdownParserService.parse(section);
       switch (section.textType) {
-        case 'h1':
+        case Token.H1:
           this.logStart('h1', currentH1, currentH2, currentH3, section);
-          section.parent_id = file.id as number;
+          if (file.textType <= Token.H1) section.parent_id = file.id as number;
           section.parent_type = 'file';
           file.sections.push(section);
           section.id = await this.dataService
@@ -36,20 +51,22 @@ export class FileTreeBuilderService {
           currentH3 = null;
           this.logEnd('h1', currentH1, currentH2, currentH3, section);
           break;
-        case 'h2':
+        case Token.H2:
           this.logStart('h2', currentH1, currentH2, currentH3, section);
-          section.parent_id = currentH1.id as number;
+          parent = currentH1 || file;
+          section.parent_id = parent.id as number;
           section.parent_type = 'section';
           section.id = await this.dataService
             .createSection(section)
             .toPromise();
           if (!section.sections) section.sections = [];
-          currentH1.sections.push(section);
+          parent.sections.push(section);
           currentH2 = section;
           currentH3 = null;
           this.logEnd('h2', currentH1, currentH2, currentH3, section);
           break;
-        case 'h3':
+        case Token.H3:
+          parent = currentH2 || currentH1 || file;
           this.logStart('h3', currentH1, currentH2, currentH3, section);
           section.parent_id = currentH2.id as number;
           section.parent_type = 'section';
@@ -60,20 +77,8 @@ export class FileTreeBuilderService {
           currentH2.sections.push(section);
           this.logEnd('h3', currentH1, currentH2, currentH3, section);
           break;
-        // case 'section':
-        //   this.logStart('section', currentH1, currentH2, currentH3, section);
-        //   if (currentH3) {
-        //     currentH3.text.push(section.text);
-        //   } else if (currentH2) {
-        //     currentH2.text.push(section.text);
-        //   } else if (currentH1) {
-        //     currentH1.text.push(section.text);
-        //   }
-        //   // send content to backend
-        //   this.logEnd('section', currentH1, currentH2, currentH3, section);
-        //   break;
-        case 'bullet':
-          this.logStart('bullet', currentH1, currentH2, currentH3, section);
+        case Token.CONTENT:
+          this.logStart('default', currentH1, currentH2, currentH3, section);
           let parentId;
           section.type = 'content';
           section.parent_id = getParent().id;
@@ -81,26 +86,11 @@ export class FileTreeBuilderService {
           section.id = await this.dataService
             .createSection(section)
             .toPromise();
-          if (!section.sections) section.sections = [];
           getParent().content.push(section);
-          this.logEnd('bullet', currentH1, currentH2, currentH3, section);
-          break;
-        case 'link':
-          // this.logStart('link', currentH1, currentH2, currentH3, section);
-          // section.parent_id = currentH2.id as number;
-          // section.parent_type = 'section';
-          // section.id = await this.dataService
-          //   .createSection(section)
-          //   .toPromise();
-          // if (!section.sections) section.sections = [];
-          // currentH2.sections.push(currentH3);
-          // this.logEnd('link', currentH1, currentH2, currentH3, section);
-          break;
-        default:
-          this.logStart('default', currentH1, currentH2, currentH3, section);
-          throw new Error('Failed to parse section:' + JSON.stringify(section));
           this.logEnd('default', currentH1, currentH2, currentH3, section);
           break;
+        default:
+          throw new Error('Invalid token type:' + JSON.stringify(section));
       }
     }
     return file;

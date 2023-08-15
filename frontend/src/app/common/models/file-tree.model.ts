@@ -1,4 +1,5 @@
 import { ContentSection, isSection } from './section.model';
+import { Token } from '../parsers/file-tree-builder.service';
 
 export interface NodeType {
   FILE;
@@ -20,20 +21,11 @@ export interface FileTreeFile {
   parent_id: number;
   parent_type: string;
   text: string[];
+  textType: Token;
   type: string;
   sections: ContentSection[];
   content: ContentSection[];
 }
-export const dummyNode = {
-  name: 'DEFAULT_NAME',
-  parent_id: -1,
-  parent_type: 'DEFAULT_PARENT_TYPE',
-  type: 'DEFAULT_TYPE',
-  text: ['DEFAULT_TEXT'],
-  content: [],
-  sections: [],
-  subNodes: [],
-};
 export type FileTreeNode = FileTreeFolder | FileTreeFile | ContentSection;
 export function isFolder(
   node: FileTreeNode | undefined
