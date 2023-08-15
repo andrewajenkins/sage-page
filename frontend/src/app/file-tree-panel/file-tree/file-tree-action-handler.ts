@@ -15,6 +15,7 @@ import { Injectable } from '@angular/core';
 import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
 import { NodeFactory } from '../../common/utils/node.factory';
+import { Token } from '../../common/parsers/file-tree-builder.service';
 
 @Injectable({
   providedIn: 'root',
@@ -58,6 +59,7 @@ export class FileTreeActionHandler {
           parent_type: isFolder(currentNode)
             ? currentNode.type
             : currentNode.parent_type,
+          textType: Token.FILE,
         });
         this.dataService.createNode(newNode).subscribe((resp) => {
           this.matTreeService.refreshTree(resp);

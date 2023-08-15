@@ -15,7 +15,7 @@ class DatabaseService {
         console.log("Opened database successfully");
         this.db = db;
         db.exec(
-          "create table if not exists treenodes (id integer primary key autoincrement , name text, parent_id int references treenodes(id), type text, text text, content text, parent_type text);"
+          "create table if not exists treenodes (id integer primary key autoincrement, name text, parent_id integer references treenodes(id), type text, text text, content text, parent_type text, textType integer);"
         );
         db.exec("delete from treenodes;");
       });
@@ -31,8 +31,8 @@ class DatabaseService {
     console.log(
       "create result:",
       await this.db.run(
-        "insert into treenodes (name, parent_id, type, parent_type) values (?,?,?,?)",
-        [node.name, node.parent_id, node.type, node.parent_type]
+        "insert into treenodes (name, parent_id, type, parent_type, textType) values (?,?,?,?,?)",
+        [node.name, node.parent_id, node.type, node.parent_type, node.textType]
       )
     );
     const lastId = await this.db.get("select last_insert_rowid();");

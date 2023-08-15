@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { OPENAI_API_KEY, OPENAI_ORG } from '../../../../../tmp/creds';
 import { ServiceLogger } from '../../common/logger/loggers';
+import { tap } from 'rxjs/operators';
+import { botModels, botResponse } from '../../common/data/data';
 
 interface Model {
   id: string;
@@ -43,6 +45,7 @@ interface Options {
 })
 @ServiceLogger()
 export class BotWindowService {
+  BYPASS = true;
   options: Options = {
     headers: {
       Authorization: `Bearer ${OPENAI_API_KEY}`,
@@ -51,13 +54,18 @@ export class BotWindowService {
   };
   constructor(private http: HttpClient) {}
   getModels(): Observable<Model[]> {
-    return this.http
-      .get<ModelResponse>('https://api.openai.com/v1/models', this.options)
-      .pipe(
-        map((response: ModelResponse) => {
-          return response.data;
-        })
-      ) as Observable<Model[]>;
+    if (this.BYPASS) {
+      return of(botModels);
+    } else {
+      return this.http
+        .get<ModelResponse>('https://api.openai.com/v1/models', this.options)
+        .pipe(
+          map((response: ModelResponse) => {
+            console.log('models resp:', JSON.stringify(response));
+            return response.data;
+          })
+        ) as Observable<Model[]>;
+    }
   }
   postQuery(model = 'gpt-3.5-turbo-18k-0613', query = 'hi bot') {
     const body = {
@@ -65,7 +73,11 @@ export class BotWindowService {
       messages: [
         {
           role: 'user',
-          content: query,
+          content: `
+Can you give me an outline for a series of wiki articles on the birds of Sourthern California?
+Mostly interested in types and biology.
+Plese respond in markdown using only the '#', '##', '###', '###' '-' and text content
+          `,
         },
       ],
       temperature: 0.7,
@@ -73,10 +85,20 @@ export class BotWindowService {
     const options = this.options;
     options.headers['Content-Type'] = 'application/json';
     console.log('making request:', body, options);
-    return this.http.post<RequestResponse>(
-      'https://api.openai.com/v1/chat/completions',
-      body,
-      options
-    );
+    if (this.BYPASS) {
+      return of(botResponse);
+    } else {
+      return this.http
+        .post<RequestResponse>(
+          'https://api.openai.com/v1/chat/completions',
+          body,
+          options
+        )
+        .pipe(
+          tap((res) => {
+            console.log('resp:', JSON.stringify(res));
+          })
+        );
+    }
   }
 }

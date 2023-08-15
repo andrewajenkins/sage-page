@@ -22,16 +22,16 @@ export function ComponentLogger() {
               constructor.name,
               key,
               'Arguments:',
-              args
-              // JSON.stringify(args)
+              // args
+              JSON.stringify(args)
             );
-          console.log(
-            '--',
-            constructor.name,
-            key,
-            'Arguments:',
-            JSON.stringify(args)
-          );
+          // console.log(
+          //   '--',
+          //   constructor.name,
+          //   key,
+          //   'Arguments:',
+          //   JSON.stringify(args)
+          // );
           return originalMethod.apply(this, args);
         };
       }
