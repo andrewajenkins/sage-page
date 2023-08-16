@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { FileTreeFile, FileTreeNode } from '../models/file-tree.model';
-import { clone, cloneDeep } from 'lodash';
+import { FileTreeFile } from '../models/file-tree.model';
 import { DataService } from '../services/data.service';
 import { ServiceLogger } from '../logger/loggers';
 import { MarkdownParserService } from './markdown-parser.service';
 import { ContentSection } from '../models/section.model';
+import { clone } from 'lodash'; // used below
 
 export const enum Token {
   CONTENT,
@@ -42,16 +42,24 @@ export class FileTreeBuilderService {
       const logEnd = (token) => {
         this.logEnd(token, currentH1, currentH2, currentH3, section, newRoot);
       };
+      const skipLower = (name, minParent, token) => {
+        if (newRoot.textType <= token) {
+          console.warn(
+            "Can't nest an " +
+              name +
+              ' under anything less than a ' +
+              minParent +
+              ' - skipping section',
+            section
+          );
+          return true;
+        }
+        return false;
+      };
       switch (section.textType) {
         case Token.H1:
           logStart('h1');
-          if (newRoot.textType <= Token.H1) {
-            console.warn(
-              "Can't nest an h1 under anything less than a file - skipping section",
-              section
-            );
-            continue;
-          }
+          if (skipLower('h1', 'file', Token.H1)) continue;
           section.parent_id = newRoot.id as number;
           section.parent_type = 'file';
           newRoot.sections.push(section);
@@ -66,20 +74,13 @@ export class FileTreeBuilderService {
           break;
         case Token.H2:
           logStart('h2');
-          if (newRoot.textType <= Token.H2) {
-            console.warn(
-              "Can't nest an h2 under anything less than a h1 - skipping section",
-              section
-            );
-            continue;
-          }
+          if (skipLower('h2', 'h1', Token.H2)) continue;
           const h2Parent = currentH1 || newRoot;
           section.parent_id = h2Parent.id as number;
           section.parent_type = 'section';
           section.id = await this.dataService
             .createSection(section)
             .toPromise();
-          if (!section.sections) section.sections = [];
           h2Parent.sections.push(section);
           currentH2 = clone(section);
           currentH3 = null;
@@ -87,20 +88,13 @@ export class FileTreeBuilderService {
           break;
         case Token.H3:
           logStart('h3');
-          if (newRoot.textType <= Token.H3) {
-            console.warn(
-              "Can't nest an h3 under anything less than an h2  - skipping section",
-              section
-            );
-            continue;
-          }
+          if (skipLower('h3', 'h2', Token.H3)) continue;
           const h3Parent = currentH2 || currentH1 || newRoot;
           section.parent_id = h3Parent.id as number;
           section.parent_type = 'section';
           section.id = await this.dataService
             .createSection(section)
             .toPromise();
-          if (!section.sections) section.sections = [];
           h3Parent.sections.push(section);
           currentH3 = clone(section);
           logEnd('h3');

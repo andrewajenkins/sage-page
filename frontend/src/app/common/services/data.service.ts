@@ -11,7 +11,6 @@ import {
 import { ChatLogEntry, ContentSection } from '../models/section.model';
 import { MatTreeService } from './mat-tree.service';
 import { getDummyFile } from '../utils/node.factory';
-import { cloneDeep } from 'lodash';
 
 const url = 'http://localhost:4200/api';
 
