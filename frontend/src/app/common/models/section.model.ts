@@ -6,6 +6,7 @@ export const enum ContentSectionType {
   NONE = 'CONTENT_TYPE_NONE',
 }
 export interface ContentSection {
+  editable: boolean;
   id?: number;
   name: string;
   parent_id: number;
@@ -35,6 +36,7 @@ export function isContent(
   return !!node && node.type === 'content';
 }
 export const dummySection: ContentSection = {
+  editable: false,
   sections: [],
   name: '',
   parent_id: -1,

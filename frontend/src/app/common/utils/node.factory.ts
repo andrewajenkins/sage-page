@@ -24,6 +24,7 @@ const dummySection = {
   sections: [], // subsections to be created
   textType: -1,
   text: '',
+  editable: false,
 };
 export function getDummyFile() {
   return cloneDeep(dummyFile);

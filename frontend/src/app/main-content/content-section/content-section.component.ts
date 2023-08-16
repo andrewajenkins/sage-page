@@ -12,6 +12,7 @@ import {
 })
 export class ContentSectionComponent {
   @Input() contentSection: ContentSection = dummySection;
+  isEditable: any;
   toggleSelection() {
     this.contentSection.selected = !this.contentSection.selected;
   }
