@@ -12,13 +12,23 @@ export class MarkdownParserService {
   static parse(node) {
     if (!node.text) return (node.text = [node.name]);
     const md = node.text[0];
-    if (md.startsWith('#### ')) {
+
+    if (md.startsWith('- #### ')) {
+      node.textType = Token.H4;
+      node.name = md.substring(7);
+    } else if (md.startsWith('#### ')) {
       node.textType = Token.H4;
       node.name = md.substring(5);
+    } else if (md.startsWith('- ### ')) {
+      (node.textType = Token.H3), (node.name = md.substring(6));
     } else if (md.startsWith('### ')) {
       (node.textType = Token.H3), (node.name = md.substring(4));
+    } else if (md.startsWith('- ## ')) {
+      (node.textType = Token.H2), (node.name = md.substring(5));
     } else if (md.startsWith('## ')) {
       (node.textType = Token.H2), (node.name = md.substring(3));
+    } else if (md.startsWith('- # ')) {
+      (node.textType = Token.H1), (node.name = md.substring(2));
     } else if (md.startsWith('# ')) {
       (node.textType = Token.H1), (node.name = md.substring(2));
     } else if (md.startsWith('- [')) {
