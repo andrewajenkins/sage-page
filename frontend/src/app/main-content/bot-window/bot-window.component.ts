@@ -156,7 +156,7 @@ export class BotWindowComponent implements OnInit {
         // TODO save user queries and responses and pass them in the messages (with roles) to enable convo context
 
         // scroll down bot chat
-        this.scrollDown();
+        // this.scrollDown();
         // TODO remove below selectall and send selection
         // this.selectAll(this.log[this.log.length - 1]);
         // this.sendSelection(this.log[this.log.length - 1]);

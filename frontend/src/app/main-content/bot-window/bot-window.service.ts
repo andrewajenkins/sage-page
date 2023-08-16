@@ -55,7 +55,7 @@ export class BotWindowService {
   constructor(private http: HttpClient) {}
   getModels(): Observable<Model[]> {
     if (this.BYPASS) {
-      return of(botModels);
+      return of(botModels.data as Model[]);
     } else {
       return this.http
         .get<ModelResponse>('https://api.openai.com/v1/models', this.options)

@@ -10,7 +10,8 @@ import {
 } from '../models/file-tree.model';
 import { ChatLogEntry, ContentSection } from '../models/section.model';
 import { MatTreeService } from './mat-tree.service';
-import { dummyFile } from '../utils/node.factory';
+import { getDummyFile } from '../utils/node.factory';
+import { cloneDeep } from 'lodash';
 
 const url = 'http://localhost:4200/api';
 
@@ -90,7 +91,7 @@ export class DataService {
         if (isFile(newNode)) {
           newNode.sections = [];
           return newNode;
-        } else return dummyFile;
+        } else return getDummyFile();
       })
     );
   }

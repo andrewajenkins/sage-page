@@ -1,8 +1,9 @@
 import { FileTreeNode } from '../models/file-tree.model';
 import { Token } from '../parsers/file-tree-builder.service';
 import { ContentSection, ContentSectionType } from '../models/section.model';
+import { cloneDeep } from 'lodash';
 
-export const dummyFile = {
+const dummyFile = {
   name: '',
   parent_id: -1,
   parent_type: '',
@@ -12,7 +13,7 @@ export const dummyFile = {
   sections: [],
   content: [],
 };
-export const dummySection = {
+const dummySection = {
   name: '',
   parent_id: -1,
   parent_type: '',
@@ -23,17 +24,19 @@ export const dummySection = {
   sections: [], // subsections to be created
   textType: -1,
 };
-
+export function getDummyFile() {
+  return cloneDeep(dummyFile);
+}
 export class NodeFactory {
   static createNode(uniqueParams: Partial<FileTreeNode>): FileTreeNode {
     return {
-      ...dummyFile,
+      ...getDummyFile(),
       ...uniqueParams,
     };
   }
 
   static createFile(uniqueParams: Partial<FileTreeNode>) {
-    const newNode = dummyFile;
+    const newNode = getDummyFile();
     newNode.type = 'file';
     return {
       ...newNode,
@@ -42,8 +45,10 @@ export class NodeFactory {
   }
 
   static createSection(uniqueParams: Partial<ContentSection>): ContentSection {
-    const newNode = dummySection;
+    const newNode = cloneDeep(dummySection);
     newNode.type = 'section';
+    // newNode.sections = [];
+    // newNode.content = [];
     return {
       ...newNode,
       ...uniqueParams,

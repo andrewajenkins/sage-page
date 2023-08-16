@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FileTreeFile, FileTreeNode } from '../models/file-tree.model';
-import { cloneDeep } from 'lodash';
+import { clone, cloneDeep } from 'lodash';
 import { DataService } from '../services/data.service';
 import { ServiceLogger } from '../logger/loggers';
 import { MarkdownParserService } from './markdown-parser.service';
@@ -23,112 +23,90 @@ export class FileTreeBuilderService {
   constructor(private dataService: DataService) {}
 
   async generateNodes(rootNode: FileTreeFile | ContentSection) {
-    let currentH1, currentH2, currentH3, parent;
+    let currentH1, currentH2, currentH3;
+    const newRoot: FileTreeFile | ContentSection = clone(rootNode);
+    newRoot.sections = [];
     function getParent() {
-      return currentH3 || currentH2 || currentH1 || rootNode;
+      return currentH3 || currentH2 || currentH1 || newRoot;
     }
-    const sections = cloneDeep(rootNode.sections);
-    rootNode.sections = [];
-    for (const section of sections) {
-      console.log('sections:', rootNode.sections);
+    for (const section of rootNode.sections) {
       if (section.parent_id !== -1) {
         // already exists
-        rootNode.sections.push(section);
+        newRoot.sections.push(section);
         continue;
       } // skip existing sections
       MarkdownParserService.parse(section);
+      const logStart = (token) => {
+        this.logStart(token, currentH1, currentH2, currentH3, section, newRoot);
+      };
+      const logEnd = (token) => {
+        this.logEnd(token, currentH1, currentH2, currentH3, section, newRoot);
+      };
       switch (section.textType) {
         case Token.H1:
-          this.logStart(
-            'h1',
-            currentH1,
-            currentH2,
-            currentH3,
-            section,
-            rootNode
-          );
-          if (rootNode.textType <= Token.H1) {
+          logStart('h1');
+          if (newRoot.textType <= Token.H1) {
             console.warn(
               "Can't nest an h1 under anything less than a file - skipping section",
               section
             );
             continue;
           }
-          section.parent_id = rootNode.id as number;
+          section.parent_id = newRoot.id as number;
           section.parent_type = 'file';
-          rootNode.sections.push(section);
+          newRoot.sections.push(section);
           section.id = await this.dataService
             .createSection(section)
             .toPromise();
           if (!section.sections) section.sections = [];
-          currentH1 = section;
+          currentH1 = clone(section);
           currentH2 = null;
           currentH3 = null;
-          this.logEnd('h1', currentH1, currentH2, currentH3, section, rootNode);
+          logEnd('h1');
           break;
         case Token.H2:
-          this.logStart(
-            'h2',
-            currentH1,
-            currentH2,
-            currentH3,
-            section,
-            rootNode
-          );
-          if (rootNode.textType <= Token.H2) {
+          logStart('h2');
+          if (newRoot.textType <= Token.H2) {
             console.warn(
               "Can't nest an h2 under anything less than a h1 - skipping section",
               section
             );
             continue;
           }
-          parent = currentH1 || rootNode;
-          section.parent_id = parent.id as number;
+          const h2Parent = currentH1 || newRoot;
+          section.parent_id = h2Parent.id as number;
           section.parent_type = 'section';
           section.id = await this.dataService
             .createSection(section)
             .toPromise();
           if (!section.sections) section.sections = [];
-          parent.sections.push(section);
-          currentH2 = section;
+          h2Parent.sections.push(section);
+          currentH2 = clone(section);
           currentH3 = null;
-          this.logEnd('h2', currentH1, currentH2, currentH3, section, rootNode);
+          logEnd('h2');
           break;
         case Token.H3:
-          this.logStart(
-            'h3',
-            currentH1,
-            currentH2,
-            currentH3,
-            section,
-            rootNode
-          );
-          if (rootNode.textType <= Token.H3) {
+          logStart('h3');
+          if (newRoot.textType <= Token.H3) {
             console.warn(
               "Can't nest an h3 under anything less than an h2  - skipping section",
               section
             );
             continue;
           }
-          parent = currentH2 || currentH1 || rootNode;
-          section.parent_id = currentH2.id as number;
+          const h3Parent = currentH2 || currentH1 || newRoot;
+          section.parent_id = h3Parent.id as number;
           section.parent_type = 'section';
           section.id = await this.dataService
             .createSection(section)
             .toPromise();
           if (!section.sections) section.sections = [];
-          currentH2.sections.push(section);
-          this.logEnd('h3', currentH1, currentH2, currentH3, section, rootNode);
+          h3Parent.sections.push(section);
+          currentH3 = clone(section);
+          logEnd('h3');
           break;
         case Token.CONTENT:
-          this.logStart(
-            'default',
-            currentH1,
-            currentH2,
-            currentH3,
-            section,
-            rootNode
-          );
+          logStart('default');
           let parentId;
           section.type = 'content';
           section.parent_id = getParent().id;
@@ -137,19 +115,14 @@ export class FileTreeBuilderService {
             .createSection(section)
             .toPromise();
           getParent().content.push(section);
-          this.logEnd(
-            'default',
-            currentH1,
-            currentH2,
-            currentH3,
-            section,
-            rootNode
-          );
+          logEnd('default');
           break;
         default:
           throw new Error('Invalid token type:' + JSON.stringify(section));
       }
     }
+    rootNode.sections = newRoot.sections;
+    rootNode.content = newRoot.content;
     return rootNode;
   }
   logStart(el, h1, h2, h3, node, root) {
