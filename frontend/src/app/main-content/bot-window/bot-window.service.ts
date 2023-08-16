@@ -45,7 +45,7 @@ interface Options {
 })
 @ServiceLogger()
 export class BotWindowService {
-  BYPASS = true;
+  BYPASS = false;
   options: Options = {
     headers: {
       Authorization: `Bearer ${OPENAI_API_KEY}`,
@@ -73,11 +73,7 @@ export class BotWindowService {
       messages: [
         {
           role: 'user',
-          content: `
-Can you give me an outline for a series of wiki articles on the birds of Sourthern California?
-Mostly interested in types and biology.
-Plese respond in markdown using only the '#', '##', '###', '###' '-' and text content
-          `,
+          content: query,
         },
       ],
       temperature: 0.7,

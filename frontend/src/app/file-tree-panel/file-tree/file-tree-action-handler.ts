@@ -52,7 +52,7 @@ export class FileTreeActionHandler {
         if (!currentNode) return;
         const newNode: FileTreeFile = NodeFactory.createFile({
           name: cmd.value || '' + this.fileIndex++,
-          text: [cmd.value || '' + this.fileIndex++],
+          text: cmd.value || '' + this.fileIndex++,
           parent_id: isFolder(currentNode)
             ? (currentNode.id as number)
             : (currentNode.parent_id as number),

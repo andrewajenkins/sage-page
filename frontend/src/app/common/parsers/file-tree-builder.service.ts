@@ -8,6 +8,8 @@ import { clone } from 'lodash'; // used below
 
 export const enum Token {
   CONTENT,
+  H6,
+  H5,
   H4,
   H3,
   H2,
@@ -23,7 +25,7 @@ export class FileTreeBuilderService {
   constructor(private dataService: DataService) {}
 
   async generateNodes(rootNode: FileTreeFile | ContentSection) {
-    let currentH1, currentH2, currentH3;
+    let currentH1, currentH2, currentH3, currentH4, currentH5, currentH6;
     const newRoot: FileTreeFile | ContentSection = clone(rootNode);
     newRoot.sections = [];
     function getParent() {
@@ -43,73 +45,82 @@ export class FileTreeBuilderService {
         this.logEnd(token, currentH1, currentH2, currentH3, section, newRoot);
       };
       const skipLower = (name, minParent, token) => {
+        const msg1 = "Can't nest an " + name;
+        const msg2 =
+          'under anything less than a ' + minParent + ' - skipping section';
         if (newRoot.textType <= token) {
-          console.warn(
-            "Can't nest an " +
-              name +
-              ' under anything less than a ' +
-              minParent +
-              ' - skipping section',
-            section
-          );
+          console.warn(msg1, msg2, section);
           return true;
         }
         return false;
       };
+      const writeNode = async (parent_id, parent_type) => {
+        section.parent_id = parent_id;
+        section.parent_type = parent_type;
+        section.id = await this.dataService.createSection(section).toPromise();
+      };
       switch (section.textType) {
         case Token.H1:
-          logStart('h1');
           if (skipLower('h1', 'file', Token.H1)) continue;
-          section.parent_id = newRoot.id as number;
-          section.parent_type = 'file';
+          await writeNode(newRoot.id, 'file');
           newRoot.sections.push(section);
-          section.id = await this.dataService
-            .createSection(section)
-            .toPromise();
-          if (!section.sections) section.sections = [];
           currentH1 = clone(section);
           currentH2 = null;
           currentH3 = null;
-          logEnd('h1');
+          currentH4 = null;
+          currentH5 = null;
+          currentH6 = null;
           break;
         case Token.H2:
-          logStart('h2');
           if (skipLower('h2', 'h1', Token.H2)) continue;
           const h2Parent = currentH1 || newRoot;
-          section.parent_id = h2Parent.id as number;
-          section.parent_type = 'section';
-          section.id = await this.dataService
-            .createSection(section)
-            .toPromise();
+          await writeNode(h2Parent.id, 'section');
           h2Parent.sections.push(section);
           currentH2 = clone(section);
           currentH3 = null;
-          logEnd('h2');
+          currentH4 = null;
+          currentH5 = null;
+          currentH6 = null;
           break;
         case Token.H3:
-          logStart('h3');
           if (skipLower('h3', 'h2', Token.H3)) continue;
           const h3Parent = currentH2 || currentH1 || newRoot;
-          section.parent_id = h3Parent.id as number;
-          section.parent_type = 'section';
-          section.id = await this.dataService
-            .createSection(section)
-            .toPromise();
+          await writeNode(h3Parent.id, 'section');
           h3Parent.sections.push(section);
           currentH3 = clone(section);
-          logEnd('h3');
+          currentH4 = null;
+          currentH5 = null;
+          currentH6 = null;
+          break;
+        case Token.H4:
+          if (skipLower('h4', 'h3', Token.H4)) continue;
+          const h4Parent = currentH2 || currentH1 || newRoot;
+          await writeNode(h4Parent.id, 'section');
+          h4Parent.sections.push(section);
+          currentH4 = clone(section);
+          currentH5 = null;
+          currentH6 = null;
+          break;
+        case Token.H5:
+          if (skipLower('h5', 'h4', Token.H5)) continue;
+          const h5Parent = currentH2 || currentH1 || newRoot;
+          await writeNode(h5Parent.id, 'section');
+          h5Parent.sections.push(section);
+          currentH5 = clone(section);
+          currentH6 = null;
+          break;
+        case Token.H6:
+          if (skipLower('h6', 'h5', Token.H6)) continue;
+          const h6Parent = currentH2 || currentH1 || newRoot;
+          await writeNode(h6Parent.id, 'section');
+          h6Parent.sections.push(section);
+          currentH6 = clone(section);
           break;
         case Token.CONTENT:
-          logStart('default');
           let parentId;
           section.type = 'content';
-          section.parent_id = getParent().id;
-          section.parent_type = 'section';
-          section.id = await this.dataService
-            .createSection(section)
-            .toPromise();
+          await writeNode(getParent().id, 'section');
           getParent().content.push(section);
-          logEnd('default');
           break;
         default:
           throw new Error('Invalid token type:' + JSON.stringify(section));

@@ -10,10 +10,21 @@ export class MarkdownParserService {
   constructor() {}
 
   static parse(node) {
-    if (!node.text) return (node.text = [node.name]);
-    const md = node.text[0];
-
-    if (md.startsWith('- #### ')) {
+    if (!node.text) return (node.text = node.name);
+    const md = node.text;
+    if (md.startsWith('- ###### ')) {
+      node.textType = Token.H6;
+      node.name = md.substring(9);
+    } else if (md.startsWith('###### ')) {
+      node.textType = Token.H6;
+      node.name = md.substring(7);
+    } else if (md.startsWith('- ##### ')) {
+      node.textType = Token.H5;
+      node.name = md.substring(8);
+    } else if (md.startsWith('##### ')) {
+      node.textType = Token.H5;
+      node.name = md.substring(6);
+    } else if (md.startsWith('- #### ')) {
       node.textType = Token.H4;
       node.name = md.substring(7);
     } else if (md.startsWith('#### ')) {

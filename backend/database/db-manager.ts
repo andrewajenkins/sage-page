@@ -31,8 +31,8 @@ class DatabaseService {
     console.log(
       "create result:",
       await this.db.run(
-        "insert into treenodes (name, parent_id, type, parent_type, textType) values (?,?,?,?,?)",
-        [node.name, node.parent_id, node.type, node.parent_type, node.textType]
+        "insert into treenodes (name, parent_id, type, parent_type, textType, text) values (?,?,?,?,?,?)",
+        [node.name, node.parent_id, node.type, node.parent_type, node.textType, node.text]
       )
     );
     const lastId = await this.db.get("select last_insert_rowid();");

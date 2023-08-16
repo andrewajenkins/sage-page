@@ -9,6 +9,7 @@ const ignoreList = [
   'ngOnInit',
   'logStart',
   'logEnd',
+  'getIcon',
 ];
 export function ComponentLogger() {
   return function (constructor: Function) {
@@ -17,21 +18,7 @@ export function ComponentLogger() {
       if (typeof originalMethod === 'function') {
         constructor.prototype[key] = function (...args: any[]) {
           if (ignoreList.indexOf(key) === -1)
-            console.log(
-              '--',
-              constructor.name,
-              key,
-              'Arguments:',
-              // args
-              JSON.stringify(args)
-            );
-          // console.log(
-          //   '--',
-          //   constructor.name,
-          //   key,
-          //   'Arguments:',
-          //   JSON.stringify(args)
-          // );
+            console.log('--', constructor.name, key, 'Arguments:', args);
           return originalMethod.apply(this, args);
         };
       }
@@ -45,13 +32,7 @@ export function ServiceLogger() {
       if (typeof originalMethod === 'function') {
         constructor.prototype[key] = function (...args: any[]) {
           if (ignoreList.indexOf(key) === -1)
-            console.log(
-              '---',
-              constructor.name,
-              key,
-              'Arguments:',
-              JSON.stringify(args)
-            );
+            console.log('---', constructor.name, key, 'Arguments:', args);
           return originalMethod.apply(this, args);
         };
       }
@@ -66,7 +47,7 @@ export function ServiceLogger() {
               constructor.name,
               key,
               'Static Arguments:',
-              JSON.stringify(args)
+              args
             );
           return originalMethod.apply(this, args);
         };

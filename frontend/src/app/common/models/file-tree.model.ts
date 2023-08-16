@@ -20,7 +20,7 @@ export interface FileTreeFile {
   name: string;
   parent_id: number;
   parent_type: string;
-  text: string[];
+  text: string;
   textType: Token;
   type: string;
   sections: ContentSection[];

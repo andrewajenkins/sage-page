@@ -16,7 +16,7 @@ export interface ContentSection {
   content: ContentSection[]; // section text that goes between the name and subsections
   sections: ContentSection[]; // subsections to be created
   path?: string[];
-  text?: string[]; // store the raw input strings
+  text?: string; // store the raw input strings
   textType: number;
 }
 export interface ChatLogEntry {

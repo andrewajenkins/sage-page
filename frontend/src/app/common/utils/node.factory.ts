@@ -7,7 +7,7 @@ const dummyFile = {
   name: '',
   parent_id: -1,
   parent_type: '',
-  text: [],
+  text: '',
   textType: Token.CONTENT,
   type: '',
   sections: [],
@@ -23,6 +23,7 @@ const dummySection = {
   content: [], // section text that goes between the name and subsections
   sections: [], // subsections to be created
   textType: -1,
+  text: '',
 };
 export function getDummyFile() {
   return cloneDeep(dummyFile);

@@ -33,16 +33,22 @@
   <button mat-icon-button matTooltip="Delete selected sections">
     <span class="material-symbols-outlined"> delete </span>
   </button>
-  <button mat-icon-button matTooltip="Lock/Unlock highlighter position">
-    <span class="material-symbols-outlined"> lock </span>
+  <button mat-icon-button matTooltip="">
+    <span class="material-symbols-outlined"> edit </span>
   </button>
-  <button mat-icon-button matTooltip="Help">
-    <span class="material-symbols-outlined"> help </span>
+  <button
+    (click)="exportFile()"
+    mat-icon-button
+    matTooltip="Export current file to markdown">
+    <span class="material-symbols-outlined"> export_notes </span>
   </button>
-  <button mat-icon-button matTooltip="Navigate backward">
-    <span class="material-symbols-outlined"> arrow_backward </span>
-  </button>
-  <button mat-icon-button matTooltip="Navigate forward">
-    <span class="material-symbols-outlined"> arrow_forward </span>
-  </button>
+  <!--  <button mat-icon-button matTooltip="Help">-->
+  <!--    <span class="material-symbols-outlined"> help </span>-->
+  <!--  </button>-->
+  <!--  <button mat-icon-button matTooltip="Navigate backward">-->
+  <!--    <span class="material-symbols-outlined"> arrow_backward </span>-->
+  <!--  </button>-->
+  <!--  <button mat-icon-button matTooltip="Navigate forward">-->
+  <!--    <span class="material-symbols-outlined"> arrow_forward </span>-->
+  <!--  </button>-->
 </mat-toolbar>

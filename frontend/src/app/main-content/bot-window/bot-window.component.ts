@@ -105,10 +105,7 @@ export class BotWindowComponent implements OnInit {
           content: [
             NodeFactory.createSection({
               contentType: ContentSectionType.STRING,
-              text: [],
-              content: [],
               type: 'section',
-              sections: [],
               name: query,
               selected: false,
             }),
@@ -131,7 +128,7 @@ export class BotWindowComponent implements OnInit {
                 contentType: ContentSectionType.STRING,
                 type: ContentSectionType.CODE,
                 name: content,
-                text: [content],
+                text: content,
               })
             );
           } else {
@@ -140,7 +137,7 @@ export class BotWindowComponent implements OnInit {
                 contentType: ContentSectionType.STRING,
                 type: 'section',
                 name: content,
-                text: [content],
+                text: content,
                 selected: false,
               })
             );

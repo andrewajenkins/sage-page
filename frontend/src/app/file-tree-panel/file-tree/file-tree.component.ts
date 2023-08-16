@@ -117,4 +117,11 @@ export class FileTreeComponent {
   }
   hasSub = (_: number, node: FileTreeFolder) =>
     isFolder(node) || isFile(node) || isSection(node);
+
+  getIcon(node) {
+    if (node.type == 'folder') return 'folder';
+    else if (node.type == 'file') return 'description';
+    else return 'format_h' + (7 - node.textType);
+    // return node.type == 'folder' ? 'folder' : 'description';
+  }
 }

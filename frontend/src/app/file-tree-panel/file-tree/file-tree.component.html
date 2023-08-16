@@ -40,9 +40,12 @@
           </span>
         </button>
         <span class="material-symbols-outlined icon-spacing">{{
-          node.type == "folder" ? "folder" : "description"
+          getIcon(node) // node.type == "folder" ? "folder" : "description"
         }}</span>
         {{ node.name }}
+        <span class="material-symbols-outlined icon-spacing">
+          {{ node.content?.length > 0 ? "article" : "" }}
+        </span>
       </div>
       <div *ngIf="!treeControl.isExpanded(node)" role="group">
         <ng-container matTreeNodeOutlet></ng-container>
@@ -50,4 +53,4 @@
     </mat-nested-tree-node>
   </mat-button-toggle-group>
 </mat-tree>
-<pre>data: {{ this.dataSource.data | json }}</pre>
+<!--<pre>data: {{ this.dataSource.data | json }}</pre>-->

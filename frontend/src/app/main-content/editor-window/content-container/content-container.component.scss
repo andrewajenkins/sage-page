@@ -1,5 +1,7 @@
-:host, .content-container {
-  overflow-x: auto;
+:host,
+.content-container {
+  //overflow-x: auto;
+  overflow: auto;
 }
 .content-container {
   background-color: whitesmoke;
@@ -13,8 +15,12 @@ mat-button-toggle {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  & code, span {
+  & code,
+  span {
     display: inline-flex;
     line-height: 20px;
   }
+}
+.content-container {
+  height: 100%;
 }
