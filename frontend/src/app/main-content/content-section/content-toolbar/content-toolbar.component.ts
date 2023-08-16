@@ -20,6 +20,19 @@ export class ContentToolbarComponent {
     });
   }
   createContent() {}
-  editSection() {}
-  deleteSection() {}
+  editSection() {
+    this.contentSection.editable = true;
+  }
+  deleteSection() {
+    this.commandService.perform({
+      action: NodeAction.DELETE_NODE,
+      content: this.contentSection,
+    });
+  }
+
+  saveContent($event: MouseEvent) {
+    console.log('event:', $event);
+    // $event.target.
+    this.contentSection.editable = false;
+  }
 }

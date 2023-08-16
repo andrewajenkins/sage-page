@@ -29,7 +29,6 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { SettingsPopoverComponent } from './settings-popover/settings-popover.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { SettingsService } from './settings-popover/settings.service';
 import { ToolbarComponent } from './main-content/editor-window/toolbar/toolbar.component';
 import { ContentContainerComponent } from './main-content/editor-window/content-container/content-container.component';
 import { ContentSectionComponent } from './main-content/content-section/content-section.component';
@@ -100,10 +99,10 @@ import { ReadablePipe } from './common/pipes/readable.pipe';
     MatDividerModule,
     MatTreeModule,
     MatDialogModule,
+    MatSlideToggleModule,
   ],
   providers: [
     BotWindowService,
-    SettingsService,
     AngularSplitModule,
     DataService,
     {

@@ -9,5 +9,21 @@
   #settingsMenu="matMenu"
   xPosition="before"
   class="settings-menu-panel">
-  <button mat-menu-item (click)="toggleWikiRight()">Wiki side toggle</button>
+  <mat-slide-toggle
+    (click)="toggleEditorLeft()"
+    [checked]="editorLeft"
+    color="primary"
+    >Editor left</mat-slide-toggle
+  >
+  <mat-slide-toggle
+    (click)="toggleAdjustHeading()"
+    [checked]="adjustHeadingGeneration"
+    color="primary"
+    >Auto adjust heading generation
+    <div
+      class="material-symbols-outlined icon-spacing"
+      tooltip="Auto up/downgrade headings so they fit under the currently selected node. Otherwise will be removed.">
+      help
+    </div></mat-slide-toggle
+  >
 </mat-menu>

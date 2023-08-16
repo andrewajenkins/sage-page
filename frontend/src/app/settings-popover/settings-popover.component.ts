@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { SettingsService } from './settings.service';
+import { StateAction } from '../common/models/command.model';
+import { CommandService } from '../common/services/command.service';
 
 @Component({
   selector: 'app-settings-popover',
@@ -8,15 +9,24 @@ import { SettingsService } from './settings.service';
 })
 export class SettingsPopoverComponent {
   isWikiRight!: boolean;
+  adjustHeadingGeneration: boolean = true;
+  editorLeft: boolean = false;
 
-  constructor(private settingsService: SettingsService) {
-    this.toggleWikiRight();
+  constructor(private commandService: CommandService) {}
+
+  toggleEditorLeft() {
+    this.editorLeft = !this.editorLeft;
+    this.commandService.perform({
+      action: StateAction.SET_EDITOR_LEFT,
+      flag: this.editorLeft,
+    });
   }
 
-  toggleWikiRight() {
-    this.isWikiRight = !this.isWikiRight;
-    this.settingsService.updateSettings({
-      wikiRight: this.isWikiRight,
+  toggleAdjustHeading() {
+    this.adjustHeadingGeneration = !this.adjustHeadingGeneration;
+    this.commandService.perform({
+      action: StateAction.SET_AUTO_ADJUST_HEADINGS,
+      flag: this.adjustHeadingGeneration,
     });
   }
 }
