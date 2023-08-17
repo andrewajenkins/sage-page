@@ -83,7 +83,7 @@ export class FileTreeMenuComponent {
 
   deleteNode() {
     this.commandService.perform({
-      action: NodeAction.DELETE_NODE,
+      action: NodeAction.DELETE_CURRENT_NODE,
     });
   }
 }

@@ -1,4 +1,4 @@
-import { isNodeCommand, isValueCommand, NodeAction, StateAction } from '../../common/models/command.model';
+import { isContentCommand, isValueCommand, NodeAction, StateAction } from '../../common/models/command.model';
 import { FileTreeFile, FileTreeFolder, isFolder } from '../../common/models/file-tree.model';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
@@ -51,7 +51,11 @@ export class FileTreeActionHandler {
         this.dataService.createNode(newNode).subscribe((resp) => {
           this.matTreeService.refreshTree(resp);
         });
-      } else if (action === NodeAction.DELETE_NODE) {
+      } else if (isContentCommand(cmd) && action === NodeAction.DELETE_NODE) {
+        this.dataService.deleteNode(cmd.content).subscribe((resp) => {
+          this.matTreeService.refreshTree(resp);
+        });
+      } else if (action === NodeAction.DELETE_CURRENT_NODE) {
         const currentNode = this.nodeService.currentNode;
         if (!currentNode) return;
         this.dataService.deleteNode(currentNode).subscribe((resp) => {

@@ -14,6 +14,6 @@
   </div>
   <app-content-toolbar
     [contentSection]="contentSection"
-    (saveContentEvent)="saveContent(textContent)"></app-content-toolbar>
+    (contentToolbarEvent)="handleToolbarEvent(textContent)"></app-content-toolbar>
 </div>
 <!--<pre>cs:{{ contentSection | json }}</pre>-->

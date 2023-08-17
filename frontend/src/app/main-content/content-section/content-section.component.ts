@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 
 import { ContentSection, dummySection } from '../../common/models/section.model';
 
@@ -9,6 +9,7 @@ import { ContentSection, dummySection } from '../../common/models/section.model'
 })
 export class ContentSectionComponent {
   @Input() contentSection: ContentSection = dummySection;
+  @ViewChild('textContent', { static: false }) textContent!: ElementRef;
   isEditable: any;
   toggleSelection() {
     this.contentSection.selected = !this.contentSection.selected;
@@ -21,7 +22,9 @@ export class ContentSectionComponent {
     return this.contentSection.text ? this.contentSection.text : this.contentSection.name;
   }
 
-  saveContent(textContent) {
-    this.contentSection.text = textContent.innerText;
+  handleToolbarEvent(event) {
+    if (event == 'save') {
+      this.contentSection.text = this.textContent.nativeElement.innerText;
+    }
   }
 }

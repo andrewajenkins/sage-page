@@ -11,9 +11,12 @@ import { ContentSection } from '../../../common/models/section.model';
 export class ContentToolbarComponent {
   contentMenu: any;
   @Input() contentSection!: ContentSection;
-  @Output() saveContentEvent = new EventEmitter();
+  @Output() contentToolbarEvent = new EventEmitter();
   constructor(private commandService: CommandService) {}
 
+  ngOnChanges(changes) {
+    console.log(changes);
+  }
   createSubsection() {
     this.commandService.perform({
       action: NodeAction.CREATE_SECTION,
@@ -25,14 +28,18 @@ export class ContentToolbarComponent {
     this.contentSection.editable = true;
   }
   deleteSection() {
+    // if (this.contentSection.type === 'content') {
+    //   this.contentToolbarEvent.emit('deleteContent');
+    // } else {
     this.commandService.perform({
       action: NodeAction.DELETE_NODE,
       content: this.contentSection,
     });
+    // }
   }
 
   saveContent() {
-    this.saveContentEvent.emit();
+    this.contentToolbarEvent.emit('save');
     this.contentSection.editable = false;
   }
 }
