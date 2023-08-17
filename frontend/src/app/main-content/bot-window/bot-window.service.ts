@@ -45,7 +45,7 @@ interface Options {
 })
 @ServiceLogger()
 export class BotWindowService {
-  BYPASS = false;
+  BYPASS = true;
   options: Options = {
     headers: {
       Authorization: `Bearer ${OPENAI_API_KEY}`,
@@ -57,14 +57,12 @@ export class BotWindowService {
     if (this.BYPASS) {
       return of(botModels.data as Model[]);
     } else {
-      return this.http
-        .get<ModelResponse>('https://api.openai.com/v1/models', this.options)
-        .pipe(
-          map((response: ModelResponse) => {
-            console.log('models resp:', JSON.stringify(response));
-            return response.data;
-          })
-        ) as Observable<Model[]>;
+      return this.http.get<ModelResponse>('https://api.openai.com/v1/models', this.options).pipe(
+        map((response: ModelResponse) => {
+          console.log('models resp:', JSON.stringify(response));
+          return response.data;
+        })
+      ) as Observable<Model[]>;
     }
   }
   postQuery(model = 'gpt-3.5-turbo-18k-0613', query = 'hi bot') {
@@ -84,17 +82,11 @@ export class BotWindowService {
     if (this.BYPASS) {
       return of(botResponse);
     } else {
-      return this.http
-        .post<RequestResponse>(
-          'https://api.openai.com/v1/chat/completions',
-          body,
-          options
-        )
-        .pipe(
-          tap((res) => {
-            console.log('resp:', JSON.stringify(res));
-          })
-        );
+      return this.http.post<RequestResponse>('https://api.openai.com/v1/chat/completions', body, options).pipe(
+        tap((res) => {
+          console.log('resp:', JSON.stringify(res));
+        })
+      );
     }
   }
 }

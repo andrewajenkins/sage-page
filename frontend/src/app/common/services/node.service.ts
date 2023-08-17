@@ -1,15 +1,11 @@
 import { Injectable } from '@angular/core';
 import { CommandService } from './command.service';
-import {
-  isFileCommand,
-  isNodeCommand,
-  NodeAction,
-  StateAction,
-} from '../models/command.model';
+import { isFileCommand, isNodeCommand, NodeAction, StateAction } from '../models/command.model';
 import { FileTreeFile, FileTreeNode, isFile } from '../models/file-tree.model';
 import { FileTreeBuilderService } from '../parsers/file-tree-builder.service';
 import { MatTreeService } from './mat-tree.service';
 import { isSection } from '../models/section.model';
+import { TreeBuilderService } from '../parsers/tree-builder.service';
 
 @Injectable({
   providedIn: 'root',
@@ -34,11 +30,7 @@ export class NodeService {
     if (!this._currentNode) {
       return false;
     }
-    return (
-      isFile(this._currentNode) ||
-      isSection(this._currentNode) ||
-      !!this._currentFile
-    );
+    return isFile(this._currentNode) || isSection(this._currentNode) || !!this._currentFile;
   }
   private _currentFile!: FileTreeFile;
   get currentFile(): FileTreeFile {
@@ -52,21 +44,19 @@ export class NodeService {
     });
   }
   constructor(
-    private fileTreeBuilder: FileTreeBuilderService,
+    // private fileTreeBuilder: FileTreeBuilderService,
     private commandService: CommandService,
-    private matTreeService: MatTreeService
+    private matTreeService: MatTreeService,
+    private treeBuilderService: TreeBuilderService
   ) {}
 
   init() {
     this.commandService.action$.subscribe(async (cmd) => {
       if (cmd.action == NodeAction.GENERATE_FILE_SECTIONS) {
-        if (
-          this._currentNode &&
-          (isFile(this._currentNode) || isSection(this._currentNode))
-        ) {
-          await this.fileTreeBuilder.generateNodes(this._currentNode);
+        if (this._currentNode && (isFile(this._currentNode) || isSection(this._currentNode))) {
+          await this.treeBuilderService.generateNodes(this._currentNode);
         } else {
-          await this.fileTreeBuilder.generateNodes(this.currentFile);
+          await this.treeBuilderService.generateNodes(this.currentFile);
         }
         this.matTreeService.refreshTree();
       }

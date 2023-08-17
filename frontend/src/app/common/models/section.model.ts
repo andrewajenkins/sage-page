@@ -19,6 +19,7 @@ export interface ContentSection {
   path?: string[];
   text?: string; // store the raw input strings
   textType: number;
+  bulletedText?: boolean;
 }
 export interface ChatLogEntry {
   role: string;
