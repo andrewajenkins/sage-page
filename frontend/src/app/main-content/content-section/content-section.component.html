@@ -7,16 +7,10 @@
   <div fxLayoutAlign="start center" class="content-text">
     <div
       [contentEditable]="contentSection.editable"
-      [ngStyle]="
-        !!contentSection.editable ? { cursor: 'text' } : { cursor: 'pointer' }
-      ">
-      {{ contentSection.text }}
+      [ngStyle]="!!contentSection.editable ? { cursor: 'text' } : { cursor: 'pointer' }">
+      {{ getContent() }}
     </div>
-    <!--    <ng-container *ngFor="let content of contentSection.content">-->
-    <!--      <span>{{ content }}</span>-->
-    <!--    </ng-container>-->
   </div>
-
   <app-content-toolbar [contentSection]="contentSection"></app-content-toolbar>
 </div>
 <!--<pre>cs:{{ contentSection | json }}</pre>-->

@@ -1,9 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import {
-  ContentSection,
-  dummySection,
-} from '../../common/models/section.model';
+import { ContentSection, dummySection } from '../../common/models/section.model';
 
 @Component({
   selector: 'app-content-section',
@@ -18,5 +15,9 @@ export class ContentSectionComponent {
   }
   ngOnChanges() {
     console.log(this.contentSection);
+  }
+
+  getContent() {
+    return this.contentSection.text ? this.contentSection.text : this.contentSection.name;
   }
 }

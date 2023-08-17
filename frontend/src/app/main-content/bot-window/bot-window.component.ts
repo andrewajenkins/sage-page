@@ -1,31 +1,14 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  NgZone,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { take } from 'rxjs';
 import { BotWindowService } from './bot-window.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { cloneDeep } from 'lodash';
 import { ComponentLogger } from '../../common/logger/loggers';
-import {
-  ContentAction,
-  isFlagCommand,
-  isNodeCommand,
-  StateAction,
-} from '../../common/models/command.model';
+import { ContentAction, isFlagCommand, isNodeCommand, StateAction } from '../../common/models/command.model';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
-import {
-  ChatLogEntry,
-  ContentSection,
-  ContentSectionType,
-  isSection,
-} from '../../common/models/section.model';
+import { ChatLogEntry, ContentSection, ContentSectionType, isSection } from '../../common/models/section.model';
 import { NodeFactory } from '../../common/utils/node.factory';
 
 @Component({
@@ -69,11 +52,7 @@ export class BotWindowComponent implements OnInit {
     this.commandService.action$.subscribe((cmd) => {
       if (isFlagCommand(cmd) && cmd.action === StateAction.SET_FILE_SELECTED) {
         this.contentSectionSelected = cmd.flag as boolean;
-      } else if (
-        isNodeCommand(cmd) &&
-        isFlagCommand(cmd) &&
-        cmd.action === StateAction.SET_NODE_SELECTED
-      ) {
+      } else if (isNodeCommand(cmd) && isFlagCommand(cmd) && cmd.action === StateAction.SET_NODE_SELECTED) {
         if (isSection(cmd.node)) {
           this.contentSectionSelected = cmd.flag as boolean;
         }
@@ -85,87 +64,82 @@ export class BotWindowComponent implements OnInit {
 
   triggerResize() {
     // Wait for changes to be applied, then trigger textarea resize.
-    this._ngZone.onStable
-      .pipe(take(1))
-      .subscribe(() => this.autosize.resizeToFitContent(true));
+    this._ngZone.onStable.pipe(take(1)).subscribe(() => this.autosize.resizeToFitContent(true));
   }
 
   sendQuery(event?: Event) {
     event?.preventDefault(); // keep the enter key from returning
     const query = this.form.get('queryControl')?.value;
     this.form.get('queryControl')?.reset();
-    this.botWindowService
-      .postQuery(this.form.get('modelControl')?.value, query)
-      .subscribe((response) => {
-        console.log('bot-response:', response);
-        // TODO nest log entries under conversation objects (avoide parsing for select all and future stuff)
-        this.log.push({
-          id: this.log.length,
-          role: 'Query:',
-          content: [
+    this.botWindowService.postQuery(this.form.get('modelControl')?.value, query).subscribe((response) => {
+      // console.log('bot-response:', response);
+      // TODO nest log entries under conversation objects (avoide parsing for select all and future stuff)
+      this.log.push({
+        id: this.log.length,
+        role: 'Query:',
+        content: [
+          NodeFactory.createSection({
+            contentType: ContentSectionType.STRING,
+            type: 'section',
+            name: query,
+            selected: false,
+          }),
+        ],
+      });
+      const contentArray = response.choices[0].message.content.split('\n');
+      const contents = [...contentArray];
+      const newContents: ContentSection[] = [];
+      let isCode = false;
+      for (let i = 0; i < contents.length; i++) {
+        const content = contents[i];
+        if (!content) continue;
+        if (content.indexOf('```') !== -1) {
+          isCode = !isCode;
+          continue;
+        }
+        if (isCode) {
+          newContents.push(
+            NodeFactory.createSection({
+              contentType: ContentSectionType.STRING,
+              type: ContentSectionType.CODE,
+              name: content,
+              text: content,
+            })
+          );
+        } else {
+          newContents.push(
             NodeFactory.createSection({
               contentType: ContentSectionType.STRING,
               type: 'section',
-              name: query,
+              name: content,
+              text: content,
               selected: false,
-            }),
-          ],
-        });
-        const contentArray = response.choices[0].message.content.split('\n');
-        const contents = [...contentArray];
-        const newContents: ContentSection[] = [];
-        let isCode = false;
-        for (let i = 0; i < contents.length; i++) {
-          const content = contents[i];
-          if (!content) continue;
-          if (content.indexOf('```') !== -1) {
-            isCode = !isCode;
-            continue;
-          }
-          if (isCode) {
-            newContents.push(
-              NodeFactory.createSection({
-                contentType: ContentSectionType.STRING,
-                type: ContentSectionType.CODE,
-                name: content,
-                text: content,
-              })
-            );
-          } else {
-            newContents.push(
-              NodeFactory.createSection({
-                contentType: ContentSectionType.STRING,
-                type: 'section',
-                name: content,
-                text: content,
-                selected: false,
-              })
-            );
-          }
+            })
+          );
         }
-        this.log.push({
-          role: 'Sage:',
-          content: newContents,
-          id: this.log.length,
-        });
-        // TODO generally need to format the window content somehow so its selectable
-        // TODO use edits endpoint for selecting text you want and regenerating text you dont
-        // TODO save user queries and responses and pass them in the messages (with roles) to enable convo context
-
-        // scroll down bot chat
-        // this.scrollDown();
-        // TODO remove below selectall and send selection
-        // this.selectAll(this.log[this.log.length - 1]);
-        // this.sendSelection(this.log[this.log.length - 1]);
+      }
+      this.log.push({
+        role: 'Sage:',
+        content: newContents,
+        id: this.log.length,
       });
+      // TODO generally need to format the window content somehow so its selectable
+      // TODO use edits endpoint for selecting text you want and regenerating text you dont
+      // TODO save user queries and responses and pass them in the messages (with roles) to enable convo context
+
+      // scroll down bot chat
+      // this.scrollDown();
+      // TODO remove below selectall and send selection
+      // this.selectAll(this.log[this.log.length - 1]);
+      // this.sendSelection(this.log[this.log.length - 1]);
+    });
   }
 
   scrollDown() {
     this.cdRef.detectChanges();
     // TODO needs to scroll down to top of response maybe, not bottom?
     try {
-      this.botLogWindow.nativeElement.scrollTop =
-        this.botLogWindow.nativeElement.scrollHeight;
+      this.botLogWindow.nativeElement.scrollTop = this.botLogWindow.nativeElement.scrollHeight;
     } catch (e) {}
   }
 
@@ -178,9 +152,7 @@ export class BotWindowComponent implements OnInit {
   }
 
   sendSelection(logEntry: ChatLogEntry) {
-    const selected: ContentSection[] = cloneDeep(
-      logEntry.content.filter((content) => content.selected)
-    );
+    const selected: ContentSection[] = cloneDeep(logEntry.content.filter((content) => content.selected));
     selected.forEach((content) => {
       content.selected = false;
     });
