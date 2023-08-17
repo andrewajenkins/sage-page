@@ -1,14 +1,5 @@
-import {
-  isNodeCommand,
-  isValueCommand,
-  NodeAction,
-  StateAction,
-} from '../../common/models/command.model';
-import {
-  FileTreeFile,
-  FileTreeFolder,
-  isFolder,
-} from '../../common/models/file-tree.model';
+import { isNodeCommand, isValueCommand, NodeAction, StateAction } from '../../common/models/command.model';
+import { FileTreeFile, FileTreeFolder, isFolder } from '../../common/models/file-tree.model';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { Injectable } from '@angular/core';
@@ -34,10 +25,9 @@ export class FileTreeActionHandler {
       const action = cmd.action;
 
       if (isValueCommand(cmd) && action === NodeAction.CREATE_FOLDER) {
-        const currentNode = this.nodeService.hasCurrent()
-          ? this.nodeService.currentNode
-          : undefined;
+        const currentNode = this.nodeService.hasCurrent() ? this.nodeService.currentNode : undefined;
         const newNode: FileTreeFolder = {
+          id: Math.floor(Math.random() * 1000000),
           name: cmd.value || '' + this.fileIndex++,
           subNodes: [],
           type: 'folder',
@@ -51,14 +41,11 @@ export class FileTreeActionHandler {
         const currentNode = this.nodeService.currentNode;
         if (!currentNode) return;
         const newNode: FileTreeFile = NodeFactory.createFile({
+          id: Math.floor(Math.random() * 1000000),
           name: cmd.value || '' + this.fileIndex++,
           text: cmd.value || '' + this.fileIndex++,
-          parent_id: isFolder(currentNode)
-            ? (currentNode.id as number)
-            : (currentNode.parent_id as number),
-          parent_type: isFolder(currentNode)
-            ? currentNode.type
-            : currentNode.parent_type,
+          parent_id: isFolder(currentNode) ? (currentNode.id as number) : (currentNode.parent_id as number),
+          parent_type: isFolder(currentNode) ? currentNode.type : currentNode.parent_type,
           textType: Token.FILE,
         });
         this.dataService.createNode(newNode).subscribe((resp) => {

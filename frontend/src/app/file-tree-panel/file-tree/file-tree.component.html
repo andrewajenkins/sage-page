@@ -1,7 +1,4 @@
-<mat-tree
-  [dataSource]="dataSource"
-  [treeControl]="treeControl"
-  class="file-tree">
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="file-tree">
   <mat-button-toggle-group>
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
       <div
@@ -13,9 +10,7 @@
         (click)="nodeSelect($event, node)"
         [ngClass]="{ 'current-node': getClass(node) }">
         <button mat-button>
-          <span
-            class="small-icon material-symbols-outlined"
-            style="font-size: 18px">
+          <span class="small-icon material-symbols-outlined" style="font-size: 18px">
             {{ treeControl.isExpanded(node) ? "chevron_right" : "expand_more" }}
           </span>
         </button>
@@ -33,9 +28,7 @@
         (click)="nodeSelect($event, node)"
         [ngClass]="{ 'current-node': getClass(node) }">
         <button mat-button matTreeNodeToggle>
-          <span
-            class="small-icon material-symbols-outlined"
-            style="font-size: 18px">
+          <span class="small-icon material-symbols-outlined" style="font-size: 18px">
             {{ treeControl.isExpanded(node) ? "chevron_right" : "expand_more" }}
           </span>
         </button>
@@ -53,4 +46,4 @@
     </mat-nested-tree-node>
   </mat-button-toggle-group>
 </mat-tree>
-<!--<pre>data: {{ this.dataSource.data | json }}</pre>-->
+<pre>data: {{ this.dataSource.data | json }}</pre>

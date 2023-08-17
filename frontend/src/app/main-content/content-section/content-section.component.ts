@@ -14,7 +14,7 @@ export class ContentSectionComponent {
     this.contentSection.selected = !this.contentSection.selected;
   }
   ngOnChanges() {
-    console.log(this.contentSection);
+    // console.log(this.contentSection);
   }
 
   getContent() {

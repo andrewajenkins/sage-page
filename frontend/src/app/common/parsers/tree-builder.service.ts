@@ -66,7 +66,9 @@ export class TreeBuilderService {
       type: textType >= 0 ? 'content' : 'section',
       depth: token.depth,
     });
-    this.dataService.createSection(result).subscribe((resp) => {});
+    this.dataService.createSection(result).subscribe((resp) => {
+      // result.id = resp;
+    });
     return result;
   }
 }
