@@ -24,9 +24,9 @@ export class TreeBuilderService {
     this.postprocessNodes(rootNode);
     return rootNode;
   }
-  preprocessNodes(rootNode) {}
-  postprocessNodes(rootNode) {}
-  processNodes(rootNode) {
+  private preprocessNodes(rootNode) {}
+  private postprocessNodes(rootNode) {}
+  private processNodes(rootNode) {
     let ancestors: ContentSection[] = [];
     const sections = cloneDeep(rootNode.sections);
     rootNode.sections = [];
@@ -51,7 +51,7 @@ export class TreeBuilderService {
       }
     }
   }
-  tokenToSection(token, textType?, parent?): ContentSection {
+  private tokenToSection(token, textType?, parent?): ContentSection {
     if (parent.depth) {
       token.depth = parent.depth + 1;
     }
