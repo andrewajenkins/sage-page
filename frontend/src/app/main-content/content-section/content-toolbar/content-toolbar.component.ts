@@ -11,6 +11,7 @@ import { ContentSection } from '../../../common/models/section.model';
 export class ContentToolbarComponent {
   contentMenu: any;
   @Input() contentSection!: ContentSection;
+  @Output() saveContentEvent = new EventEmitter();
   constructor(private commandService: CommandService) {}
 
   createSubsection() {
@@ -30,9 +31,8 @@ export class ContentToolbarComponent {
     });
   }
 
-  saveContent($event: MouseEvent) {
-    console.log('event:', $event);
-    // $event.target.
+  saveContent() {
+    this.saveContentEvent.emit();
     this.contentSection.editable = false;
   }
 }

@@ -2,17 +2,13 @@
 <!--  &lt;!&ndash;  (click)="sidenav.toggle()"&ndash;&gt;-->
 <!--  <span class="material-symbols-outlined" style="display: inline">menu</span>-->
 <!--</div>-->
-<button
-  mat-menu-item
-  [matMenuTriggerFor]="contentMenu"
-  fxLayoutAlign="end center"
-  class="menu-button">
+<button mat-menu-item [matMenuTriggerFor]="contentMenu" fxLayoutAlign="end center" class="menu-button">
   <span class="material-symbols-outlined">more_vert</span>
 </button>
 <mat-menu #contentMenu="matMenu">
   <button mat-menu-item (click)="createSubsection()">Create Subsections</button>
   <button mat-menu-item (click)="createContent()">Create Content</button>
   <button mat-menu-item (click)="editSection()">Edit Section</button>
-  <button mat-menu-item (click)="saveContent($event)">Save Section</button>
+  <button mat-menu-item (click)="saveContent()">Save Section</button>
   <button mat-menu-item (click)="deleteSection()">Delete Section</button>
 </mat-menu>

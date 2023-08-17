@@ -20,4 +20,8 @@ export class ContentSectionComponent {
   getContent() {
     return this.contentSection.text ? this.contentSection.text : this.contentSection.name;
   }
+
+  saveContent(textContent) {
+    this.contentSection.text = textContent.innerText;
+  }
 }
