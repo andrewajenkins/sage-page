@@ -2,12 +2,7 @@ import { Injectable } from '@angular/core';
 import { ServiceLogger } from '../logger/loggers';
 import { FileTreeComponent } from '../../file-tree-panel/file-tree/file-tree.component';
 import { map } from 'rxjs';
-import {
-  FileTreeFolder,
-  FileTreeNode,
-  isFile,
-  isFolder,
-} from '../models/file-tree.model';
+import { FileTreeFolder, FileTreeNode, isFile, isFolder } from '../models/file-tree.model';
 import { ContentSection, isContent, isSection } from '../models/section.model';
 
 @Injectable({
@@ -62,6 +57,7 @@ export class MatTreeService {
       } else if (node.type === 'content') {
         console.log('assembleTree: pushing content:', node);
         const parent = nodeMap.get(node.parent_id) as ContentSection;
+        if (!parent.content) parent.content = [];
         parent.content.push(node);
       } else if (isSection(node)) {
         console.log('assembleTree: pushing section:', node);

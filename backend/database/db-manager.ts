@@ -15,7 +15,7 @@ class DatabaseService {
         console.log("Opened database successfully");
         this.db = db;
         db.exec(
-          "create table if not exists treenodes (id integer primary key autoincrement, name text, parent_id integer references treenodes(id), type text, text text, content text, parent_type text, textType integer);"
+          "create table if not exists treenodes (id integer primary key, name text, parent_id integer references treenodes(id), type text, text text, content text, parent_type text, textType integer);"
         );
         // db.exec("delete from treenodes;");
       });

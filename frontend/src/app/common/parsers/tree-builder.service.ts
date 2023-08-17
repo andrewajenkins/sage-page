@@ -5,6 +5,7 @@ import { marked } from 'marked';
 import { NodeFactory } from '../utils/node.factory';
 import { Token } from './file-tree-builder.service';
 import { cloneDeep } from 'lodash';
+import { DataService } from '../services/data.service';
 
 const slugger = new marked.Slugger();
 
@@ -13,7 +14,7 @@ const slugger = new marked.Slugger();
 })
 export class TreeBuilderService {
   content = ['paragraph', 'list'];
-  constructor() {}
+  constructor(private dataService: DataService) {}
 
   async generateNodes(rootNode: FileTreeFile | ContentSection) {
     // preprocess sections (adjust depths)
@@ -39,23 +40,33 @@ export class TreeBuilderService {
       for (let token of tokens) {
         if (this.content.indexOf(token.type) !== -1) {
           const parent = ancestors[ancestors.length - 1];
-          parent.content.push(TreeBuilderService.tokenToSection(token, Token.CONTENT));
+          parent.content.push(this.tokenToSection(token, Token.CONTENT, parent));
         } else if (token.type === 'heading') {
           ancestors.splice(token.depth);
           const parent = ancestors[ancestors.length - 1];
-          const newSection = TreeBuilderService.tokenToSection(token);
+          const newSection = this.tokenToSection(token, -1, parent);
           parent.sections.push(newSection);
           ancestors.push(newSection);
         }
       }
     }
   }
-  static tokenToSection(token, textType?): ContentSection {
-    return NodeFactory.createSection({
-      id: Math.floor(Math.random() * 100000),
+  tokenToSection(token, textType?, parent?): ContentSection {
+    if (parent.depth) {
+      token.depth = parent.depth + 1;
+    }
+    const depth = token.depth ? 7 - token.depth : -1;
+    const result = NodeFactory.createSection({
+      id: Math.floor(Math.random() * 1000000),
       text: token.raw,
-      textType: textType ? textType : 7 - token.depth,
-      name: token.text,
+      textType: textType >= 0 ? textType : depth,
+      name: token.text ? token.text : token.items[0]?.text,
+      parent_id: parent.id,
+      parent_type: 'section',
+      type: textType >= 0 ? 'content' : 'section',
+      depth: token.depth,
     });
+    this.dataService.createSection(result).subscribe((resp) => {});
+    return result;
   }
 }
