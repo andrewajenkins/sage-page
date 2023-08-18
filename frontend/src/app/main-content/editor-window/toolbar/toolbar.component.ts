@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommandService } from '../../../common/services/command.service';
 import { ComponentLogger } from '../../../common/logger/loggers';
-import { NodeAction } from '../../../common/models/command.model';
+import { EditorAction, NodeAction } from '../../../common/models/command.model';
 import { MarkdownExportService } from '../../../common/services/markdown-export.service';
 import { NodeService } from '../../../common/services/node.service';
 import { FileTreeFile } from '../../../common/models/file-tree.model';
@@ -20,14 +20,11 @@ export class ToolbarComponent {
     private nodeService: NodeService
   ) {}
   saveFile() {
-    this.commandService.perform({ action: NodeAction.SAVE_FILE });
+    this.commandService.perform({ action: EditorAction.SAVE_CONTENT });
   }
   exportFile() {
     if (this.nodeService.currentFile) {
-      this.markdownExportService.downloadMarkdown(
-        this.nodeService.currentFile,
-        'test.md'
-      );
+      this.markdownExportService.downloadMarkdown(this.nodeService.currentFile, 'test.md');
     } else throw new Error("Can't export file - none selected!");
   }
 }

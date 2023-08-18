@@ -8,6 +8,7 @@ import { clone } from 'lodash';
 import { StateService } from '../services/state.service'; // used below
 
 export enum Token {
+  NONE = -1,
   CONTENT,
   H6,
   H5,

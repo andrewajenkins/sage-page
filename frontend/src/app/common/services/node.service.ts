@@ -6,6 +6,7 @@ import { FileTreeBuilderService } from '../parsers/file-tree-builder.service';
 import { MatTreeService } from './mat-tree.service';
 import { isSection } from '../models/section.model';
 import { TreeBuilderService } from '../parsers/tree-builder.service';
+import { TreeBuilderV2Service } from './tree-builder-v2.service';
 
 @Injectable({
   providedIn: 'root',
@@ -47,16 +48,17 @@ export class NodeService {
     // private fileTreeBuilder: FileTreeBuilderService,
     private commandService: CommandService,
     private matTreeService: MatTreeService,
-    private treeBuilderService: TreeBuilderService
+    private treeBuilderService: TreeBuilderService,
+    private treeBuilderV2Service: TreeBuilderV2Service
   ) {}
 
   init() {
     this.commandService.action$.subscribe(async (cmd) => {
       if (cmd.action == NodeAction.GENERATE_FILE_SECTIONS) {
         if (this._currentNode && (isFile(this._currentNode) || isSection(this._currentNode))) {
-          await this.treeBuilderService.generateNodes(this._currentNode);
+          await this.treeBuilderV2Service.update(this._currentNode);
         } else {
-          await this.treeBuilderService.generateNodes(this.currentFile);
+          await this.treeBuilderV2Service.update(this.currentFile);
         }
         this.matTreeService.refreshTree();
       }

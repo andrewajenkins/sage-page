@@ -17,12 +17,6 @@ export class ContentToolbarComponent {
   ngOnChanges(changes) {
     // console.log(changes);
   }
-  createSubsection() {
-    this.commandService.perform({
-      action: NodeAction.CREATE_SECTION,
-      content: this.contentSection,
-    });
-  }
   createContent(location: 'above' | 'below') {
     this.commandService.perform({
       action: EditorAction.CREATE_SECTION,
@@ -40,6 +34,5 @@ export class ContentToolbarComponent {
 
   saveContent() {
     this.contentToolbarEvent.emit('save');
-    this.contentSection.editable = false;
   }
 }

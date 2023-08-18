@@ -1,5 +1,11 @@
-import { isContentCommand, isValueCommand, NodeAction, StateAction } from '../../common/models/command.model';
-import { FileTreeFile, FileTreeFolder, isFolder } from '../../common/models/file-tree.model';
+import {
+  EditorAction,
+  isContentCommand,
+  isValueCommand,
+  NodeAction,
+  StateAction,
+} from '../../common/models/command.model';
+import { FileTreeFile, FileTreeFolder, isContentNode, isFolder } from '../../common/models/file-tree.model';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { Injectable } from '@angular/core';
@@ -7,6 +13,7 @@ import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
 import { NodeFactory } from '../../common/utils/node.factory';
 import { Token } from '../../common/parsers/file-tree-builder.service';
+import { ContentSection } from '../../common/models/section.model';
 
 @Injectable({
   providedIn: 'root',
@@ -67,6 +74,21 @@ export class FileTreeActionHandler {
           this.matTreeService.refreshTree(resp);
         });
       }
+      // else if (isContentCommand(cmd) && action === EditorAction.SAVE_SECTION) {
+      //   const currentNode = this.nodeService.currentNode;
+      //   if (!currentNode) return;
+      //   const node = cmd.content;
+      //   const newNode: ContentSection = NodeFactory.createSection({
+      //     // name: cmd.value || '' + this.fileIndex++,
+      //     // text: cmd.value || '' + this.fileIndex++,
+      //     parent_id: currentNode.id,
+      //     parent_type: currentNode.type,
+      //     // textType: Token,
+      //   });
+      //   this.dataService.createNode(newNode).subscribe((resp) => {
+      //     this.matTreeService.refreshTree(resp);
+      //   });
+      // }
     });
   }
   setNodeNotSelected() {

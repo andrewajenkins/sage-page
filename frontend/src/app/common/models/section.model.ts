@@ -6,6 +6,7 @@ export const enum ContentSectionType {
   NONE = 'CONTENT_TYPE_NONE',
 }
 export interface ContentSection {
+  lexType?: string;
   editable: boolean;
   id?: number;
   name: string;

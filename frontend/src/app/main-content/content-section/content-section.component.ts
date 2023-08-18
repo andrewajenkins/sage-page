@@ -39,6 +39,7 @@ export class ContentSectionComponent implements OnChanges {
   handleToolbarEvent(event) {
     if (event == 'save') {
       this.contentSection.text = this.textContent.nativeElement.innerText;
+      this.contentSection.editable = false;
     } else if (event === 'delete') {
       this.recursiveDeleteNode();
     } else if (event === 'edit') {

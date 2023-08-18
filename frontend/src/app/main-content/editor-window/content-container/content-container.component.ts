@@ -41,10 +41,15 @@ export class ContentContainerComponent {
           this.nodeService.currentNode.sections.push(...cmd.sections);
         }
         this.scrollDown();
-      } else if (cmd.action === NodeAction.SAVE_FILE) {
-        this.commandService.perform({
-          action: NodeAction.GENERATE_FILE_SECTIONS,
-        });
+      } else if (cmd.action === EditorAction.SAVE_CONTENT) {
+        if (!this.nodeService.currentNode) return;
+        if (isFile(this.nodeService.currentNode) || isSection(this.nodeService.currentNode)) {
+          this.nodeService.currentNode.sections = this.section?.sections || [];
+          this.nodeService.currentNode.content = this.section?.content || [];
+          this.commandService.perform({
+            action: NodeAction.GENERATE_FILE_SECTIONS,
+          });
+        }
       } else if (isFileCommand(cmd) && cmd.action === NodeAction.LOAD_FILE) {
         this.nodeService.currentFile.sections = cmd.file?.sections || [];
         this.section = cmd.file;
