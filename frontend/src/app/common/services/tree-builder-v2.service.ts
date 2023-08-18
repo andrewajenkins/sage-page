@@ -72,6 +72,27 @@ export class TreeBuilderV2Service {
     return {} as ContentSection;
   }
   private adjustNodes(docNodes: ContentSection[], parent: ContentSection) {
+    docNodes = this.adjustForDoc(docNodes);
+    docNodes = this.adjustForParent(docNodes, parent);
+
+    return docNodes;
+  }
+  adjustForDoc(docNodes): ContentSection[] {
+    let minDepth = 100;
+    docNodes.forEach((node) => {
+      if (node.depth && node.depth < minDepth) {
+        minDepth = node.depth;
+      }
+    });
+    minDepth--;
+    docNodes.forEach((node) => {
+      if (node.depth) {
+        node.depth -= minDepth;
+      }
+    });
+    return docNodes;
+  }
+  adjustForParent(docNodes, parent): ContentSection[] {
     const offset = 7 - parent.textType;
     for (let node of docNodes) {
       if (!!node.depth && node.depth > -1) {
