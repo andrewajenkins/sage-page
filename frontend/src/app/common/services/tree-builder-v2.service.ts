@@ -22,6 +22,7 @@ export class TreeBuilderV2Service {
     // stringify the section nodes
     const docString: string = this.getDocString(parentNode.sections);
     // lex
+    console.log('docString:', docString);
     const lexResult: TokensList = marked.lexer(docString);
     // combine the tokens and the current nodes
     const annotatedNodes: ContentSection[] = this.mapTokensToNodes(lexResult, parentNode.sections);
@@ -94,7 +95,7 @@ export class TreeBuilderV2Service {
         parent.content.push(node);
       } else if (node.lexType === 'heading') {
         if (debug) console.log('build: pushing heading:', node);
-        ancestors.splice(node.depth || -1);
+        ancestors.splice((node.depth || 0) - 1);
         const isTopLevel = ancestors.length == 0;
         const parent = isTopLevel ? rootNode : ancestors[ancestors.length - 1];
         if (!node.generated) this.write(node, parent, Token.NONE);
@@ -110,7 +111,7 @@ export class TreeBuilderV2Service {
 
   private write(node: ContentSection, parent: ContentSection, token: Token) {
     node.id = Math.floor(Math.random() * 1000000);
-    node.textType = node.depth || -1;
+    node.textType = 7 - (node.depth || -8);
     node.parent_id = parent.id || -1;
     node.parent_type = 'section';
     node.generated = true;
