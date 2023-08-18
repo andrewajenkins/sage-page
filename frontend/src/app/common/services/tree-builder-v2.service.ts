@@ -35,9 +35,9 @@ export class TreeBuilderV2Service {
     // put the new trees where the old doc nodes were
     const updatedParentNode: ContentSection = this.replaceNode(parent, newTrees);
     // for each sub node do update on it
-    for (let subnode of parent.sections) {
-      this.doUpdate(subnode, rootNode);
-    }
+    // for (let subnode of parent.sections) {
+    //   this.doUpdate(subnode, rootNode);
+    // }
   }
 
   private getParentContent(annotatedNodes: ContentSection[], parent: ContentSection): any {
@@ -75,6 +75,7 @@ export class TreeBuilderV2Service {
     const offset = 7 - parent.textType;
     for (let node of docNodes) {
       if (!!node.depth && node.depth > -1) {
+        node.lexDepth = node.depth;
         node.depth += offset;
       }
     }
@@ -91,11 +92,12 @@ export class TreeBuilderV2Service {
       if (['paragraph', 'list'].indexOf(node.lexType || 'none') !== -1) {
         if (debug) console.log('build: pushing content:', node);
         const parent = ancestors[ancestors.length - 1];
+        node.type = 'content';
         if (!node.generated) this.write(node, parent, Token.CONTENT);
         parent.content.push(node);
       } else if (node.lexType === 'heading') {
         if (debug) console.log('build: pushing heading:', node);
-        ancestors.splice((node.depth || 0) - 1);
+        ancestors.splice((node.lexDepth || 0) - 1);
         const isTopLevel = ancestors.length == 0;
         const parent = isTopLevel ? rootNode : ancestors[ancestors.length - 1];
         if (!node.generated) this.write(node, parent, Token.NONE);

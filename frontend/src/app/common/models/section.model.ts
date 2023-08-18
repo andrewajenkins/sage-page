@@ -6,7 +6,6 @@ export const enum ContentSectionType {
   NONE = 'CONTENT_TYPE_NONE',
 }
 export interface ContentSection {
-  lexType?: string;
   editable: boolean;
   id?: number;
   name: string;
@@ -24,6 +23,8 @@ export interface ContentSection {
   depth?: number;
   focused?: boolean;
   generated?: boolean;
+  lexType?: string;
+  lexDepth?: number;
 }
 export interface ChatLogEntry {
   role: string;

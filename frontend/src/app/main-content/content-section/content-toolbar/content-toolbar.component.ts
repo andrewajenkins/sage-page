@@ -17,7 +17,7 @@ export class ContentToolbarComponent {
   ngOnChanges(changes) {
     // console.log(changes);
   }
-  createContent(location: 'above' | 'below') {
+  createSection(location: 'above' | 'below') {
     this.commandService.perform({
       action: EditorAction.CREATE_SECTION,
       value: location,
