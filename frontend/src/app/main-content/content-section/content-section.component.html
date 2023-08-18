@@ -5,6 +5,7 @@
   (click)="toggleSelection()"
   [isSelected]="!!contentSection?.selected">
   <div fxLayoutAlign="start center" class="content-text">
+    {{ !contentSection.generated && !hideAsteriks ? "* " : "" }}
     <div
       #textContent
       (focusout)="handleFocusOut($event)"

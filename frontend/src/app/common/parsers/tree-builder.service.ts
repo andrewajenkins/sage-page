@@ -29,27 +29,28 @@ export class TreeBuilderService {
     rootNode.sections = [];
     ancestors.push(rootNode as ContentSection);
     for (let section of sections) {
-      if (section.generated) {
-        if (debug) console.log('processNodes: skipping section:', section);
-        rootNode.sections.push(section);
-        continue;
-      }
+      // if (section.generated) {
+      //   if (debug) console.log('processNodes: skipping section:', section);
+      //   rootNode.sections.push(section);
+      //   continue;
+      // }
       const tokens = marked.lexer(section.text!);
-      for (let token of tokens) {
-        if (this.content.indexOf(token.type) !== -1) {
-          if (debug) console.log('processNodes: pushing content:', token);
-          const parent = ancestors[ancestors.length - 1];
-          parent.content.push(this.tokenToSection(token, Token.CONTENT, parent));
-        } else if (token.type === 'heading') {
-          if (debug) console.log('processNodes: pushing heading:', token);
-          ancestors.splice(token.depth);
-          const parent = ancestors[ancestors.length - 1];
-          const newSection = this.tokenToSection(token, -1, parent);
-          parent.sections.push(newSection);
-          ancestors.push(newSection);
-        } else {
-          throw new Error('Failed to parse token:\n' + JSON.stringify(token, null, 2));
-        }
+      if (tokens.length === 0) continue;
+      const token = tokens[0];
+      if (this.content.indexOf(token.type) !== -1) {
+        if (debug) console.log('processNodes: pushing content:', token);
+        const parent = ancestors[ancestors.length - 1];
+        if (!section.generated) section = this.tokenToSection(token, Token.CONTENT, parent);
+        parent.content.push(section);
+      } else if (token.type === 'heading') {
+        if (debug) console.log('processNodes: pushing heading:', token);
+        ancestors.splice(token.depth);
+        const parent = ancestors[ancestors.length - 1];
+        if (!section.generated) section = this.tokenToSection(token, -1, parent);
+        parent.sections.push(section);
+        ancestors.push(section);
+      } else {
+        throw new Error('Failed to parse token:\n' + JSON.stringify(token, null, 2));
       }
     }
   }

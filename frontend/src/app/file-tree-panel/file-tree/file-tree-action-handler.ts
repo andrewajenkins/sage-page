@@ -53,6 +53,7 @@ export class FileTreeActionHandler {
         });
       } else if (isContentCommand(cmd) && action === NodeAction.DELETE_NODE) {
         this.dataService.deleteNode(cmd.content).subscribe((resp) => {
+          this.setNodeNotSelected();
           this.matTreeService.refreshTree(resp);
         });
       } else if (action === NodeAction.DELETE_CURRENT_NODE) {
@@ -62,14 +63,17 @@ export class FileTreeActionHandler {
           // if (!currentNode.parent_id) {
           this.nodeService.currentNode = undefined;
           // }
-          this.commandService.perform({
-            action: StateAction.SET_NODE_SELECTED,
-            // node: currentNode,
-            flag: false,
-          });
+          this.setNodeNotSelected();
           this.matTreeService.refreshTree(resp);
         });
       }
+    });
+  }
+  setNodeNotSelected() {
+    this.commandService.perform({
+      action: StateAction.SET_NODE_SELECTED,
+      // node: currentNode,
+      flag: false,
     });
   }
 }

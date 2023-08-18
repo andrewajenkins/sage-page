@@ -1,4 +1,4 @@
-<div *ngFor="let content of section?.content">
+<div class="content-container" *ngFor="let content of section?.content">
   <app-content-section [contentSection]="content"></app-content-section>
 </div>
 <div class="content-container" *ngFor="let subSection of section?.sections">

@@ -1,10 +1,6 @@
 <!-- TODO Overhaul the interface! -->
 <form [formGroup]="form">
-  <div
-    fxFill
-    fxLayout="column"
-    fxLayoutAlign="center"
-    class="bot-window-container">
+  <div fxFill fxLayout="column" fxLayoutAlign="center" class="bot-window-container">
     <!--    fxLayoutGap="20px"-->
     <mat-form-field class="model-container">
       <mat-label>ChatGPT Model Select</mat-label>
@@ -23,9 +19,7 @@
           <div
             fxFlex
             class="function-button"
-            [matTooltip]="
-              !contentSectionSelected ? 'Please select a file or section' : ''
-            ">
+            [matTooltip]="!contentSectionSelected ? 'Please select a file or section' : ''">
             <button
               fxFlex
               (click)="sendSelection(logEntry)"
@@ -38,30 +32,20 @@
             </button>
           </div>
           <div fxFlex class="function-button">
-            <button
-              fxFlex
-              (click)="selectAll(logEntry)"
-              mat-stroked-button
-              color="primary"
-              class="function-button">
+            <button fxFlex (click)="selectAll(logEntry)" mat-stroked-button color="primary" class="function-button">
               <mat-icon>done_all</mat-icon>
               <span>Select All</span>
             </button>
           </div>
           <div fxFlex class="function-button">
-            <button
-              fxFlex
-              mat-stroked-button
-              (click)="clearSelection(logEntry)"
-              color="warn"
-              class="function-button">
+            <button fxFlex mat-stroked-button (click)="clearSelection(logEntry)" color="warn" class="function-button">
               <mat-icon>close</mat-icon>
               <span>Clear All</span>
             </button>
           </div>
         </div>
         <div class="content-container" *ngFor="let section of logEntry.content">
-          <app-content-section [contentSection]="section"></app-content-section>
+          <app-content-section [contentSection]="section" [hideAsteriks]="true"></app-content-section>
         </div>
       </div>
     </div>
@@ -76,12 +60,7 @@
           formControlName="queryControl"
           (keydown.enter)="sendQuery($event)"
           placeholder="How much wood could a Woodchuck chuck..."></textarea>
-        <button
-          matSuffix
-          mat-icon-button
-          class="hamburger"
-          style="padding-top: 10px"
-          (click)="sendQuery($event)">
+        <button matSuffix mat-icon-button class="hamburger" style="padding-top: 10px" (click)="sendQuery($event)">
           <span class="material-symbols-outlined">send</span>
         </button>
       </mat-form-field>

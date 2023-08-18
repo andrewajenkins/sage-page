@@ -52,10 +52,8 @@ export class BotWindowComponent implements OnInit {
     this.commandService.action$.subscribe((cmd) => {
       if (isFlagCommand(cmd) && cmd.action === StateAction.SET_FILE_SELECTED) {
         this.contentSectionSelected = cmd.flag as boolean;
-      } else if (isNodeCommand(cmd) && isFlagCommand(cmd) && cmd.action === StateAction.SET_NODE_SELECTED) {
-        if (isSection(cmd.node)) {
-          this.contentSectionSelected = cmd.flag as boolean;
-        }
+      } else if (isFlagCommand(cmd) && cmd.action === StateAction.SET_NODE_SELECTED) {
+        this.contentSectionSelected = cmd.flag as boolean;
       }
     });
     this.scrollDown();

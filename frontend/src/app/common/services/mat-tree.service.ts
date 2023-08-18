@@ -41,8 +41,9 @@ export class MatTreeService {
       nodeMap.set(node.id as number, node);
     });
     if (debug) console.log('assembleTree: map:', map);
-    nodes.forEach((node) => {
+    nodes.forEach((node: FileTreeNode) => {
       const findDebug = true;
+      node.generated = true;
       if (!node.parent_id) {
         if (findDebug) console.log('assembleTree: pushing root node:', node);
         rootNodes.push(node);
