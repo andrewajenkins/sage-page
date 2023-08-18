@@ -4,11 +4,12 @@ import { CommandService } from '../../../common/services/command.service';
 import { ComponentLogger } from '../../../common/logger/loggers';
 import {
   ContentAction,
+  EditorAction,
   isContentCommand,
   isFileCommand,
-  isNodeCommand,
   isSectionCommand,
   isSectionsCommand,
+  isValueCommand,
   NodeAction,
 } from '../../../common/models/command.model';
 import { ContentSection, isSection } from '../../../common/models/section.model';
@@ -16,6 +17,7 @@ import { NodeService } from '../../../common/services/node.service';
 import { FileTreeFile, isContentNode, isFile } from '../../../common/models/file-tree.model';
 import { recursiveDeleteNode } from '../../../common/utils/tree-utils';
 import { remove } from 'lodash';
+import { NodeFactory } from '../../../common/utils/node.factory';
 
 @Component({
   selector: 'app-content-container',
@@ -58,6 +60,28 @@ export class ContentContainerComponent {
         }
       } else if (cmd.action === NodeAction.DELETE_CURRENT_NODE) {
         this.section = undefined;
+      } else if (isValueCommand(cmd) && isSectionCommand(cmd) && cmd.action === EditorAction.CREATE_SECTION) {
+        if (!this.section) return;
+        let index = this.section.sections.findIndex((section) => section.id === cmd.section.id);
+        console.log('sections index:', index);
+        const array = index >= 0 ? this.section.sections : this.section.content;
+        if (index < 0) {
+          index = this.section.content.findIndex((section) => section.id === cmd.section.id);
+          console.log('content index:', index);
+        }
+        const newSection = NodeFactory.createSection({
+          editable: true,
+          parent_id: this.section.id as number,
+          parent_type: 'section',
+        });
+        if (cmd.value == 'above') {
+          console.log('above:', array.length, index);
+          array.splice(index, 0, newSection);
+        } else {
+          console.log('below:', array.length, index);
+          array.splice(index + 1, 0, newSection);
+        }
+        newSection.focused = true;
       }
     });
   }

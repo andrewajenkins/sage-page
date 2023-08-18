@@ -7,6 +7,7 @@
   <div fxLayoutAlign="start center" class="content-text">
     <div
       #textContent
+      (focusout)="handleFocusOut($event)"
       [contentEditable]="!!contentSection.editable"
       [ngStyle]="!!contentSection.editable ? { cursor: 'text' } : { cursor: 'pointer' }">
       {{ getContent() }}
@@ -14,6 +15,6 @@
   </div>
   <app-content-toolbar
     [contentSection]="contentSection"
-    (contentToolbarEvent)="handleToolbarEvent(textContent)"></app-content-toolbar>
+    (contentToolbarEvent)="handleToolbarEvent($event)"></app-content-toolbar>
 </div>
 <!--<pre>cs:{{ contentSection | json }}</pre>-->

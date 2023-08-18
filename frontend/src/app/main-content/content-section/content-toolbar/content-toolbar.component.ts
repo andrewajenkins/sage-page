@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommandService } from '../../../common/services/command.service';
-import { NodeAction } from '../../../common/models/command.model';
+import { EditorAction, NodeAction } from '../../../common/models/command.model';
 import { ContentSection } from '../../../common/models/section.model';
 
 @Component({
@@ -15,7 +15,7 @@ export class ContentToolbarComponent {
   constructor(private commandService: CommandService) {}
 
   ngOnChanges(changes) {
-    console.log(changes);
+    // console.log(changes);
   }
   createSubsection() {
     this.commandService.perform({
@@ -23,19 +23,19 @@ export class ContentToolbarComponent {
       content: this.contentSection,
     });
   }
-  createContent() {}
-  editSection() {
-    this.contentSection.editable = true;
-  }
-  deleteSection() {
-    // if (this.contentSection.type === 'content') {
-    //   this.contentToolbarEvent.emit('deleteContent');
-    // } else {
+  createContent(location: 'above' | 'below') {
     this.commandService.perform({
-      action: NodeAction.DELETE_NODE,
-      content: this.contentSection,
+      action: EditorAction.CREATE_SECTION,
+      value: location,
+      section: this.contentSection,
     });
-    // }
+  }
+  editSection() {
+    this.contentToolbarEvent.emit('edit');
+  }
+
+  deleteSection() {
+    this.contentToolbarEvent.emit('delete');
   }
 
   saveContent() {

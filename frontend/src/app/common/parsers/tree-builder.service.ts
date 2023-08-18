@@ -18,35 +18,37 @@ export class TreeBuilderService {
 
   async generateNodes(rootNode: FileTreeFile | ContentSection) {
     // preprocess sections (adjust depths)
-    this.preprocessNodes(rootNode);
     this.processNodes(rootNode);
     // adjust raw strings to match depth
-    this.postprocessNodes(rootNode);
     return rootNode;
   }
-  private preprocessNodes(rootNode) {}
-  private postprocessNodes(rootNode) {}
   private processNodes(rootNode) {
+    const debug = true;
     let ancestors: ContentSection[] = [];
     const sections = cloneDeep(rootNode.sections);
     rootNode.sections = [];
     ancestors.push(rootNode as ContentSection);
     for (let section of sections) {
-      if (section.id >= 0) {
+      if (section.generated) {
+        if (debug) console.log('processNodes: skipping section:', section);
         rootNode.sections.push(section);
         continue;
       }
       const tokens = marked.lexer(section.text!);
       for (let token of tokens) {
         if (this.content.indexOf(token.type) !== -1) {
+          if (debug) console.log('processNodes: pushing content:', token);
           const parent = ancestors[ancestors.length - 1];
           parent.content.push(this.tokenToSection(token, Token.CONTENT, parent));
         } else if (token.type === 'heading') {
+          if (debug) console.log('processNodes: pushing heading:', token);
           ancestors.splice(token.depth);
           const parent = ancestors[ancestors.length - 1];
           const newSection = this.tokenToSection(token, -1, parent);
           parent.sections.push(newSection);
           ancestors.push(newSection);
+        } else {
+          throw new Error('Failed to parse token:\n' + JSON.stringify(token, null, 2));
         }
       }
     }
@@ -65,6 +67,7 @@ export class TreeBuilderService {
       parent_type: 'section',
       type: textType >= 0 ? 'content' : 'section',
       depth: token.depth,
+      generated: true,
     });
     this.dataService.createSection(result).subscribe((resp) => {
       // result.id = resp;

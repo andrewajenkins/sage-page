@@ -6,8 +6,8 @@
   <span class="material-symbols-outlined">more_vert</span>
 </button>
 <mat-menu #contentMenu="matMenu">
-  <button mat-menu-item (click)="createSubsection()">Create Subsections</button>
-  <button mat-menu-item (click)="createContent()">Create Content</button>
+  <button mat-menu-item (click)="createContent('above')">Create Section Above</button>
+  <button mat-menu-item (click)="createContent('below')">Create Section Below</button>
   <button mat-menu-item (click)="editSection()">Edit Section</button>
   <button mat-menu-item (click)="saveContent()">Save Section</button>
   <button mat-menu-item (click)="deleteSection()">Delete Section</button>

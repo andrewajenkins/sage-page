@@ -21,6 +21,8 @@ export interface ContentSection {
   textType: number;
   bulletedText?: boolean;
   depth?: number;
+  focused?: boolean;
+  generated?: boolean;
 }
 export interface ChatLogEntry {
   role: string;
