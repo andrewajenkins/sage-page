@@ -40,6 +40,7 @@ export class ContentSectionComponent implements OnChanges {
     if (event == 'save') {
       this.contentSection.text = this.textContent.nativeElement.innerText;
       this.contentSection.editable = false;
+      this.contentSection.generated = false;
     } else if (event === 'delete') {
       this.recursiveDeleteNode();
     } else if (event === 'edit') {

@@ -56,9 +56,9 @@ export class NodeService {
     this.commandService.action$.subscribe(async (cmd) => {
       if (cmd.action == NodeAction.GENERATE_FILE_SECTIONS) {
         if (this._currentNode && (isFile(this._currentNode) || isSection(this._currentNode))) {
-          await this.treeBuilderV2Service.update(this._currentNode);
+          this.treeBuilderV2Service.update(this._currentNode);
         } else {
-          await this.treeBuilderV2Service.update(this.currentFile);
+          this.treeBuilderV2Service.update(this.currentFile);
         }
         this.matTreeService.refreshTree();
       }

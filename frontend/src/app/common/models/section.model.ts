@@ -32,10 +32,10 @@ export interface ChatLogEntry {
   id: number;
 }
 export function isSection(node: FileTreeNode | undefined): node is ContentSection {
-  return !!node && node.type === 'section';
+  return (!!node && node.type === 'section') || (!!node && node.type === 'heading');
 }
 export function isContent(node: FileTreeNode | undefined): node is ContentSection {
-  return !!node && node.type === 'content';
+  return !!node && (node.type === 'content' || node.type === 'list_item' || node.type === 'text');
 }
 export const dummySection: ContentSection = {
   editable: false,

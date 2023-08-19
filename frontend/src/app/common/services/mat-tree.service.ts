@@ -4,6 +4,7 @@ import { FileTreeComponent } from '../../file-tree-panel/file-tree/file-tree.com
 import { map } from 'rxjs';
 import { FileTreeFolder, FileTreeNode, isFile, isFolder } from '../models/file-tree.model';
 import { ContentSection, isContent, isSection } from '../models/section.model';
+import { cloneDeep } from 'lodash';
 
 @Injectable({
   providedIn: 'root',
@@ -16,14 +17,16 @@ export class MatTreeService {
     this.fileTreeComponent = component;
   }
   refreshTree(data?) {
+    // setTimeout(() => {
     if (!data) {
       data = this.fileTreeComponent.dataSource.data;
-      console.log('refreshTree: static:', data);
+      console.log('refreshTree: not provided:', cloneDeep(data));
     } else {
-      console.log('refreshTree: provided:', data);
+      console.log('refreshTree: provided:', cloneDeep(data));
     }
     this.fileTreeComponent.dataSource.data = [];
     this.fileTreeComponent.dataSource.data = data;
+    // }, 15000);
   }
 
   static assembleTree = map((nodes: FileTreeNode[]) => {
@@ -60,11 +63,13 @@ export class MatTreeService {
         const parent = nodeMap.get(node.parent_id) as ContentSection;
         if (!parent.content) parent.content = [];
         parent.content.push(node);
-      } else if (isSection(node)) {
+      } else if (node.type == 'heading' || isSection(node)) {
         console.log('assembleTree: pushing section:', node);
         const parent = nodeMap.get(node.parent_id) as ContentSection;
         if (!parent.sections) parent.sections = [];
         parent.sections.push(node);
+      } else {
+        console.error('assembleTree: unknown node type:', node);
       }
     });
     console.log('assembleTree: final tree:', rootNodes);

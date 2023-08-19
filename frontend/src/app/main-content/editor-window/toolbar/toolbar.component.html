@@ -1,9 +1,5 @@
 <mat-toolbar fxFlex class="mat-toolbar">
-  <button
-    mat-icon-button
-    mat-stroked
-    matTooltip="File"
-    [matMenuTriggerFor]="fileMenu">
+  <button mat-icon-button mat-stroked matTooltip="File" [matMenuTriggerFor]="fileMenu">
     <span class="material-symbols-outlined"> folder </span>
   </button>
   <mat-menu #fileMenu>
@@ -15,10 +11,7 @@
     <button mat-menu-item>Rename</button>
     <button mat-menu-item>Export</button>
   </mat-menu>
-  <button
-    mat-icon-button
-    matTooltip="Save: Warning, saving will do file generation"
-    (click)="saveFile()">
+  <button mat-icon-button matTooltip="Save: Warning, saving will do file generation" (click)="saveFile()">
     <span class="material-symbols-outlined"> save </span>
   </button>
   <button mat-icon-button matTooltip="Undo">
@@ -36,13 +29,10 @@
   <button mat-icon-button matTooltip="">
     <span class="material-symbols-outlined"> edit </span>
   </button>
-  <button
-    (click)="exportFile()"
-    mat-icon-button
-    matTooltip="Export current file to markdown">
+  <button (click)="exportFile()" mat-icon-button matTooltip="Export current file to markdown">
     <span class="material-symbols-outlined"> export_notes </span>
   </button>
-  <!--  <button mat-icon-button matTooltip="Help">-->
+  ><!--  <button mat-icon-button matTooltip="Help">-->
   <!--    <span class="material-symbols-outlined"> help </span>-->
   <!--  </button>-->
   <!--  <button mat-icon-button matTooltip="Navigate backward">-->

@@ -24,12 +24,12 @@ export class MarkdownExportService {
     let result: string[] = [];
     const processNode = (node: FileTreeFile | ContentSection) => {
       if (node.text) {
-        result.push(node.text + '\n');
+        result.push(node.text + '  \n');
       }
       if (node.content) {
         node.content.forEach((content: ContentSection) => {
           if (content.text) {
-            result.push(content.text + '\n');
+            result.push(content.text + '  \n');
           }
         });
       }

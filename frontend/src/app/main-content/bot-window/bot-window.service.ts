@@ -45,7 +45,7 @@ interface Options {
 })
 @ServiceLogger()
 export class BotWindowService {
-  BYPASS = false;
+  BYPASS = true;
   options: Options = {
     headers: {
       Authorization: `Bearer ${OPENAI_API_KEY}`,
@@ -54,16 +54,13 @@ export class BotWindowService {
   };
   constructor(private http: HttpClient) {}
   getModels(): Observable<Model[]> {
-    if (this.BYPASS) {
-      return of(botModels.data as Model[]);
-    } else {
-      return this.http.get<ModelResponse>('https://api.openai.com/v1/models', this.options).pipe(
-        map((response: ModelResponse) => {
-          console.log('models resp:', response);
-          return response.data;
-        })
-      ) as Observable<Model[]>;
-    }
+    return this.http.get<ModelResponse>('https://api.openai.com/v1/models', this.options).pipe(
+      map((response: ModelResponse) => {
+        console.log('models resp:', response);
+        return response.data;
+      })
+    ) as Observable<Model[]>;
+    // }
   }
   postQuery(model = 'gpt-3.5-turbo-16k-0613', query = 'hi bot') {
     const body = {
@@ -80,6 +77,7 @@ export class BotWindowService {
     options.headers['Content-Type'] = 'application/json';
     console.log('making request:', body, options);
     if (this.BYPASS) {
+      this.BYPASS = false;
       return of(botResponse);
     } else {
       return this.http.post<RequestResponse>('https://api.openai.com/v1/chat/completions', body, options).pipe(

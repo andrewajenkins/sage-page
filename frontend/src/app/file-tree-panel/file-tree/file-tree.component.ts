@@ -2,12 +2,7 @@ import { Component } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { ComponentLogger } from '../../common/logger/loggers';
-import {
-  FileTreeFolder,
-  FileTreeNode,
-  isFile,
-  isFolder,
-} from '../../common/models/file-tree.model';
+import { FileTreeFolder, FileTreeNode, isFile, isFolder } from '../../common/models/file-tree.model';
 import { NodeAction, StateAction } from '../../common/models/command.model';
 import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
@@ -31,7 +26,7 @@ export class FileTreeComponent {
   treeControl = new NestedTreeControl<FileTreeNode>((node) => {
     if (isFolder(node)) {
       return node.subNodes;
-    } else if (isSection(node) || isFile(node)) {
+    } else if (node.type == 'heading' || isSection(node) || isFile(node)) {
       return node.sections;
     }
     return [];
@@ -48,9 +43,9 @@ export class FileTreeComponent {
   ) {
     this.matTreeService.registerComponent(this);
     this.fileHandler.init();
-    this.nodeService.init();
   }
   ngOnInit() {
+    this.nodeService.init();
     this.dataService.getFileTree().subscribe((fileTree) => {
       this.matTreeService.refreshTree(fileTree);
       this.treeControl.dataNodes = this.dataSource.data;
@@ -58,17 +53,11 @@ export class FileTreeComponent {
   }
   nodeHighlight(event: MouseEvent, newNode: FileTreeNode) {
     const previousNode = this.highlightNode;
-    const currentNode = this.nodeService.hasCurrent()
-      ? this.nodeService.currentNode
-      : undefined;
+    const currentNode = this.nodeService.hasCurrent() ? this.nodeService.currentNode : undefined;
 
     if (newNode.id === previousNode?.id) return;
 
-    if (
-      this.highlightElement &&
-      previousNode &&
-      previousNode.id !== currentNode?.id
-    )
+    if (this.highlightElement && previousNode && previousNode.id !== currentNode?.id)
       this.highlightElement.style.backgroundColor = 'white';
 
     this.highlightElement = event.target as HTMLElement;
@@ -81,11 +70,9 @@ export class FileTreeComponent {
   nodeSelect(event: MouseEvent, node: FileTreeNode) {
     // update styles and statuses for selected node
     this.nodeService.currentNode = node;
-    if (this.currentElement)
-      this.currentElement.style.backgroundColor = 'white';
+    if (this.currentElement) this.currentElement.style.backgroundColor = 'white';
     this.currentElement = event.target as HTMLElement;
-    this.currentElement.style.backgroundColor =
-      'var(--mat-standard-button-toggle-selected-state-background-color)';
+    this.currentElement.style.backgroundColor = 'var(--mat-standard-button-toggle-selected-state-background-color)';
 
     if (isSection(node)) {
       this.commandService.perform({
@@ -102,11 +89,7 @@ export class FileTreeComponent {
   }
 
   nodeUnHighlight($event: MouseEvent, previousNode: FileTreeNode) {
-    if (
-      this.highlightElement &&
-      previousNode &&
-      previousNode.id !== this.nodeService.currentNode?.id
-    )
+    if (this.highlightElement && previousNode && previousNode.id !== this.nodeService.currentNode?.id)
       this.highlightElement.style.backgroundColor = 'white';
     this.highlightNode = undefined;
     this.highlightElement = undefined;
@@ -116,7 +99,7 @@ export class FileTreeComponent {
     return this.currentElement && node.id === this.nodeService.currentNode?.id;
   }
   hasSub = (_: number, node: FileTreeFolder) =>
-    isFolder(node) || isFile(node) || isSection(node);
+    node?.type == 'heading' || isFolder(node) || isFile(node) || isSection(node);
 
   getIcon(node) {
     if (node.type == 'folder') return 'folder';
