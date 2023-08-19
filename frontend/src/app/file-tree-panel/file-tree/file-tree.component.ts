@@ -22,7 +22,7 @@ export class FileTreeComponent {
   highlightElement!: HTMLElement | undefined;
   highlightNode!: FileTreeNode | undefined;
   currentElement!: HTMLElement;
-
+  curr!: FileTreeNode | undefined;
   treeControl = new NestedTreeControl<FileTreeNode>((node) => {
     if (isFolder(node)) {
       return node.subNodes;
@@ -43,6 +43,7 @@ export class FileTreeComponent {
   ) {
     this.matTreeService.registerComponent(this);
     this.fileHandler.init();
+    this.curr = this.nodeService.currentNode;
   }
   ngOnInit() {
     this.nodeService.init();
