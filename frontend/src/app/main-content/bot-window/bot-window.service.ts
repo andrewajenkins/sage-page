@@ -59,7 +59,7 @@ export class BotWindowService {
     } else {
       return this.http.get<ModelResponse>('https://api.openai.com/v1/models', this.options).pipe(
         map((response: ModelResponse) => {
-          // console.log('models resp:', JSON.stringify(response));
+          console.log('models resp:', response);
           return response.data;
         })
       ) as Observable<Model[]>;

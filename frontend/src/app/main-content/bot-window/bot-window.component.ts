@@ -10,6 +10,7 @@ import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { ChatLogEntry, ContentSection, ContentSectionType, isSection } from '../../common/models/section.model';
 import { NodeFactory } from '../../common/utils/node.factory';
+import { Chat } from './chat.model';
 
 @Component({
   selector: 'app-bot-window',
@@ -38,12 +39,12 @@ export class BotWindowComponent implements OnInit {
     this.form = this.formBuilder.group({
       modelControl: ['gpt-3.5-turbo-16k-0613'],
       queryControl: [
-        [
-          // 'If giving a list please respond in markdown with non-numbered headings.',
-          // 'Please only give outputs with these markdown tags #, ##, ###, - and please add a few markdown links',
-          // "Can you give me a table of contents for a wiki i'm writing about the Angular API? Include all the different libraries like core, common, http, routing, testing, etc.",
-          'Can you something like the following, but not exactly? # Header1\n- Bullet content\n## Header2\n- Bullet content\n## Header3\n- Some bullet right here\n### Header 4',
-        ].join('\n'),
+        // [
+        //   // 'If giving a list please respond in markdown with non-numbered headings.',
+        //   // 'Please only give outputs with these markdown tags #, ##, ###, - and please add a few markdown links',
+        //   // "Can you give me a table of contents for a wiki i'm writing about the Angular API? Include all the different libraries like core, common, http, routing, testing, etc.",
+        //   'Can you something like the following, but not exactly? # Header1\n- Bullet content\n## Header2\n- Bullet content\n## Header3\n- Some bullet right here\n### Header 4',
+        // ].join('\n'),
       ],
     });
     this.botWindowService.getModels().subscribe((models) => {
@@ -57,7 +58,7 @@ export class BotWindowComponent implements OnInit {
       }
     });
     this.scrollDown();
-    this.sendQuery(); // TODO remove
+    // this.sendQuery(); // TODO remove
   }
 
   triggerResize() {
@@ -72,6 +73,7 @@ export class BotWindowComponent implements OnInit {
     this.botWindowService.postQuery(this.form.get('modelControl')?.value, query).subscribe((response) => {
       // console.log('bot-response:', response);
       // TODO nest log entries under conversation objects (avoide parsing for select all and future stuff)
+      const chat = new Chat(query, response);
       this.log.push({
         id: this.log.length,
         role: 'Query:',
@@ -121,13 +123,8 @@ export class BotWindowComponent implements OnInit {
         content: newContents,
         id: this.log.length,
       });
-      // TODO generally need to format the window content somehow so its selectable
-      // TODO use edits endpoint for selecting text you want and regenerating text you dont
-      // TODO save user queries and responses and pass them in the messages (with roles) to enable convo context
-
       // scroll down bot chat
       // this.scrollDown();
-      // TODO remove below selectall and send selection
       // this.selectAll(this.log[this.log.length - 1]);
       // this.sendSelection(this.log[this.log.length - 1]);
     });

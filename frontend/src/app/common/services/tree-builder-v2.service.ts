@@ -34,10 +34,6 @@ export class TreeBuilderV2Service {
     const newTrees = this.buildTree(adjustedNodes, rootNode);
     // put the new trees where the old doc nodes were
     const updatedParentNode: ContentSection = this.replaceNode(parent, newTrees);
-    // for each sub node do update on it
-    // for (let subnode of parent.sections) {
-    //   this.doUpdate(subnode, rootNode);
-    // }
   }
 
   private getParentContent(annotatedNodes: ContentSection[], parent: ContentSection): any {
@@ -54,16 +50,32 @@ export class TreeBuilderV2Service {
   }
 
   private getDocString(doc: ContentSection[]): string {
-    const docString = doc.map((section) => section.text).join('\n');
+    const docString = doc.map((section) => section.text).join('  \n');
     return docString;
   }
 
   private mapTokensToNodes(lexResult: TokensList, sections: ContentSection[]) {
     const newSections: ContentSection[] = [];
     for (let i = 0; i < sections.length; i++) {
-      sections[i].lexType = lexResult[i]?.type || '';
-      newSections.push({ ...lexResult[i], ...sections[i] });
+      const section = sections[i];
+      const resSection = lexResult[i];
+      console.log('mapping token:', resSection, section);
+      if (['paragraph', 'list'].indexOf(resSection.type) !== -1) {
+        for (let res of resSection.tokens || []) {
+          if (res.type == 'br') continue;
+          console.log('type: nested', res.type, res);
+          section.lexType = res?.type || '';
+          newSections.push({ ...section, ...res });
+          i++;
+        }
+      } else {
+        if (resSection?.type == 'br') continue;
+        console.log('type: heading:', resSection?.type, resSection);
+        section.lexType = resSection?.type || '';
+        newSections.push({ ...section, ...resSection });
+      }
     }
+    // asdfsadf;
     return newSections;
   }
 
@@ -110,9 +122,10 @@ export class TreeBuilderV2Service {
     const rootNodes: ContentSection[] = [];
     for (let node of nodes) {
       if (debug) console.log('build: node:', node);
-      if (['paragraph', 'list'].indexOf(node.lexType || 'none') !== -1) {
+      const isContent = ['paragraph', 'list', 'text'].indexOf(node.lexType || 'none') !== -1;
+      if (isContent) {
         if (debug) console.log('build: pushing content:', node);
-        const parent = ancestors[ancestors.length - 1];
+        const parent = ancestors[ancestors.length - 1] || rootNode;
         node.type = 'content';
         if (!node.generated) this.write(node, parent, Token.CONTENT);
         parent.content.push(node);
