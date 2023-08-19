@@ -60,12 +60,13 @@ export class TreeBuilderV2BuilderService {
   }
   private removeDupes(parent, node: ContentSection) {
     parent.content = parent.content.filter((content) => {
-      console.log('removeDupes: content:', content.id, node.id, content.text, node.text);
-      content.id != node.id || content.text != node.text;
+      if (content.id != node.id || content.text != node.text)
+        console.warn('removeDupes: content:', content.id, node.id, content.text, node.text);
+      return content.id != node.id || content.text != node.text;
     });
     parent.sections = parent.sections.filter((content) => {
-      console.log('removeDupes: sections:', content.id, node.id, content.text, node.text);
-      content.id != node.id;
+      if (content.id != node.id) console.warn('removeDupes: sections:', content.id, node.id, content.text, node.text);
+      return content.id != node.id;
     });
   }
   private pushContent(node: ContentSection, parent: ContentSection, _rootNode, _ancestors: ContentSection[]) {

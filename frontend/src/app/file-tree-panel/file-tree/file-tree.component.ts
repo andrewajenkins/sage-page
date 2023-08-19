@@ -23,6 +23,7 @@ export class FileTreeComponent {
   highlightNode!: FileTreeNode | undefined;
   currentElement!: HTMLElement;
   curr!: FileTreeNode | undefined;
+
   treeControl = new NestedTreeControl<FileTreeNode>((node) => {
     if (isFolder(node)) {
       return node.subNodes;
@@ -71,6 +72,7 @@ export class FileTreeComponent {
   nodeSelect(event: MouseEvent, node: FileTreeNode) {
     // update styles and statuses for selected node
     this.nodeService.currentNode = node;
+    this.curr = node;
     if (this.currentElement) this.currentElement.style.backgroundColor = 'white';
     this.currentElement = event.target as HTMLElement;
     this.currentElement.style.backgroundColor = 'var(--mat-standard-button-toggle-selected-state-background-color)';
