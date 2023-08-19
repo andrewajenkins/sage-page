@@ -55,75 +55,22 @@ test('verify unhighlighting', async ({ page }) => {
   expect(await fileTree.toBeWhite(fileTree.fileButton('File3'))).toBe(true);
 });
 
-// test.only('verify temp highlighting', async ({ page }) => {
-//   const fileTree = new FileTreePanel(page);
-//   await fileTree.folderButton('Folder1').hover();
-//   expect(await fileTree.toBeHighlighted(fileTree.folderButton('Folder1'))).toBe(
-//     true
-//   );
-//   await fileTree.folderButton('Folder1').click();
-//   await fileTree.folderButton('Folder2').hover();
-//   expect(await fileTree.toBeHighlighted(fileTree.folderButton('Folder2'))).toBe(
-//     true
-//   );
-//   await fileTree.folderButton('Folder3').hover();
-//   expect(await fileTree.toBeHighlighted(fileTree.folderButton('Folder3'))).toBe(
-//     true
-//   );
-//   await fileTree.folderButton('Folder4').hover();
-//   expect(await fileTree.toBeHighlighted(fileTree.folderButton('Folder4'))).toBe(
-//     true
-//   );
-//   await fileTree.folderButton('Folder5').hover();
-//   expect(await fileTree.toBeHighlighted(fileTree.folderButton('Folder5'))).toBe(
-//     true
-//   );
-//   await fileTree.folderButton('File1').hover();
-//   expect(await fileTree.toBeHighlighted(fileTree.fileButton('File1'))).toBe(
-//     true
-//   );
-//   await fileTree.folderButton('File2').hover();
-//   expect(await fileTree.toBeHighlighted(fileTree.fileButton('File2'))).toBe(
-//     true
-//   );
-//   await fileTree.folderButton('File3').hover();
-//   expect(await fileTree.toBeHighlighted(fileTree.fileButton('File3'))).toBe(
-//     true
-//   );
-// });
-
 test('verify node selected color', async ({ page }) => {
   const fileTree = new FileTreePanel(page);
   await fileTree.folderButton('Folder1').click();
-  expect(await fileTree.toBeWhiteSmoke(fileTree.folderButton('Folder1'))).toBe(
-    true
-  );
+  expect(await fileTree.toBeWhiteSmoke(fileTree.folderButton('Folder1'))).toBe(true);
   await fileTree.folderButton('Folder2').click();
-  expect(await fileTree.toBeWhiteSmoke(fileTree.folderButton('Folder2'))).toBe(
-    true
-  );
+  expect(await fileTree.toBeWhiteSmoke(fileTree.folderButton('Folder2'))).toBe(true);
   await fileTree.folderButton('Folder3').click();
-  expect(await fileTree.toBeWhiteSmoke(fileTree.folderButton('Folder3'))).toBe(
-    true
-  );
+  expect(await fileTree.toBeWhiteSmoke(fileTree.folderButton('Folder3'))).toBe(true);
   await fileTree.folderButton('Folder4').click();
-  expect(await fileTree.toBeWhiteSmoke(fileTree.folderButton('Folder4'))).toBe(
-    true
-  );
+  expect(await fileTree.toBeWhiteSmoke(fileTree.folderButton('Folder4'))).toBe(true);
   await fileTree.folderButton('Folder5').click();
-  expect(await fileTree.toBeWhiteSmoke(fileTree.folderButton('Folder5'))).toBe(
-    true
-  );
+  expect(await fileTree.toBeWhiteSmoke(fileTree.folderButton('Folder5'))).toBe(true);
   await fileTree.fileButton('File1').click();
-  expect(await fileTree.toBeWhiteSmoke(fileTree.fileButton('File1'))).toBe(
-    true
-  );
+  expect(await fileTree.toBeWhiteSmoke(fileTree.fileButton('File1'))).toBe(true);
   await fileTree.fileButton('File2').click();
-  expect(await fileTree.toBeWhiteSmoke(fileTree.fileButton('File2'))).toBe(
-    true
-  );
+  expect(await fileTree.toBeWhiteSmoke(fileTree.fileButton('File2'))).toBe(true);
   await fileTree.fileButton('File3').click();
-  expect(await fileTree.toBeWhiteSmoke(fileTree.fileButton('File3'))).toBe(
-    true
-  );
+  expect(await fileTree.toBeWhiteSmoke(fileTree.fileButton('File3'))).toBe(true);
 });

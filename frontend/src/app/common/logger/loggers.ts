@@ -17,8 +17,7 @@ export function ComponentLogger() {
       const originalMethod = constructor.prototype[key];
       if (typeof originalMethod === 'function') {
         constructor.prototype[key] = function (...args: any[]) {
-          if (ignoreList.indexOf(key) === -1)
-            console.log('--', constructor.name, key, 'Arguments:', args);
+          if (ignoreList.indexOf(key) === -1) console.log('--', constructor.name, key, 'Arguments:', args, '\n');
           return originalMethod.apply(this, args);
         };
       }
@@ -31,8 +30,7 @@ export function ServiceLogger() {
       const originalMethod = constructor.prototype[key];
       if (typeof originalMethod === 'function') {
         constructor.prototype[key] = function (...args: any[]) {
-          if (ignoreList.indexOf(key) === -1)
-            console.log('---', constructor.name, key, 'Arguments:', args);
+          if (ignoreList.indexOf(key) === -1) console.log('---', constructor.name, key, 'Arguments:', args, '\n');
           return originalMethod.apply(this, args);
         };
       }
@@ -42,13 +40,7 @@ export function ServiceLogger() {
       if (typeof originalMethod === 'function') {
         constructor[key] = function (...args: any[]) {
           if (ignoreList.indexOf(key) === -1)
-            console.log(
-              '---',
-              constructor.name,
-              key,
-              'Static Arguments:',
-              args
-            );
+            console.log('---', constructor.name, key, 'Static Arguments:', args, '\n');
           return originalMethod.apply(this, args);
         };
       }

@@ -6,7 +6,7 @@ import { FileTreeBuilderService } from '../parsers/file-tree-builder.service';
 import { MatTreeService } from './mat-tree.service';
 import { isSection } from '../models/section.model';
 import { TreeBuilderService } from '../parsers/tree-builder.service';
-import { TreeBuilderV2Service } from './tree-builder-v2.service';
+import { TreeBuilderV2Service } from './tree-builder-v2/tree-builder-v2.service';
 
 @Injectable({
   providedIn: 'root',
