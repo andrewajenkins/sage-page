@@ -6,12 +6,12 @@
   <span class="material-symbols-outlined">more_vert</span>
 </button>
 <mat-menu #contentMenu="matMenu">
-  <button mat-menu-item (click)="createSection('above')">Create Section Above</button>
-  <button mat-menu-item (click)="createSection('below')">Create Section Below</button>
+  <button mat-menu-item *ngIf="!hideEditorContent" (click)="createSection('above')">Create Section Above</button>
+  <button mat-menu-item *ngIf="!hideEditorContent" (click)="createSection('below')">Create Section Below</button>
   <button mat-menu-item [matMenuTriggerFor]="changeSymbol">Change Symbol</button>
   <button mat-menu-item (click)="editSection()">Edit Section</button>
   <button mat-menu-item (click)="saveContent()">Save Section</button>
-  <button mat-menu-item (click)="deleteSection()">Delete Section</button>
+  <button mat-menu-item *ngIf="!hideEditorContent" (click)="deleteSection()">Delete Section</button>
 </mat-menu>
 <mat-menu #changeSymbol="matMenu">
   <ng-container *ngFor="let symbol of symbols">

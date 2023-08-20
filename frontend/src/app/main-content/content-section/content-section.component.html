@@ -6,7 +6,7 @@
     class="content-text"
     (click)="toggleSelection()"
     [isSelected]="!!contentSection?.selected">
-    {{ !contentSection.generated && !hideAsteriks ? " * " : "" }}
+    {{ !contentSection.generated && !hideEditorContent ? " * " : "" }}
     <div
       #textContent
       (focusout)="handleFocusOut($event)"
@@ -16,6 +16,7 @@
     </div>
   </div>
   <app-content-toolbar
+    [hideEditorContent]="hideEditorContent"
     [contentSection]="contentSection"
     (contentToolbarEvent)="handleToolbarEvent($event)"></app-content-toolbar>
 </div>

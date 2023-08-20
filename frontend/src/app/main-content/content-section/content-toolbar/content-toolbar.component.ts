@@ -11,6 +11,7 @@ import { ContentSection } from '../../../common/models/section.model';
 export class ContentToolbarComponent {
   contentMenu: any;
   @Input() contentSection!: ContentSection;
+  @Input() hideEditorContent: boolean = false;
   @Output() contentToolbarEvent = new EventEmitter();
 
   symbols = ['#', '##', '###', '####', '#####', '######', '-', 'Plain text'];

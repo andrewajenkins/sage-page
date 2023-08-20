@@ -13,7 +13,7 @@ export class ContentSectionComponent implements OnChanges {
   @Input() contentSection: ContentSection = dummySection;
 
   @ViewChild('textContent', { static: false }) textContent!: ElementRef;
-  @Input() hideAsteriks: boolean = false;
+  @Input() hideEditorContent: boolean = false;
   constructor(private commandService: CommandService) {}
 
   toggleSelection() {
