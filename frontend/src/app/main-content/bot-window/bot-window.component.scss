@@ -24,3 +24,14 @@ form {
 .function-button {
   width: 100%;
 }
+
+::ng-deep .mat-mdc-menu-item {
+  height: auto !important; // query history buttons
+  width: 600px !important;
+}
+
+::ng-deep .mat-mdc-menu-panel {
+  height: auto !important; // query history buttons
+  width: 600px !important;
+  max-width: 600px !important;
+}

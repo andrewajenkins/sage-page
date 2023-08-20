@@ -156,4 +156,14 @@ export class BotWindowComponent implements OnInit {
       sections: selected,
     });
   }
+
+  prefillQuery($event: MouseEvent, query) {
+    this.form.get('queryControl')?.setValue(query);
+  }
+
+  getQueries() {
+    const log = this.botWindowService.log;
+    const queries = log.filter((chat) => chat.user == 'user').map((entry) => entry.content);
+    return queries;
+  }
 }
