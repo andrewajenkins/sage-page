@@ -1,10 +1,11 @@
-<div
-  appContentSection
-  fxLayout="row"
-  class="content-section"
-  (click)="toggleSelection()"
-  [isSelected]="!!contentSection?.selected">
-  <div fxLayoutAlign="start center" class="content-text">
+<div fxLayout="row" style="background: white">
+  <div
+    class="content-section"
+    appContentSection
+    fxLayoutAlign="start center"
+    class="content-text"
+    (click)="toggleSelection()"
+    [isSelected]="!!contentSection?.selected">
     {{ !contentSection.generated && !hideAsteriks ? " * " : "" }}
     <div
       #textContent
