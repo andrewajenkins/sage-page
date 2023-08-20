@@ -46,13 +46,21 @@ export class FileTreeComponent {
     this.fileHandler.init();
     this.curr = this.nodeService.currentNode;
     this.commandService.action$.subscribe((cmd) => {
-      if (cmd.action === StateAction.COLLAPSE_FILE_TREE_ALL) {
-        this.treeControl.dataNodes = this.dataSource.data;
-        this.treeControl.expandAll();
-      }
-      if (cmd.action === StateAction.EXPAND_FILE_TREE_ALL) {
-        this.treeControl.dataNodes = this.dataSource.data;
-        this.treeControl.collapseAll();
+      if (this.nodeService.currentNode) {
+        if (cmd.action === StateAction.COLLAPSE_FILE_TREE_ALL) {
+          this.treeControl.dataNodes = this.dataSource.data;
+          this.treeControl.getDescendants(this.nodeService.currentNode).forEach((node) => {
+            this.treeControl.expand(node);
+          });
+          this.treeControl.expand(this.nodeService.currentNode);
+        }
+        if (cmd.action === StateAction.EXPAND_FILE_TREE_ALL) {
+          this.treeControl.dataNodes = this.dataSource.data;
+          this.treeControl.getDescendants(this.nodeService.currentNode).forEach((node) => {
+            this.treeControl.collapse(node);
+          });
+          this.treeControl.collapse(this.nodeService.currentNode);
+        }
       }
     });
   }
