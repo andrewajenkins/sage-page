@@ -46,6 +46,7 @@ import { ContentSectionDirective } from './main-content/content-section/content-
 import { NavBannerComponent } from './main-content/nav-banner/nav-banner.component';
 import { FileTreeActionHandler } from './file-tree-panel/file-tree/file-tree-action-handler';
 import { ReadablePipe } from './common/pipes/readable.pipe';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
   declarations: [
@@ -100,6 +101,7 @@ import { ReadablePipe } from './common/pipes/readable.pipe';
     MatTreeModule,
     MatDialogModule,
     MatSlideToggleModule,
+    ClipboardModule,
   ],
   providers: [
     BotWindowService,

@@ -18,6 +18,7 @@ import { FileTreeFile, isContentNode, isFile } from '../../../common/models/file
 import { recursiveDeleteNode } from '../../../common/utils/tree-utils';
 import { remove } from 'lodash';
 import { NodeFactory } from '../../../common/utils/node.factory';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-content-container',
@@ -33,6 +34,7 @@ export class ContentContainerComponent {
   constructor(
     private commandService: CommandService,
     private nodeService: NodeService,
+    private clipboard: Clipboard,
     private cdRef: ChangeDetectorRef
   ) {
     this.selectionsSubscription = this.commandService.action$.subscribe((cmd) => {
@@ -87,6 +89,24 @@ export class ContentContainerComponent {
           array.splice(index + 1, 0, newSection);
         }
         newSection.focused = true;
+      } else if (cmd.action === EditorAction.COPY_ALL) {
+        if (this.section) {
+          const content = this.section.content.map((content) => content.text).join('  \n');
+          const section = this.section.sections.map((content) => content.text).join('  \n');
+          this.clipboard.copy(content + '  \n' + section);
+        }
+      } else if (cmd.action === EditorAction.COPY_SELECTED) {
+        if (this.section) {
+          const content = this.section.content
+            .filter((content) => content.selected)
+            .map((content) => content.text)
+            .join('  \n');
+          const section = this.section.sections
+            .filter((content) => content.selected)
+            .map((content) => content.text)
+            .join('  \n');
+          this.clipboard.copy(content + '  \n' + section);
+        }
       }
     });
   }

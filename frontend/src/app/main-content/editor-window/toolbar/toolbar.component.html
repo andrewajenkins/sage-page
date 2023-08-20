@@ -14,31 +14,19 @@
   <button mat-icon-button matTooltip="Save: Warning, saving will do file generation" (click)="saveFile()">
     <span class="material-symbols-outlined"> save </span>
   </button>
-  <button mat-icon-button matTooltip="Undo">
-    <span class="material-symbols-outlined"> undo </span>
-  </button>
-  <button mat-icon-button matTooltip="Redo">
-    <span class="material-symbols-outlined"> redo </span>
-  </button>
   <button mat-icon-button matTooltip="Select all">
     <span class="material-symbols-outlined"> check_circle </span>
   </button>
-  <button mat-icon-button matTooltip="Delete selected sections">
-    <span class="material-symbols-outlined"> delete </span>
+  <button (click)="copyAll()" mat-icon-button matTooltip="Copy all">
+    <span class="material-symbols-outlined"> copy_all </span>
   </button>
-  <button mat-icon-button matTooltip="">
-    <span class="material-symbols-outlined"> edit </span>
+  <button (click)="copySelected()" mat-icon-button matTooltip="Copy selected">
+    <span class="material-symbols-outlined"> content_copy </span>
   </button>
   <button (click)="exportFile()" mat-icon-button matTooltip="Export current file to markdown">
     <span class="material-symbols-outlined"> export_notes </span>
   </button>
-  ><!--  <button mat-icon-button matTooltip="Help">-->
-  <!--    <span class="material-symbols-outlined"> help </span>-->
-  <!--  </button>-->
-  <!--  <button mat-icon-button matTooltip="Navigate backward">-->
-  <!--    <span class="material-symbols-outlined"> arrow_backward </span>-->
-  <!--  </button>-->
-  <!--  <button mat-icon-button matTooltip="Navigate forward">-->
-  <!--    <span class="material-symbols-outlined"> arrow_forward </span>-->
+  <!--  <button mat-icon-button matTooltip="Delete selected sections">-->
+  <!--    <span class="material-symbols-outlined"> delete </span>-->
   <!--  </button>-->
 </mat-toolbar>

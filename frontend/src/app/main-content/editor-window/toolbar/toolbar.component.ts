@@ -22,6 +22,12 @@ export class ToolbarComponent {
   saveFile() {
     this.commandService.perform({ action: EditorAction.SAVE_CONTENT });
   }
+  copyAll() {
+    this.commandService.perform({ action: EditorAction.COPY_ALL });
+  }
+  copySelected() {
+    this.commandService.perform({ action: EditorAction.COPY_SELECTED });
+  }
   exportFile() {
     if (this.nodeService.currentFile) {
       this.markdownExportService.downloadMarkdown(this.nodeService.currentFile, 'test.md');
