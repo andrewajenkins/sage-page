@@ -29,7 +29,7 @@
         [ngClass]="{ 'current-node': getClass(node) }">
         <button mat-button matTreeNodeToggle>
           <span class="small-icon material-symbols-outlined" style="font-size: 18px">
-            {{ treeControl.isExpanded(node) ? "chevron_right" : "expand_more" }}
+            {{ getSectionSymbol(node) }}
           </span>
         </button>
         <span class="material-symbols-outlined icon-spacing">{{

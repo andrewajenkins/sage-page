@@ -110,4 +110,9 @@ export class FileTreeComponent {
     else return 'format_h' + (7 - node.textType);
     // return node.type == 'folder' ? 'folder' : 'description';
   }
+
+  getSectionSymbol(node) {
+    if (node.sections?.length == 0) return '';
+    return this.treeControl.isExpanded(node) ? 'chevron_right' : 'expand_more';
+  }
 }

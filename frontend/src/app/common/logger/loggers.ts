@@ -10,6 +10,7 @@ const ignoreList = [
   'logStart',
   'logEnd',
   'getIcon',
+  'getSectionSymbol',
 ];
 export function ComponentLogger() {
   return function (constructor: Function) {
