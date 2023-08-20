@@ -49,6 +49,14 @@ export class TreeBuilderV2Service {
       if (section.type === 'list') {
         section.items.forEach((item) => {
           result.push(item);
+          const subTokens = item?.tokens[0]?.tokens;
+          if (subTokens.length > 2) {
+            subTokens.shift();
+            subTokens.shift();
+            subTokens.forEach((token) => {
+              result.push(token);
+            });
+          }
         });
       } else if (section.type === 'paragraph') {
         section.tokens.forEach((token) => {
@@ -63,7 +71,6 @@ export class TreeBuilderV2Service {
     });
     return result;
   }
-  // asdf;
 
   private getParentContent(annotatedNodes: ContentSection[], parent: ContentSection): any {
     const contentTypes = ['paragraph', 'list'];

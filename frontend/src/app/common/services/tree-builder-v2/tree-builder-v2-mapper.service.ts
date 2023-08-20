@@ -11,7 +11,11 @@ export class TreeBuilderV2MapperService {
   mapTokensToNodes(lexResult: any, sections: ContentSection[]) {
     const newSections: ContentSection[] = [];
     lexResult = lexResult.filter((res) => {
-      return res.type !== 'space';
+      const isSpace = res.type === 'space';
+      const isBr = res.type === 'br';
+      if (isSpace) console.warn('space token found, skipping', res, sections);
+      if (isBr) console.warn('br token found, skipping', res, sections);
+      return !isSpace && !isBr;
     });
     for (let i = 0; i < sections.length; i++) {
       let section = sections[i];
@@ -34,10 +38,6 @@ export class TreeBuilderV2MapperService {
   }
 
   private mapContent(res: any, section: ContentSection, newSections: ContentSection[]) {
-    if (res.type == 'br') {
-      console.warn('br token found, skipping', res, section);
-      return;
-    }
     section.lexType = res?.type || '';
     const newSection = { ...res, ...section };
     this.verifyNameMatch(newSection, res, section, 'content');
@@ -60,10 +60,6 @@ export class TreeBuilderV2MapperService {
   }
 
   private mapSection(resSection: any, section: ContentSection, newSections: ContentSection[]) {
-    if (resSection.type == 'br') {
-      console.warn('br token found, skipping', resSection, section);
-      return;
-    }
     section.lexType = resSection?.type || '';
     const newSection = { ...resSection, ...section };
     this.verifyNameMatch(newSection, resSection, section, 'section');
