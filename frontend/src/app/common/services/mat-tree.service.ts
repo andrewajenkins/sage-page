@@ -73,10 +73,10 @@ export class MatTreeService {
   }
 
   static assembleTree = map((nodes: FileTreeNode[]) => {
-    const debug = true;
+    const debug = false;
     const nodeMap = new Map<number, FileTreeNode>();
     const rootNodes: FileTreeNode[] = [];
-    console.log('assembleTree: nodes:', nodes);
+    if (debug) console.log('assembleTree: nodes:', nodes);
     nodes.forEach((node) => {
       if (isFolder(node)) {
         node.subNodes = [];
@@ -88,27 +88,27 @@ export class MatTreeService {
     });
     if (debug) console.log('assembleTree: map:', map);
     nodes.forEach((node: FileTreeNode) => {
-      const findDebug = true;
+      const findDebug = false;
       node.generated = true;
       node.name = node.name.replace(/^[#]+\s/, '');
       if (!node.parent_id) {
         if (findDebug) console.log('assembleTree: pushing root node:', node);
         rootNodes.push(node);
       } else if (isFolder(node)) {
-        console.log('assembleTree: pushing folder or file:', node);
+        if (findDebug) console.log('assembleTree: pushing folder or file:', node);
         const parent = nodeMap.get(node.parent_id) as FileTreeFolder;
         parent.subNodes.push(node);
       } else if (isFile(node)) {
-        console.log('assembleTree: pushing file:', node);
+        if (findDebug) console.log('assembleTree: pushing file:', node);
         const parent = nodeMap.get(node.parent_id) as FileTreeFolder;
         parent.subNodes.push(node);
       } else if (node.type === 'content') {
-        console.log('assembleTree: pushing content:', node);
+        if (findDebug) console.log('assembleTree: pushing content:', node);
         const parent = nodeMap.get(node.parent_id) as ContentSection;
         if (!parent.content) parent.content = [];
         parent.content.push(node);
       } else if (node.type == 'heading' || isSection(node)) {
-        console.log('assembleTree: pushing section:', node);
+        if (findDebug) console.log('assembleTree: pushing section:', node);
         const parent = nodeMap.get(node.parent_id) as ContentSection;
         if (!parent.sections) parent.sections = [];
         parent.sections.push(node);

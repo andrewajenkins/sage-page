@@ -99,6 +99,7 @@ export class TreeBuilderV2Service {
     return docNodes;
   }
   adjustForDoc(docNodes): ContentSection[] {
+    // adjust for max
     let minDepth = 100;
     docNodes.forEach((node) => {
       if (node.depth && node.depth < minDepth) {
@@ -110,6 +111,14 @@ export class TreeBuilderV2Service {
       if (node.depth) {
         node.depth -= minDepth;
       }
+    });
+    // adjust for min
+    let parentDepth = minDepth;
+    docNodes.forEach((node) => {
+      if (node.depth && node.depth > parentDepth + 1) {
+        node.depth = parentDepth + 1;
+      }
+      parentDepth = node.depth;
     });
     return docNodes;
   }
