@@ -19,27 +19,44 @@ export class MatTreeService {
   refreshTree(data?) {
     if (!data) {
       data = this.fileTreeComponent.dataSource.data;
-      console.log('refreshTree: not provided:', cloneDeep(data));
-    } else {
-      console.log('refreshTree: provided:', cloneDeep(data));
     }
-    const previousState = this.saveTreeState();
-    this.fileTreeComponent.dataSource.data = [];
     this.fileTreeComponent.dataSource.data = data;
-    this.applyTreeState(previousState);
+    this.fileTreeComponent.treeControl.dataNodes = data;
   }
 
-  saveTreeState(): boolean[] {
-    return this.fileTreeComponent.treeControl.dataNodes?.map((node) =>
-      this.fileTreeComponent.treeControl.isExpanded(node)
-    );
+  saveTreeState(): Map<number, boolean> {
+    const state = new Map<number, boolean>();
+    this.populateMap(this.fileTreeComponent.treeControl.dataNodes, state);
+    console.log('saveTreeState:', state, this.fileTreeComponent.treeControl.dataNodes);
+    return state;
   }
-  applyTreeState(savedState: boolean[]) {
-    this.fileTreeComponent.treeControl.dataNodes?.forEach((node, index) => {
-      if (savedState[index]) {
-        this.fileTreeComponent.treeControl.expand(node);
-      } else {
-        this.fileTreeComponent.treeControl.collapse(node);
+  populateMap(dataNodes: FileTreeNode[], state: Map<number, boolean>) {
+    dataNodes?.forEach((node) => {
+      state.set(node.id as number, this.fileTreeComponent.treeControl.isExpanded(node));
+      if (isFolder(node)) {
+        this.populateMap(node.subNodes, state);
+      } else if (isFile(node) || isSection(node) || isContent(node)) {
+        this.populateMap(node.sections, state);
+      }
+    });
+  }
+  applyTreeState(savedState: Map<number, boolean>) {
+    this.applyMap(this.fileTreeComponent.treeControl.dataNodes, savedState);
+  }
+  applyMap(dataNodes: FileTreeNode[], savedState: Map<number, boolean>) {
+    dataNodes?.forEach((node) => {
+      // console.log('isExpandable:', this.fileTreeComponent.treeControl.isExpandable(node), node);
+      if (node.id) {
+        if (savedState[node.id]) {
+          this.fileTreeComponent.treeControl.collapse(node);
+        } else {
+          this.fileTreeComponent.treeControl.collapse(node);
+        }
+        if (isFolder(node)) {
+          this.applyMap(node.subNodes, savedState);
+        } else if (isFile(node) || isSection(node) || isContent(node)) {
+          this.applyMap(node.sections, savedState);
+        }
       }
     });
   }

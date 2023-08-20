@@ -24,6 +24,7 @@ export class FileTreeComponent {
   currentElement!: HTMLElement;
   curr!: FileTreeNode | undefined;
 
+  dataSource = new MatTreeNestedDataSource<FileTreeNode>();
   treeControl = new NestedTreeControl<FileTreeNode>((node) => {
     if (isFolder(node)) {
       return node.subNodes;
@@ -32,7 +33,6 @@ export class FileTreeComponent {
     }
     return [];
   });
-  dataSource = new MatTreeNestedDataSource<FileTreeNode>();
 
   // TODO temp remove
   constructor(
@@ -48,6 +48,11 @@ export class FileTreeComponent {
     this.commandService.action$.subscribe((cmd) => {
       if (cmd.action === StateAction.COLLAPSE_FILE_TREE_ALL) {
         this.treeControl.dataNodes = this.dataSource.data;
+        this.treeControl.expandAll();
+      }
+      if (cmd.action === StateAction.EXPAND_FILE_TREE_ALL) {
+        this.treeControl.dataNodes = this.dataSource.data;
+        this.treeControl.collapseAll();
       }
     });
   }
