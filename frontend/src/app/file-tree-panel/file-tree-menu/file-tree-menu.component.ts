@@ -85,4 +85,10 @@ export class FileTreeMenuComponent {
       action: StateAction.COLLAPSE_FILE_TREE_ALL,
     });
   }
+
+  expandAll() {
+    this.commandService.perform({
+      action: StateAction.EXPAND_FILE_TREE_ALL,
+    });
+  }
 }
