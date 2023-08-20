@@ -60,10 +60,12 @@ export class FileTreeMenuComponent {
     })
       .afterClosed()
       .subscribe((name) => {
-        this.commandService.perform({
-          action: NodeAction.EDIT_NODE_NAME,
-          value: name,
-        });
+        if (name.trim().length > 0) {
+          this.commandService.perform({
+            action: NodeAction.EDIT_NODE_NAME,
+            value: name,
+          });
+        }
       });
   }
 
