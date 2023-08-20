@@ -30,7 +30,7 @@ export class FileTreeActionHandler {
   init() {
     this.commandService.action$.subscribe((cmd) => {
       const action = cmd.action;
-
+      this.matTreeService.saveTreeState();
       if (isValueCommand(cmd) && action === NodeAction.CREATE_FOLDER) {
         const currentNode = this.nodeService.hasCurrent() ? this.nodeService.currentNode : undefined;
         const newNode: FileTreeFolder = {
@@ -67,11 +67,15 @@ export class FileTreeActionHandler {
         const currentNode = this.nodeService.currentNode;
         if (!currentNode) return;
         this.dataService.deleteNode(currentNode).subscribe((resp) => {
-          // if (!currentNode.parent_id) {
-          this.nodeService.currentNode = undefined;
-          // }
           this.setNodeNotSelected();
-          this.matTreeService.refreshTree(resp);
+          if (this.nodeService.currentNode && this.nodeService.currentNode.id) {
+            this.matTreeService.refreshTree(resp);
+            this.nodeService.currentNode = undefined;
+            this.commandService.perform({
+              action: StateAction.SET_NODE_SELECTED,
+              flag: false,
+            });
+          }
         });
       } else if (isValueCommand(cmd) && action === NodeAction.EDIT_NODE_NAME) {
         if (this.nodeService.currentNode) {

@@ -12,6 +12,7 @@ import { cloneDeep } from 'lodash';
 @ServiceLogger()
 export class MatTreeService {
   private fileTreeComponent!: FileTreeComponent;
+  private state!: Map<number, boolean>;
   constructor() {}
   registerComponent(component) {
     this.fileTreeComponent = component;
@@ -20,15 +21,25 @@ export class MatTreeService {
     if (!data) {
       data = this.fileTreeComponent.dataSource.data;
     }
-    this.fileTreeComponent.dataSource.data = data;
-    this.fileTreeComponent.treeControl.dataNodes = data;
+    // const state: Map<number, boolean> = this.saveTreeState();
+    const temp = data;
+    this.fileTreeComponent.dataSource.data = [];
+    this.fileTreeComponent.dataSource.data = temp;
+    this.fileTreeComponent.treeControl.dataNodes = temp;
+    this.applyTreeState(this.state);
   }
 
-  saveTreeState(): Map<number, boolean> {
+  deleteNode(id) {
+    this.fileTreeComponent.dataSource.data;
+    this.fileTreeComponent.treeControl.dataNodes = this.fileTreeComponent.treeControl.dataNodes.filter(
+      (node) => node.id === id
+    );
+  }
+
+  saveTreeState() {
     const state = new Map<number, boolean>();
     this.populateMap(this.fileTreeComponent.treeControl.dataNodes, state);
-    console.log('saveTreeState:', state, this.fileTreeComponent.treeControl.dataNodes);
-    return state;
+    this.state = state;
   }
   populateMap(dataNodes: FileTreeNode[], state: Map<number, boolean>) {
     dataNodes?.forEach((node) => {
@@ -41,14 +52,14 @@ export class MatTreeService {
     });
   }
   applyTreeState(savedState: Map<number, boolean>) {
+    if (!savedState) return;
     this.applyMap(this.fileTreeComponent.treeControl.dataNodes, savedState);
   }
   applyMap(dataNodes: FileTreeNode[], savedState: Map<number, boolean>) {
     dataNodes?.forEach((node) => {
-      // console.log('isExpandable:', this.fileTreeComponent.treeControl.isExpandable(node), node);
       if (node.id) {
-        if (savedState[node.id]) {
-          this.fileTreeComponent.treeControl.collapse(node);
+        if (savedState.get(node.id)) {
+          this.fileTreeComponent.treeControl.expand(node);
         } else {
           this.fileTreeComponent.treeControl.collapse(node);
         }

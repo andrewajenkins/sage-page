@@ -12,6 +12,8 @@ const ignoreList = [
   'getIcon',
   'getSectionSymbol',
   'getQueries',
+  'applyMap',
+  'populateMap',
 ];
 export function ComponentLogger() {
   return function (constructor: Function) {
