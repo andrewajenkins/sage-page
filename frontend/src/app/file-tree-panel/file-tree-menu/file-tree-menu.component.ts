@@ -2,11 +2,7 @@ import { Component } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NodeNameDialog } from '../dialogs/create-file/node-name-dialog.component';
-import {
-  isFlagCommand,
-  NodeAction,
-  StateAction,
-} from '../../common/models/command.model';
+import { isFlagCommand, NodeAction, StateAction } from '../../common/models/command.model';
 
 @Component({
   selector: 'app-file-tree-menu',
@@ -15,10 +11,7 @@ import {
 })
 export class FileTreeMenuComponent {
   nodeNotSelected: boolean = true;
-  constructor(
-    private commandService: CommandService,
-    public dialog: MatDialog
-  ) {}
+  constructor(private commandService: CommandService, public dialog: MatDialog) {}
 
   ngOnInit() {
     this.commandService.action$.subscribe((cmd) => {
@@ -84,6 +77,12 @@ export class FileTreeMenuComponent {
   deleteNode() {
     this.commandService.perform({
       action: NodeAction.DELETE_CURRENT_NODE,
+    });
+  }
+
+  collapseAll() {
+    this.commandService.perform({
+      action: StateAction.COLLAPSE_FILE_TREE_ALL,
     });
   }
 }

@@ -45,13 +45,16 @@ export class FileTreeComponent {
     this.matTreeService.registerComponent(this);
     this.fileHandler.init();
     this.curr = this.nodeService.currentNode;
+    this.commandService.action$.subscribe((cmd) => {
+      if (cmd.action === StateAction.COLLAPSE_FILE_TREE_ALL) {
+        this.treeControl.dataNodes = this.dataSource.data;
+      }
+    });
   }
   ngOnInit() {
     this.nodeService.init();
     this.dataService.getFileTree().subscribe((fileTree) => {
       this.matTreeService.refreshTree(fileTree);
-      this.treeControl.dataNodes = this.dataSource.data;
-      this.treeControl.collapseAll();
     });
   }
   nodeHighlight(event: MouseEvent, newNode: FileTreeNode) {

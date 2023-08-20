@@ -8,7 +8,6 @@ import { ControlValueAccessor, FormGroup } from '@angular/forms';
 })
 export class QueryInputComponent {
   @Input() queryHistory!: string[];
-  @Input() form!: FormGroup;
   @Output() query = new EventEmitter<any>();
 
   value: string = '';
@@ -20,6 +19,6 @@ export class QueryInputComponent {
   }
 
   prefillQuery($event: MouseEvent, query) {
-    this.form.get('queryControl')?.setValue(query);
+    this.value = query;
   }
 }

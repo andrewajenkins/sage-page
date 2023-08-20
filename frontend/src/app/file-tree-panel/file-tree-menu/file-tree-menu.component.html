@@ -1,11 +1,6 @@
 <mat-toolbar color="whitesmoke">
   <span>My Project</span>
-  <button
-    mat-icon-button
-    auto="create-folder"
-    class="add-folder"
-    (click)="createFolder()"
-    matTooltip="Create a folder">
+  <button mat-icon-button auto="create-folder" class="add-folder" (click)="createFolder()" matTooltip="Create a folder">
     <span class="material-symbols-outlined">create_new_folder</span>
   </button>
   <button
@@ -34,5 +29,8 @@
     (click)="deleteNode()"
     matTooltip="Delete file or folder">
     <span class="material-symbols-outlined">delete</span>
+  </button>
+  <button mat-icon-button class="edit-file" (click)="collapseAll()" matTooltip="Collapse all file tree nodes">
+    <span class="material-symbols-outlined">collapse_all</span>
   </button>
 </mat-toolbar>

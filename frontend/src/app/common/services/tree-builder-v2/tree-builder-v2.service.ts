@@ -120,10 +120,10 @@ export class TreeBuilderV2Service {
   }
   rewriteSymbols(node: ContentSection) {
     if (node.type === 'heading' && node.text && node.depth) {
-      node.name = node.name.replace(/^[#]+/, '');
-      node.text = node.text.replace(/^[#]+/, '');
+      node.name = node.name.replace(/^[#]+/, '').trim();
+      node.text = node.text.replace(/^[#]+/, '').trim();
       node.text = this.headers[node.depth - 1] + ' ' + node.text;
-      console.log('result:', node);
+      console.log('rewriteSymbols: result:', node);
     }
   }
 }
