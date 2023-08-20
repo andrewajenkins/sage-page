@@ -33,4 +33,15 @@ export class ToolbarComponent {
       this.markdownExportService.downloadMarkdown(this.nodeService.currentFile, 'test.md');
     } else throw new Error("Can't export file - none selected!");
   }
+
+  selectAll() {
+    this.commandService.perform({ action: EditorAction.SELECT_ALL });
+  }
+  deleteSelected() {
+    this.commandService.perform({ action: EditorAction.DELETE_SELECTED });
+  }
+
+  deselectAll() {
+    this.commandService.perform({ action: EditorAction.DESELECT_ALL });
+  }
 }

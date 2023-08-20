@@ -26,7 +26,13 @@
   <button (click)="exportFile()" mat-icon-button matTooltip="Export current file to markdown">
     <span class="material-symbols-outlined"> export_notes </span>
   </button>
-  <!--  <button mat-icon-button matTooltip="Delete selected sections">-->
-  <!--    <span class="material-symbols-outlined"> delete </span>-->
-  <!--  </button>-->
+  <button (click)="selectAll()" mat-icon-button matTooltip="Select all">
+    <span class="material-symbols-outlined"> check_circle </span>
+  </button>
+  <button (click)="deselectAll()" mat-icon-button matTooltip="Unselect all">
+    <span class="material-symbols-outlined"> radio_button_unchecked </span>
+  </button>
+  <button (click)="deleteSelected()" mat-icon-button matTooltip="Delete selected sections">
+    <span class="material-symbols-outlined"> delete </span>
+  </button>
 </mat-toolbar>

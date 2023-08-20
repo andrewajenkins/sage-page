@@ -107,6 +107,31 @@ export class ContentContainerComponent {
             .join('  \n');
           this.clipboard.copy(content + '  \n' + section);
         }
+      } else if (cmd.action === EditorAction.SELECT_ALL) {
+        if (this.section) {
+          this.section.content.forEach((content) => (content.selected = true));
+          this.section.sections.forEach((content) => (content.selected = true));
+        }
+      } else if (cmd.action === EditorAction.DELETE_SELECTED) {
+        if (this.section) {
+          const deleteSelected = (content: ContentSection[]) => {
+            content
+              .filter((content) => content.selected)
+              .forEach((content) => {
+                this.commandService.perform({
+                  action: NodeAction.DELETE_NODE,
+                  content: content,
+                });
+              });
+          };
+          deleteSelected(this.section.content);
+          deleteSelected(this.section.sections);
+        }
+      } else if (cmd.action === EditorAction.DESELECT_ALL) {
+        if (this.section) {
+          this.section.content.forEach((content) => (content.selected = false));
+          this.section.sections.forEach((content) => (content.selected = false));
+        }
       }
     });
   }
