@@ -68,6 +68,10 @@ export class FileTreeComponent {
     this.nodeService.init();
     this.dataService.getFileTree().subscribe((fileTree) => {
       this.matTreeService.refreshTree(fileTree);
+      this.treeControl.expandAll();
+      this.treeControl.dataNodes.forEach((node) => {
+        this.treeControl.collapse(node);
+      });
     });
   }
   nodeHighlight(event: MouseEvent, newNode: FileTreeNode) {
