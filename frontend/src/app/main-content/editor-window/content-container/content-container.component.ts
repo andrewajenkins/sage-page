@@ -132,6 +132,12 @@ export class ContentContainerComponent {
           this.section.content.forEach((content) => (content.selected = false));
           this.section.sections.forEach((content) => (content.selected = false));
         }
+      } else if (cmd.action === EditorAction.ADD_NEW_SECTION) {
+        if (this.section && this.nodeService.acceptsContent()) {
+          this.section.content.push(
+            NodeFactory.createSection({ parent_id: this.section.id as number, editable: true })
+          );
+        } else throw new Error("Can't add section - none selected!");
       }
     });
   }

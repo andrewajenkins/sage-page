@@ -73,22 +73,12 @@ export class FileTreeActionHandler {
           this.setNodeNotSelected();
           this.matTreeService.refreshTree(resp);
         });
+      } else if (isValueCommand(cmd) && action === NodeAction.EDIT_NODE_NAME) {
+        if (this.nodeService.currentNode) {
+          this.nodeService.currentNode.name = cmd.value;
+          this.dataService.updateNode(this.nodeService.currentNode).subscribe((resp) => {});
+        }
       }
-      // else if (isContentCommand(cmd) && action === EditorAction.SAVE_SECTION) {
-      //   const currentNode = this.nodeService.currentNode;
-      //   if (!currentNode) return;
-      //   const node = cmd.content;
-      //   const newNode: ContentSection = NodeFactory.createSection({
-      //     // name: cmd.value || '' + this.fileIndex++,
-      //     // text: cmd.value || '' + this.fileIndex++,
-      //     parent_id: currentNode.id,
-      //     parent_type: currentNode.type,
-      //     // textType: Token,
-      //   });
-      //   this.dataService.createNode(newNode).subscribe((resp) => {
-      //     this.matTreeService.refreshTree(resp);
-      //   });
-      // }
     });
   }
   setNodeNotSelected() {

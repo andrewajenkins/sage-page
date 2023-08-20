@@ -17,7 +17,7 @@ class DatabaseService {
         db.exec(
           "create table if not exists treenodes (id integer, name text, parent_id integer references treenodes(id), type text, text text, content text, parent_type text, textType integer);"
         );
-        db.exec("delete from treenodes;");
+        // db.exec("delete from treenodes;");
       });
   }
 
@@ -41,10 +41,23 @@ class DatabaseService {
       id: lastId["last_insert_rowid()"],
     };
   }
+  public async updateNode(node: any) {
+    if (!this.db) throw new Error("Database not initialized");
+    console.log(
+      "update result:",
+      await this.db.run(
+        "update treenodes set name = ?, parent_id = ?, type = ?, parent_type = ?, textType = ?, text = ? where id = ?",
+        [node.name, node.parent_id, node.type, node.parent_type, node.textType, node.text, node.id]
+      )
+    );
+    return;
+  }
 
   public async getFileTree() {
     if (!this.db) throw new Error("Database not initialized");
-    return await this.db.all("SELECT * FROM treenodes", []);
+    const result = await this.db.all("SELECT * FROM treenodes", []);
+    console.log("TREE_SIZE:", Buffer.from(JSON.stringify(result)).length);
+    return result;
   }
 
   public async deleteNode(id: number) {

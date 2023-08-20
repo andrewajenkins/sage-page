@@ -1,11 +1,14 @@
 import express from "express";
 import DatabaseService from "../database/db-manager.ts";
+import bodyParser from "body-parser";
 
 const app = express();
 const port = 3000;
 app.use(express.json());
 
 let db = await new DatabaseService();
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path} ${JSON.stringify(req?.body)}`);
@@ -29,8 +32,10 @@ app.post("/api/section", async (req: any, res: any) => {
   console.log("1 record inserted: res data:", data);
   res.send(data);
 });
-app.put("/api/node", (req: any, res: any) => {
-  res.send("Not yet implemented");
+app.put("/api/node", async (req: any, res: any) => {
+  const data = await db.updateNode(req.body);
+  console.log("1 record updated: res data:", data);
+  res.status(204).end();
 });
 app.delete("/api/node", async (req: any, res: any) => {
   console.log(req.body, req.query);

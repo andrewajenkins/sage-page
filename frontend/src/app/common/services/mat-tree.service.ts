@@ -17,16 +17,31 @@ export class MatTreeService {
     this.fileTreeComponent = component;
   }
   refreshTree(data?) {
-    // setTimeout(() => {
     if (!data) {
       data = this.fileTreeComponent.dataSource.data;
       console.log('refreshTree: not provided:', cloneDeep(data));
     } else {
       console.log('refreshTree: provided:', cloneDeep(data));
     }
+    const previousState = this.saveTreeState();
     this.fileTreeComponent.dataSource.data = [];
     this.fileTreeComponent.dataSource.data = data;
-    // }, 15000);
+    this.applyTreeState(previousState);
+  }
+
+  saveTreeState(): boolean[] {
+    return this.fileTreeComponent.treeControl.dataNodes?.map((node) =>
+      this.fileTreeComponent.treeControl.isExpanded(node)
+    );
+  }
+  applyTreeState(savedState: boolean[]) {
+    this.fileTreeComponent.treeControl.dataNodes?.forEach((node, index) => {
+      if (savedState[index]) {
+        this.fileTreeComponent.treeControl.expand(node);
+      } else {
+        this.fileTreeComponent.treeControl.collapse(node);
+      }
+    });
   }
 
   static assembleTree = map((nodes: FileTreeNode[]) => {

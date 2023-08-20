@@ -2,13 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ServiceLogger } from '../logger/loggers';
-import {
-  FileTreeFile,
-  FileTreeFolder,
-  FileTreeNode,
-  isFile,
-} from '../models/file-tree.model';
-import { ChatLogEntry, ContentSection } from '../models/section.model';
+import { FileTreeFile, FileTreeFolder, FileTreeNode, isFile } from '../models/file-tree.model';
+import { ChatLogEntry, ContentSection, isSection } from '../models/section.model';
 import { MatTreeService } from './mat-tree.service';
 import { getDummyFile } from '../utils/node.factory';
 
@@ -28,15 +23,11 @@ export class DataService {
   constructor(private http: HttpClient) {}
 
   getFileTree(): Observable<any> {
-    return this.http
-      .get<FileTreeNode[]>(url + '/filetree')
-      .pipe(MatTreeService.assembleTree);
+    return this.http.get<FileTreeNode[]>(url + '/filetree').pipe(MatTreeService.assembleTree);
   }
 
   getNode(sub: number): Observable<FileTreeNode> {
-    return this.http
-      .get<ApiResponse>(url + '/node?id=' + sub)
-      .pipe(map((res) => res.node));
+    return this.http.get<ApiResponse>(url + '/node?id=' + sub).pipe(map((res) => res.node));
   }
 
   createNode(node: FileTreeNode) {
@@ -61,7 +52,19 @@ export class DataService {
   }
 
   updateNode(node: FileTreeNode) {
-    return this.http.put<ApiResponse>(url + '/node', node);
+    const updateNode = {
+      id: node.id,
+      name: node.name,
+      parent_id: node.parent_id,
+      parent_type: node.parent_type,
+      type: node.type,
+    };
+    if (isFile(node) || isSection(node)) {
+      updateNode['text'] = node.text;
+      updateNode['textType'] = node.textType;
+    }
+    console.log('UPDATE_NODE:', updateNode);
+    return this.http.put<FileTreeNode[]>(url + '/node', updateNode);
   }
 
   deleteNode(node: FileTreeNode) {

@@ -44,4 +44,8 @@ export class ToolbarComponent {
   deselectAll() {
     this.commandService.perform({ action: EditorAction.DESELECT_ALL });
   }
+
+  addSection() {
+    this.commandService.perform({ action: EditorAction.ADD_NEW_SECTION });
+  }
 }
