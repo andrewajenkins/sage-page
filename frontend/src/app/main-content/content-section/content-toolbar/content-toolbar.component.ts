@@ -34,12 +34,16 @@ export class ContentToolbarComponent {
   }
 
   saveContent() {
-    this.contentToolbarEvent.emit('save');
+    if (this.contentSection.text) {
+      this.contentSection.text = this.contentSection?.text.trim();
+      this.contentToolbarEvent.emit('save');
+    }
   }
 
   changeSymbolTo(symbol: string) {
     if (this.contentSection.text) {
-      this.contentSection.text = this.contentSection.text.replace(/^[#|-]+\s/, symbol + ' ');
+      this.contentSection.text = this.contentSection.text.trim().replace(/^[#|-]+\s/, '');
+      this.contentSection.text = symbol + ' ' + this.contentSection.text;
       this.contentSection.generated = false;
     }
   }

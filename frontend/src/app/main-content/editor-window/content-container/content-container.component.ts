@@ -137,7 +137,7 @@ export class ContentContainerComponent {
           this.section.content.push(
             NodeFactory.createSection({ parent_id: this.section.id as number, editable: true })
           );
-        } else throw new Error("Can't add section - none selected!");
+        } else throw new Error("Can't add section - no node selected in file tree!");
       }
     });
   }
