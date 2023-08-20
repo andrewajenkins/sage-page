@@ -9,6 +9,7 @@
     display: none;
   }
 }
+
 .bot-text-window {
   height: 100%;
   overflow: auto;
@@ -21,17 +22,18 @@ form {
 .bot-form-wrapper {
   width: 100%;
 }
+
 .function-button {
   width: 100%;
 }
 
-::ng-deep .mat-mdc-menu-item {
-  height: auto !important; // query history buttons
-  width: 600px !important;
-}
-
-::ng-deep .mat-mdc-menu-panel {
-  height: auto !important; // query history buttons
-  width: 600px !important;
-  max-width: 600px !important;
-}
+//::ng-deep .mat-mdc-menu-item {
+//  height: auto !important; // query history buttons
+//  width: 600px !important;
+//}
+//
+//::ng-deep .mat-mdc-menu-panel {
+//  height: auto !important; // query history buttons
+//  width: 600px !important;
+//  max-width: 600px !important;
+//}

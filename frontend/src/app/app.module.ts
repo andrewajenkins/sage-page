@@ -47,6 +47,7 @@ import { NavBannerComponent } from './main-content/nav-banner/nav-banner.compone
 import { FileTreeActionHandler } from './file-tree-panel/file-tree/file-tree-action-handler';
 import { ReadablePipe } from './common/pipes/readable.pipe';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { QueryInputComponent } from './main-content/bot-window/query-input/query-input.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     ContentSectionDirective,
     NavBannerComponent,
     ReadablePipe,
+    QueryInputComponent,
   ],
   imports: [
     BrowserModule,

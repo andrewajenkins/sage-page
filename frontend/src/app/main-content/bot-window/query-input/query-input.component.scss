@@ -1,0 +1,21 @@
+.bot-input-container {
+  width: 100%;
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+.mat-mdc-menu-item {
+  height: auto !important;
+  width: 600px !important;
+}
+::ng-deep .mat-mdc-menu-panel {
+  height: auto !important;
+  max-width: 600px !important;
+}
+.bot-text-window {
+  height: 100%;
+  overflow: auto;
+}
+.bot-form-wrapper {
+  width: 100%;
+}

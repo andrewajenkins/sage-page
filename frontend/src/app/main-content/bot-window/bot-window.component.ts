@@ -66,13 +66,8 @@ export class BotWindowComponent implements OnInit {
     this._ngZone.onStable.pipe(take(1)).subscribe(() => this.autosize.resizeToFitContent(true));
   }
 
-  sendQuery(event?: Event) {
-    event?.preventDefault(); // keep the enter key from returning
-    const query = this.form.get('queryControl')?.value;
-    this.form.get('queryControl')?.reset();
+  sendQuery(query?) {
     this.botWindowService.postQuery(this.form.get('modelControl')?.value, query).subscribe((response) => {
-      // console.log('bot-response:', response);
-      // TODO nest log entries under conversation objects (avoide parsing for select all and future stuff)
       const chat = new Chat(query, response);
       this.log.push({
         id: this.log.length,
@@ -155,10 +150,6 @@ export class BotWindowComponent implements OnInit {
       action: ContentAction.ADD_SECTIONS,
       sections: selected,
     });
-  }
-
-  prefillQuery($event: MouseEvent, query) {
-    this.form.get('queryControl')?.setValue(query);
   }
 
   getQueries() {
