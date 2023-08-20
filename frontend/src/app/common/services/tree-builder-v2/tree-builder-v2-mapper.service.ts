@@ -61,8 +61,8 @@ export class TreeBuilderV2MapperService {
 
   private mapSection(resSection: any, section: ContentSection, newSections: ContentSection[]) {
     section.lexType = resSection?.type || '';
-    const newSection = { ...resSection, ...section };
+    const newSection = { ...section, ...resSection };
     this.verifyNameMatch(newSection, resSection, section, 'section');
-    newSections.push({ ...section, ...resSection });
+    newSections.push(newSection);
   }
 }
