@@ -47,6 +47,7 @@ export class MatTreeService {
     nodes.forEach((node: FileTreeNode) => {
       const findDebug = true;
       node.generated = true;
+      node.name = node.name.replace(/^[#]+\s/, '');
       if (!node.parent_id) {
         if (findDebug) console.log('assembleTree: pushing root node:', node);
         rootNodes.push(node);

@@ -12,11 +12,11 @@ export class ContentToolbarComponent {
   contentMenu: any;
   @Input() contentSection!: ContentSection;
   @Output() contentToolbarEvent = new EventEmitter();
+
+  symbols = ['#', '##', '###', '####', '#####', '######', '-', 'Plain text'];
+
   constructor(private commandService: CommandService) {}
 
-  ngOnChanges(changes) {
-    // console.log(changes);
-  }
   createSection(location: 'above' | 'below') {
     this.commandService.perform({
       action: EditorAction.CREATE_SECTION,
@@ -34,5 +34,12 @@ export class ContentToolbarComponent {
 
   saveContent() {
     this.contentToolbarEvent.emit('save');
+  }
+
+  changeSymbolTo(symbol: string) {
+    if (this.contentSection.text) {
+      this.contentSection.text = this.contentSection.text.replace(/^[#|-]+\s/, symbol + ' ');
+      this.contentSection.generated = false;
+    }
   }
 }
