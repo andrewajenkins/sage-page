@@ -13,6 +13,8 @@ import { cloneDeep } from 'lodash';
 export class MatTreeService {
   private fileTreeComponent!: FileTreeComponent;
   private state!: Map<number, boolean>;
+  private nodeMap!: Map<number, FileTreeNode>;
+
   constructor() {}
   registerComponent(component) {
     this.fileTreeComponent = component;
@@ -72,9 +74,9 @@ export class MatTreeService {
     });
   }
 
-  static assembleTree = map((nodes: FileTreeNode[]) => {
+  assembleTree = map((nodes: FileTreeNode[]) => {
     const debug = false;
-    const nodeMap = new Map<number, FileTreeNode>();
+    this.nodeMap = new Map<number, FileTreeNode>();
     const rootNodes: FileTreeNode[] = [];
     if (debug) console.log('assembleTree: nodes:', nodes);
     nodes.forEach((node) => {
@@ -84,7 +86,7 @@ export class MatTreeService {
         node.sections = [];
         node.content = [];
       }
-      nodeMap.set(node.id as number, node);
+      this.nodeMap.set(node.id as number, node);
     });
     if (debug) console.log('assembleTree: map:', map);
     nodes.forEach((node: FileTreeNode) => {
@@ -96,20 +98,20 @@ export class MatTreeService {
         rootNodes.push(node);
       } else if (isFolder(node)) {
         if (findDebug) console.log('assembleTree: pushing folder or file:', node);
-        const parent = nodeMap.get(node.parent_id) as FileTreeFolder;
+        const parent = this.nodeMap.get(node.parent_id) as FileTreeFolder;
         parent.subNodes.push(node);
       } else if (isFile(node)) {
         if (findDebug) console.log('assembleTree: pushing file:', node);
-        const parent = nodeMap.get(node.parent_id) as FileTreeFolder;
+        const parent = this.nodeMap.get(node.parent_id) as FileTreeFolder;
         parent.subNodes.push(node);
       } else if (node.type === 'content') {
         if (findDebug) console.log('assembleTree: pushing content:', node);
-        const parent = nodeMap.get(node.parent_id) as ContentSection;
+        const parent = this.nodeMap.get(node.parent_id) as ContentSection;
         if (!parent.content) parent.content = [];
         parent.content.push(node);
       } else if (node.type == 'heading' || isSection(node)) {
         if (findDebug) console.log('assembleTree: pushing section:', node);
-        const parent = nodeMap.get(node.parent_id) as ContentSection;
+        const parent = this.nodeMap.get(node.parent_id) as ContentSection;
         if (!parent.sections) parent.sections = [];
         parent.sections.push(node);
       } else {
@@ -119,4 +121,14 @@ export class MatTreeService {
     console.log('assembleTree: final tree:', rootNodes);
     return rootNodes;
   });
+
+  getPath(node: FileTreeNode) {
+    let curr: FileTreeNode = node;
+    const path: FileTreeNode[] = [];
+    while (!isFolder(curr)) {
+      path.unshift(curr);
+      curr = this.nodeMap.get(curr.parent_id) as FileTreeNode;
+    }
+    return path;
+  }
 }

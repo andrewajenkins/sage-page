@@ -20,10 +20,10 @@ export interface ApiResponse {
 })
 @ServiceLogger()
 export class DataService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private matTreeService: MatTreeService) {}
 
   getFileTree(): Observable<any> {
-    return this.http.get<FileTreeNode[]>(url + '/filetree').pipe(MatTreeService.assembleTree);
+    return this.http.get<FileTreeNode[]>(url + '/filetree').pipe(this.matTreeService.assembleTree);
   }
 
   getNode(sub: number): Observable<FileTreeNode> {
@@ -39,7 +39,7 @@ export class DataService {
           return response.tree;
         })
       )
-      .pipe(MatTreeService.assembleTree);
+      .pipe(this.matTreeService.assembleTree);
   }
 
   createSection(node: FileTreeNode) {
@@ -78,7 +78,7 @@ export class DataService {
           return response.tree;
         })
       )
-      .pipe(MatTreeService.assembleTree);
+      .pipe(this.matTreeService.assembleTree);
   }
 
   saveContent(contents: ContentSection[]) {

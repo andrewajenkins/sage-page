@@ -1,6 +1,11 @@
-<div class="banner-container" fxLayoutAlign="space-around center">
-  <span class="current-task"
-    >Create "{{ task | readable }}" section outline</span
-  >
-  <span class="breadcrumbs">Angular 10 > {{ task | readable }}</span>
+<div class="banner-container" fxLayoutAlign="center center" fxLayout="row">
+  <div *ngFor="let node of path">
+    <span class="material-symbols-outlined icon-spacing">{{ getIcon(node) }}</span>
+    <a href="#" (click)="goToNode(node)">
+      <span fxFlexAlign="center">{{ node.name }}</span>
+    </a>
+    <pre style="display: inline-block"> > </pre>
+  </div>
+  <span class="material-symbols-outlined icon-spacing">{{ getIcon(curr) }}</span>
+  <span>{{ curr?.name }}</span>
 </div>

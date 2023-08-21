@@ -1,9 +1,12 @@
 .banner-container {
   display: flex;
 }
-.current-task {
-  margin-left: 10px;
+.icon-spacing {
+  margin: 2px 2px 0 0;
 }
-.breadcrumbs {
-  margin-right: 30px;
+a {
+  text-decoration: none;
+}
+pre {
+  margin: 0;
 }

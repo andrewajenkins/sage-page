@@ -13,6 +13,7 @@ export interface FileTreeFolder {
   type: string;
   subNodes: FileTreeNode[];
   generated?: boolean;
+  depth?: number;
 }
 export interface FileTreeFile {
   id?: number;
