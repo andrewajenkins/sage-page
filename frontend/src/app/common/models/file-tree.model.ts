@@ -14,6 +14,7 @@ export interface FileTreeFolder {
   subNodes: FileTreeNode[];
   generated?: boolean;
   depth?: number;
+  selected?: boolean;
 }
 export interface FileTreeFile {
   id?: number;
@@ -25,6 +26,7 @@ export interface FileTreeFile {
   content: ContentSection[];
   generated?: boolean;
   depth?: number;
+  selected?: boolean;
 }
 export type FileTreeNode = FileTreeFolder | FileTreeFile | ContentSection;
 export function isFolder(node: FileTreeNode | undefined): node is FileTreeFolder {

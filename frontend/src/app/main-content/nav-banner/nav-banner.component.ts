@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
 import { Subscription } from 'rxjs';
-import { NodeAction, isNodeCommand, isFileCommand, isSectionCommand } from '../../common/models/command.model';
+import { NodeAction, isFileCommand, isSectionCommand, isNodeCommand } from '../../common/models/command.model';
 import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
 import { FileTreeNode, isFile } from '../../common/models/file-tree.model';
@@ -23,17 +23,13 @@ export class NavBannerComponent implements OnInit, OnDestroy {
   ) {}
   ngOnInit() {
     this.fileTreeSubscription = this.commandService.action$.subscribe((cmd) => {
-      if (isFileCommand(cmd) && cmd.action === NodeAction.LOAD_FILE) this.path = this.matTreeService.getPath(cmd.file);
-      else if (isSectionCommand(cmd) && cmd.action === NodeAction.LOAD_SECTION)
-        this.path = this.matTreeService.getPath(cmd.section);
-      this.curr = this.path.pop() as FileTreeNode;
+      if (isNodeCommand(cmd) && cmd.action === NodeAction.LOAD_NODE) this.path = this.matTreeService.getPath(cmd.node);
+      this.curr = this.path?.pop() as FileTreeNode;
     });
   }
-
   ngOnDestroy() {
     this.fileTreeSubscription.unsubscribe();
   }
-
   getIcon(node: FileTreeNode) {
     if (node) {
       if (!node.depth) return 'article';
@@ -41,19 +37,10 @@ export class NavBannerComponent implements OnInit, OnDestroy {
     }
     return '';
   }
-
   goToNode(node: FileTreeNode) {
-    console.log(node);
-    if (isFile(node)) {
-      this.commandService.perform({
-        action: NodeAction.LOAD_FILE,
-        file: node,
-      });
-    } else if (isSection(node)) {
-      this.commandService.perform({
-        action: NodeAction.LOAD_SECTION,
-        section: node,
-      });
-    }
+    this.commandService.perform({
+      action: NodeAction.LOAD_NODE,
+      node: node,
+    });
   }
 }

@@ -5,10 +5,9 @@
         class="mat-tree-node"
         auto="file-name"
         [attr.name]="node.name"
-        (mouseenter)="nodeHighlight($event, node)"
-        (mouseleave)="nodeUnHighlight($event, node)"
-        (click)="nodeSelect($event, node)"
-        [ngClass]="{ 'current-node': getClass(node) }">
+        (click)="nodeSelect(node)"
+        appHighlight
+        [isSelected]="node.selected">
         <button mat-button>
           <span class="small-icon material-symbols-outlined" style="font-size: 18px">
             {{ treeControl.isExpanded(node) ? "chevron_right" : "expand_more" }}
@@ -23,10 +22,9 @@
         class="mat-tree-node"
         auto="folder-name"
         [attr.name]="node.name"
-        (mouseenter)="nodeHighlight($event, node)"
-        (mouseleave)="nodeUnHighlight($event, node)"
-        (click)="nodeSelect($event, node)"
-        [ngClass]="{ 'current-node': getClass(node) }">
+        (click)="nodeSelect(node)"
+        appHighlight
+        [isSelected]="node.selected">
         <button mat-button matTreeNodeToggle>
           <span class="small-icon material-symbols-outlined" style="font-size: 18px">
             {{ getSectionSymbol(node) }}

@@ -3,7 +3,7 @@ import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { ComponentLogger } from '../../common/logger/loggers';
 import { FileTreeFolder, FileTreeNode, isFile, isFolder } from '../../common/models/file-tree.model';
-import { NodeAction, StateAction } from '../../common/models/command.model';
+import { isNodeCommand, isSectionCommand, NodeAction, StateAction } from '../../common/models/command.model';
 import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
 import { NestedTreeControl } from '@angular/cdk/tree';
@@ -53,13 +53,14 @@ export class FileTreeComponent {
             this.treeControl.expand(node);
           });
           this.treeControl.expand(this.nodeService.currentNode);
-        }
-        if (cmd.action === StateAction.EXPAND_FILE_TREE_ALL) {
+        } else if (cmd.action === StateAction.EXPAND_FILE_TREE_ALL) {
           this.treeControl.dataNodes = this.dataSource.data;
           this.treeControl.getDescendants(this.nodeService.currentNode).forEach((node) => {
             this.treeControl.collapse(node);
           });
           this.treeControl.collapse(this.nodeService.currentNode);
+        } else if (isNodeCommand(cmd) && cmd.action === NodeAction.LOAD_NODE) {
+          this.nodeSelectHighlight(cmd.node);
         }
       }
     });
@@ -89,27 +90,18 @@ export class FileTreeComponent {
     if (this.highlightElement && newNode.id !== currentNode?.id)
       this.highlightElement.style.backgroundColor = 'whitesmoke';
   }
-
-  nodeSelect(event: MouseEvent, node: FileTreeNode) {
-    // update styles and statuses for selected node
+  nodeSelect(node: FileTreeNode) {
+    this.nodeSelectHighlight(node);
+    this.commandService.perform({
+      action: NodeAction.LOAD_NODE,
+      node: node,
+    });
+  }
+  nodeSelectHighlight(node: FileTreeNode) {
+    if (this.nodeService.prev) this.nodeService.prev.selected = false;
+    if (this.nodeService.currentNode) this.nodeService.prev = this.nodeService.currentNode;
     this.nodeService.currentNode = node;
-    this.curr = node;
-    if (this.currentElement) this.currentElement.style.backgroundColor = 'white';
-    this.currentElement = event.target as HTMLElement;
-    this.currentElement.style.backgroundColor = 'var(--mat-standard-button-toggle-selected-state-background-color)';
-
-    if (isSection(node)) {
-      this.commandService.perform({
-        action: NodeAction.LOAD_SECTION,
-        section: node,
-      });
-    }
-    if (isFile(node)) {
-      this.commandService.perform({
-        action: NodeAction.LOAD_FILE,
-        file: node,
-      });
-    }
+    node.selected = true;
   }
 
   nodeUnHighlight($event: MouseEvent, previousNode: FileTreeNode) {

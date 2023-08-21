@@ -11,6 +11,7 @@ import { DataService } from './data.service';
   providedIn: 'root',
 })
 export class NodeService {
+  prev!: FileTreeNode | undefined;
   private _currentNode!: FileTreeNode | undefined;
   get currentNode(): FileTreeNode | undefined {
     return this._currentNode;
@@ -62,16 +63,6 @@ export class NodeService {
         this.dataService.getFileTree().subscribe((resp) => {
           this.matTreeService.refreshTree(resp.tree);
         });
-      }
-    });
-    this.commandService.action$.subscribe((cmd) => {
-      if (isFileCommand(cmd) && cmd.action == NodeAction.LOAD_FILE) {
-        this._currentFile = cmd.file!;
-      }
-    });
-    this.commandService.action$.subscribe((cmd) => {
-      if (isNodeCommand(cmd) && cmd.action == StateAction.SET_NODE_SELECTED) {
-        this._currentNode = cmd.node!;
       }
     });
   }

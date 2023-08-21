@@ -7,6 +7,7 @@ import {
   EditorAction,
   isContentCommand,
   isFileCommand,
+  isNodeCommand,
   isSectionCommand,
   isSectionsCommand,
   isValueCommand,
@@ -14,7 +15,7 @@ import {
 } from '../../../common/models/command.model';
 import { ContentSection, isSection } from '../../../common/models/section.model';
 import { NodeService } from '../../../common/services/node.service';
-import { FileTreeFile, isContentNode, isFile } from '../../../common/models/file-tree.model';
+import { FileTreeFile, isContentNode, isFile, isFolder } from '../../../common/models/file-tree.model';
 import { recursiveDeleteNode } from '../../../common/utils/tree-utils';
 import { remove } from 'lodash';
 import { NodeFactory } from '../../../common/utils/node.factory';
@@ -52,11 +53,9 @@ export class ContentContainerComponent {
             action: NodeAction.GENERATE_FILE_SECTIONS,
           });
         }
-      } else if (isFileCommand(cmd) && cmd.action === NodeAction.LOAD_FILE) {
-        this.nodeService.currentFile.sections = cmd.file?.sections || [];
-        this.section = cmd.file;
-      } else if (isSectionCommand(cmd) && cmd.action === NodeAction.LOAD_SECTION) {
-        this.section = cmd.section;
+      } else if (isNodeCommand(cmd) && cmd.action === NodeAction.LOAD_NODE) {
+        if (isFolder(cmd.node)) this.section = undefined;
+        if (isFile(cmd.node) || isSection(cmd.node)) this.section = cmd.node;
       } else if (isContentCommand(cmd) && cmd.action === NodeAction.DELETE_NODE) {
         if (cmd.content.id) {
           recursiveDeleteNode(this.section as ContentSection, cmd.content.id);
