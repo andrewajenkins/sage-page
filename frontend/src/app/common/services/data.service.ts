@@ -56,12 +56,10 @@ export class DataService {
       id: node.id,
       name: node.name,
       parent_id: node.parent_id,
-      parent_type: node.parent_type,
       type: node.type,
     };
     if (isFile(node) || isSection(node)) {
       updateNode['text'] = node.text;
-      updateNode['textType'] = node.textType;
     }
     console.log('UPDATE_NODE:', updateNode);
     return this.http.put<FileTreeNode[]>(url + '/node', updateNode);

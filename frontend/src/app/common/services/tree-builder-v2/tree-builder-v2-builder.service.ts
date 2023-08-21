@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ContentSection } from '../../models/section.model';
-import { cloneDeep } from 'lodash';
-import { Token } from '../../parsers/file-tree-builder.service';
 import { DataService } from '../data.service';
 import { ServiceLogger } from '../../logger/loggers';
 
@@ -22,10 +20,10 @@ export class TreeBuilderV2BuilderService {
     return rootNodes;
   }
   private buildNode(node: ContentSection, rootNode, ancestors: ContentSection[], rootNodes: ContentSection[]) {
-    const isContent = ['list_item', 'text'].indexOf(node.lexType || 'none') !== -1;
+    const isContent = ['list_item', 'text'].indexOf(node.type || 'none') !== -1;
     if (isContent) {
       this.buildContent(node, rootNode, ancestors);
-    } else if (node.lexType === 'heading') {
+    } else if (node.type === 'heading') {
       this.buildSection(node, rootNode, ancestors, rootNodes);
     } else {
       throw new Error('Failed to parse token:\n' + JSON.stringify(node, null, 2));
@@ -34,11 +32,11 @@ export class TreeBuilderV2BuilderService {
   private buildContent(node: ContentSection, rootNode, ancestors: ContentSection[]) {
     const parent = ancestors[ancestors.length - 1] || rootNode;
     node.type = 'content';
-    if (!node.generated) this.write(node, parent, Token.CONTENT);
+    if (!node.generated) this.write(node, parent);
     this.pushContent(node, parent, rootNode, ancestors);
   }
   private buildSection(node: ContentSection, rootNode, ancestors: ContentSection[], rootNodes: ContentSection[]) {
-    ancestors.splice((node.lexDepth || 0) - 1);
+    ancestors.splice((node.depth || 0) - 1);
     this.pushSection(rootNode, node, ancestors, rootNodes);
 
     ancestors.push(node);
@@ -51,7 +49,7 @@ export class TreeBuilderV2BuilderService {
   ) {
     const isTopLevel = ancestors.length == 0;
     const parent = isTopLevel ? rootNode : ancestors[ancestors.length - 1];
-    if (!node.generated) this.write(node, parent, Token.NONE);
+    if (!node.generated) this.write(node, parent);
     if (isTopLevel) rootNodes.push(node);
     else {
       this.removeDupesContent(parent, node);
@@ -78,11 +76,8 @@ export class TreeBuilderV2BuilderService {
     this.removeDupesSection(parent, node);
     parent.content.push(node);
   }
-  private write(node: ContentSection, parent: ContentSection, token: Token) {
-    // node.id = Math.floor(Math.random() * 1000000);
-    node.textType = 7 - (node.depth || -8);
+  private write(node: ContentSection, parent: ContentSection) {
     node.parent_id = parent.id || -1;
-    node.parent_type = 'section';
     node.generated = true;
     this.dataService.createSection(node).subscribe(() => {});
   }

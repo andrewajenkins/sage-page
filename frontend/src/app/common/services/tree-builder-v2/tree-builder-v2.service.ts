@@ -68,7 +68,7 @@ export class TreeBuilderV2Service {
     let index = 0;
     while (index < annotatedNodes.length) {
       const node = annotatedNodes[index];
-      if (node.lexType && contentTypes.indexOf(node.lexType) !== -1) {
+      if (node.type && contentTypes.indexOf(node.type) !== -1) {
         parent.content.push(annotatedNodes.shift() as ContentSection);
       } else break;
     }
@@ -123,10 +123,9 @@ export class TreeBuilderV2Service {
     return docNodes;
   }
   adjustForParent(docNodes, parent): ContentSection[] {
-    const offset = 7 - parent.textType;
+    const offset = parent.depth || 0;
     for (let node of docNodes) {
       if (!!node.depth && node.depth > -1) {
-        node.lexDepth = node.depth;
         node.depth += offset;
         this.rewriteSymbols(node);
       }

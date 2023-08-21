@@ -1,14 +1,11 @@
 import { FileTreeFile, FileTreeNode } from '../models/file-tree.model';
-import { Token } from '../parsers/file-tree-builder.service';
-import { ContentSection, ContentSectionType } from '../models/section.model';
+import { ContentSection } from '../models/section.model';
 import { cloneDeep } from 'lodash';
 
 const dummyFile: FileTreeFile = {
   name: '',
   parent_id: -1,
-  parent_type: '',
   text: '',
-  textType: Token.CONTENT,
   type: '',
   sections: [],
   content: [],
@@ -16,13 +13,10 @@ const dummyFile: FileTreeFile = {
 const dummySection: ContentSection = {
   name: '',
   parent_id: -1,
-  parent_type: '',
   type: '',
-  contentType: ContentSectionType.NONE,
   selected: false,
   content: [], // section text that goes between the name and subsections
   sections: [], // subsections to be created
-  textType: -1,
   text: '',
   editable: false,
 };

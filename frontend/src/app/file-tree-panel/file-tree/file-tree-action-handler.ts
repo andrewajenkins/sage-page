@@ -1,20 +1,17 @@
 import {
-  EditorAction,
   isContentCommand,
   isNodeCommand,
   isValueCommand,
   NodeAction,
   StateAction,
 } from '../../common/models/command.model';
-import { FileTreeFile, FileTreeFolder, isContentNode, isFolder } from '../../common/models/file-tree.model';
+import { FileTreeFile, FileTreeFolder, isFolder } from '../../common/models/file-tree.model';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { Injectable } from '@angular/core';
 import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
 import { NodeFactory } from '../../common/utils/node.factory';
-import { Token } from '../../common/parsers/file-tree-builder.service';
-import { ContentSection } from '../../common/models/section.model';
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +37,6 @@ export class FileTreeActionHandler {
           subNodes: [],
           type: 'folder',
           parent_id: currentNode?.id as number,
-          parent_type: currentNode?.type as string,
         };
         this.dataService.createNode(newNode).subscribe((resp) => {
           this.matTreeService.refreshTree(resp);
@@ -50,11 +46,9 @@ export class FileTreeActionHandler {
         if (!currentNode) return;
         const newNode: FileTreeFile = NodeFactory.createFile({
           id: Math.floor(Math.random() * 1000000),
-          name: cmd.value || '' + this.fileIndex++,
-          text: cmd.value || '' + this.fileIndex++,
-          parent_id: isFolder(currentNode) ? (currentNode.id as number) : (currentNode.parent_id as number),
-          parent_type: isFolder(currentNode) ? currentNode.type : currentNode.parent_type,
-          textType: Token.FILE,
+          name: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
+          text: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
+          parent_id: currentNode.id as number,
         });
         this.dataService.createNode(newNode).subscribe((resp) => {
           this.matTreeService.refreshTree(resp);

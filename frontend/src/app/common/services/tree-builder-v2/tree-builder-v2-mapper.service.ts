@@ -38,7 +38,7 @@ export class TreeBuilderV2MapperService {
   }
 
   private mapContent(res: any, section: ContentSection, newSections: ContentSection[]) {
-    section.lexType = res?.type || '';
+    section.type = res?.type || '';
     const newSection = { ...section, ...res };
     this.verifyNameMatch(newSection, res, section, 'content');
     newSections.push({ ...section, ...res });
@@ -60,7 +60,7 @@ export class TreeBuilderV2MapperService {
   }
 
   private mapSection(resSection: any, section: ContentSection, newSections: ContentSection[]) {
-    section.lexType = resSection?.type || '';
+    section.type = resSection?.type || '';
     const newSection = { ...section, ...resSection };
     this.verifyNameMatch(newSection, resSection, section, 'section');
     newSections.push(newSection);

@@ -20,12 +20,12 @@ export class MarkdownExportService {
     window.URL.revokeObjectURL(url);
   }
 }
-const headers = ['NONE', '', '######', '#####', '####', '###', '##', '#'];
+const headers = ['#', '##', '###', '####', '#####', '######'];
 export const dfs = function (file: FileTreeFile) {
   let result: string[] = [];
   const processNode = (node: FileTreeFile | ContentSection) => {
     if (node.text) {
-      result.push(headers[node.textType] + ' ' + node.text + '  \n');
+      result.push(headers[node.depth || -1] + ' ' + node.text + '  \n');
     }
     if (node.content) {
       node.content.forEach((content: ContentSection) => {

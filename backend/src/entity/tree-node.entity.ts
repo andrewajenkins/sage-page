@@ -13,10 +13,6 @@ export class TreeNode {
   @Column({ nullable: true })
   parent_id!: number;
   @Column({ nullable: true })
-  parent_type!: string;
-  @Column({ nullable: true })
-  textType!: number;
-  @Column({ nullable: true })
   lexType!: string;
   @Column({ nullable: true })
   depth!: number;

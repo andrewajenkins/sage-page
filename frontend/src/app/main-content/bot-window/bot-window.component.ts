@@ -5,10 +5,9 @@ import { BotWindowService } from './bot-window.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { cloneDeep } from 'lodash';
 import { ComponentLogger } from '../../common/logger/loggers';
-import { ContentAction, isFlagCommand, isNodeCommand, StateAction } from '../../common/models/command.model';
+import { ContentAction, isFlagCommand, StateAction } from '../../common/models/command.model';
 import { CommandService } from '../../common/services/command.service';
-import { DataService } from '../../common/services/data.service';
-import { ChatLogEntry, ContentSection, ContentSectionType, isSection } from '../../common/models/section.model';
+import { ChatLogEntry, ContentSection } from '../../common/models/section.model';
 import { NodeFactory } from '../../common/utils/node.factory';
 import { Chat } from './chat.model';
 
@@ -74,7 +73,6 @@ export class BotWindowComponent implements OnInit {
         role: 'Query:',
         content: [
           NodeFactory.createSection({
-            contentType: ContentSectionType.STRING,
             type: 'section',
             name: query,
             selected: false,
@@ -95,8 +93,6 @@ export class BotWindowComponent implements OnInit {
         if (isCode) {
           newContents.push(
             NodeFactory.createSection({
-              contentType: ContentSectionType.STRING,
-              type: ContentSectionType.CODE,
               name: content,
               text: content,
             })
@@ -104,7 +100,6 @@ export class BotWindowComponent implements OnInit {
         } else {
           newContents.push(
             NodeFactory.createSection({
-              contentType: ContentSectionType.STRING,
               type: 'section',
               name: content,
               text: content,

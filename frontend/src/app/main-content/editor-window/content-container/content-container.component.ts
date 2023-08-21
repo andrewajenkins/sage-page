@@ -79,7 +79,6 @@ export class ContentContainerComponent {
         const newSection = NodeFactory.createSection({
           editable: true,
           parent_id: this.section.id as number,
-          parent_type: 'section',
         });
         if (cmd.value == 'above') {
           console.log('above:', array.length, index);
