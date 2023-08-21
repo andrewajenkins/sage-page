@@ -9,6 +9,7 @@
     {{ !contentSection.generated && !hideEditorContent ? " * " : "" }}
     <div
       #textContent
+      (keydown.enter)="handleEnter($event)"
       (focusout)="handleFocusOut($event)"
       [contentEditable]="!!contentSection.editable"
       [ngStyle]="!!contentSection.editable ? { cursor: 'text' } : { cursor: 'pointer' }">

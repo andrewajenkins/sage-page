@@ -38,7 +38,7 @@ export class ContentSectionComponent implements OnChanges {
 
   handleToolbarEvent(event) {
     if (event == 'save') {
-      this.contentSection.text = this.textContent.nativeElement.innerText;
+      this.contentSection.text = this.textContent.nativeElement.innerText.trim();
       this.contentSection.editable = false;
       this.contentSection.generated = false;
     } else if (event === 'delete') {
@@ -67,5 +67,10 @@ export class ContentSectionComponent implements OnChanges {
       this.contentSection.text = text;
       this.contentSection.name = text;
     }
+  }
+
+  handleEnter($event: any) {
+    $event.preventDefault();
+    this.handleToolbarEvent('save');
   }
 }

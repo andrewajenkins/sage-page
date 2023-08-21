@@ -60,9 +60,17 @@ export class TreeBuilderV2BuilderService {
   }
   private removeDupes(parent, node: ContentSection) {
     parent.content = parent.content.filter((content) => {
-      if (content.id != node.id || content.text != node.text)
-        console.warn('removeDupes: content:', content.id, node.id, content.text, node.text);
-      return content.id != node.id || content.text != node.text;
+      if (content.id != node.id)
+        console.warn(
+          'removeDupes: content:',
+          content.id,
+          node.id,
+          'content text:',
+          content.text,
+          'node text:',
+          node.text
+        );
+      return content.id != node.id;
     });
     parent.sections = parent.sections.filter((content) => {
       if (content.id != node.id) console.warn('removeDupes: sections:', content.id, node.id, content.text, node.text);

@@ -118,10 +118,11 @@ export class ContentContainerComponent {
             content
               .filter((content) => content.selected)
               .forEach((content) => {
-                this.commandService.perform({
-                  action: NodeAction.DELETE_NODE,
-                  content: content,
-                });
+                if (content.generated)
+                  this.commandService.perform({
+                    action: NodeAction.DELETE_NODE,
+                    content: content,
+                  });
               });
           };
           deleteSelected(this.section.content);
@@ -134,7 +135,7 @@ export class ContentContainerComponent {
         }
       } else if (cmd.action === EditorAction.ADD_NEW_SECTION) {
         if (this.section && this.nodeService.acceptsContent()) {
-          this.section.content.push(
+          this.section.content.unshift(
             NodeFactory.createSection({ parent_id: this.section.id as number, editable: true })
           );
         } else throw new Error("Can't add section - no node selected in file tree!");
