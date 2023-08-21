@@ -17,12 +17,14 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022",
+    "module": "esnext",
     "useDefineForClassFields": false,
     "noImplicitAny": false,
     "noImplicitThis": false,
     "lib": ["ES2022", "dom"],
     "esModuleInterop": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "emitDecoratorMetadata": true
   }
 }
