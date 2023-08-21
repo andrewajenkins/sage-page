@@ -113,20 +113,21 @@ export class ContentContainerComponent {
           this.section.sections.forEach((content) => (content.selected = true));
         }
       } else if (cmd.action === EditorAction.DELETE_SELECTED) {
+        const deleteSelected = (content: ContentSection[]) => {
+          content
+            .filter((content) => content.selected)
+            .forEach((content) => {
+              if (content.generated)
+                this.commandService.perform({
+                  action: NodeAction.DELETE_NODE,
+                  content: content,
+                });
+            });
+          return content.filter((content) => !content.selected);
+        };
         if (this.section) {
-          const deleteSelected = (content: ContentSection[]) => {
-            content
-              .filter((content) => content.selected)
-              .forEach((content) => {
-                if (content.generated)
-                  this.commandService.perform({
-                    action: NodeAction.DELETE_NODE,
-                    content: content,
-                  });
-              });
-          };
-          deleteSelected(this.section.content);
-          deleteSelected(this.section.sections);
+          this.section.content = deleteSelected(this.section.content);
+          this.section.sections = deleteSelected(this.section.sections);
         }
       } else if (cmd.action === EditorAction.DESELECT_ALL) {
         if (this.section) {

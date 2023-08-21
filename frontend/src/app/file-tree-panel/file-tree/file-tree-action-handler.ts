@@ -59,8 +59,9 @@ export class FileTreeActionHandler {
           this.matTreeService.refreshTree(resp);
         });
       } else if (isContentCommand(cmd) && action === NodeAction.DELETE_NODE) {
-        this.dataService.deleteNode(cmd.content).subscribe((resp) => {
+        if (this.nodeService.currentNode && cmd.content.id == this.nodeService.currentNode.id)
           this.setNodeNotSelected();
+        this.dataService.deleteNode(cmd.content).subscribe((resp) => {
           this.matTreeService.refreshTree(resp);
         });
       } else if (action === NodeAction.DELETE_CURRENT_NODE) {

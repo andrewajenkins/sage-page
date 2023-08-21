@@ -54,35 +54,32 @@ export class TreeBuilderV2BuilderService {
     if (!node.generated) this.write(node, parent, Token.NONE);
     if (isTopLevel) rootNodes.push(node);
     else {
-      this.removeDupes(parent, node);
+      this.removeDupesContent(parent, node);
       parent.sections.push(node);
     }
   }
-  private removeDupes(parent, node: ContentSection) {
+  private removeDupesContent(parent, node: ContentSection) {
     parent.content = parent.content.filter((content) => {
-      if (content.id != node.id)
-        console.warn(
-          'removeDupes: content:',
-          content.id,
-          node.id,
-          'content text:',
-          content.text,
-          'node text:',
-          node.text
-        );
+      if (content.id == node.id) {
+        console.warn('removeDupes: content:', content.id, node.id);
+      }
       return content.id != node.id;
     });
+  }
+  private removeDupesSection(parent, node: ContentSection) {
     parent.sections = parent.sections.filter((content) => {
-      if (content.id != node.id) console.warn('removeDupes: sections:', content.id, node.id, content.text, node.text);
+      if (content.id == node.id) {
+        console.warn('removeDupes: sections:', content.id, node.id);
+      }
       return content.id != node.id;
     });
   }
   private pushContent(node: ContentSection, parent: ContentSection, _rootNode, _ancestors: ContentSection[]) {
-    this.removeDupes(parent, node);
+    this.removeDupesSection(parent, node);
     parent.content.push(node);
   }
   private write(node: ContentSection, parent: ContentSection, token: Token) {
-    node.id = Math.floor(Math.random() * 1000000);
+    // node.id = Math.floor(Math.random() * 1000000);
     node.textType = 7 - (node.depth || -8);
     node.parent_id = parent.id || -1;
     node.parent_type = 'section';

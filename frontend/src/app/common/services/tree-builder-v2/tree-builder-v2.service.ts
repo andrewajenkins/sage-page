@@ -90,7 +90,7 @@ export class TreeBuilderV2Service {
 
   handleContentSectionChange(parent: ContentSection) {
     const sectionIds = parent.sections.map((section) => section.id);
-    parent.content = parent.content.filter((content) => sectionIds.indexOf(content.id) !== -1);
+    parent.content = parent.content.filter((content) => sectionIds.indexOf(content.id) === -1);
   }
   private adjustNodes(docNodes: ContentSection[], parent: ContentSection) {
     docNodes = this.adjustForDoc(docNodes);
