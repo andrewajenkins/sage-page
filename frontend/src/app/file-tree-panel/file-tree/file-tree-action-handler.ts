@@ -1,6 +1,7 @@
 import {
   EditorAction,
   isContentCommand,
+  isNodeCommand,
   isValueCommand,
   NodeAction,
   StateAction,
@@ -83,6 +84,8 @@ export class FileTreeActionHandler {
           this.nodeService.currentNode.name = cmd.value;
           this.dataService.updateNode(this.nodeService.currentNode).subscribe((resp) => {});
         }
+      } else if (isNodeCommand(cmd) && action === NodeAction.UPDATE_NODE) {
+        this.dataService.updateNode(cmd.node).subscribe((resp) => {});
       }
     });
   }
