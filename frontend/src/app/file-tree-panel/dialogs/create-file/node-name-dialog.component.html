@@ -1,11 +1,11 @@
 <h1 mat-dialog-title>{{ title }}</h1>
 <div mat-dialog-content>
   <p>Please enter a {{ nodeType }} name.</p>
-  <form (ngSubmit)="submitName()">
+  <form (ngSubmit)="submitName('submit')">
     <mat-form-field>
       <mat-label>Name</mat-label>
       <input matInput auto="node-name" [(ngModel)]="data.name" name="name" />
     </mat-form-field>
-    <button mat-button type="submit" auto="submit-node-name" (click)="submitName()">Submit</button>
+    <button mat-button type="submit" auto="submit-node-name">Submit</button>
   </form>
 </div>

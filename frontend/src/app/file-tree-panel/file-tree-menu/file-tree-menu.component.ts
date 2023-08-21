@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { NodeNameDialog } from '../dialogs/create-file/node-name-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 import { isFlagCommand, NodeAction, StateAction } from '../../common/models/command.model';
+import { NodeNameDialog } from '../dialogs/create-file/node-name-dialog.component';
 
 @Component({
   selector: 'app-file-tree-menu',
@@ -29,10 +29,11 @@ export class FileTreeMenuComponent {
       nodeType: 'folder',
     })
       .afterClosed()
-      .subscribe((name) => {
+      .subscribe((res) => {
+        if (res.result != 'submit') return;
         this.commandService.perform({
           action: NodeAction.CREATE_FOLDER,
-          value: name,
+          value: res.name,
         });
       });
   }
@@ -44,10 +45,11 @@ export class FileTreeMenuComponent {
       nodeType: 'file',
     })
       .afterClosed()
-      .subscribe((name) => {
+      .subscribe((res) => {
+        if (res.result != 'submit') return;
         this.commandService.perform({
           action: NodeAction.CREATE_FILE,
-          value: name,
+          value: res.name,
         });
       });
   }
@@ -59,13 +61,12 @@ export class FileTreeMenuComponent {
       nodeType: 'edit',
     })
       .afterClosed()
-      .subscribe((name) => {
-        if (name.trim().length > 0) {
-          this.commandService.perform({
-            action: NodeAction.EDIT_NODE_NAME,
-            value: name,
-          });
-        }
+      .subscribe((res) => {
+        if (res.result != 'submit') return;
+        this.commandService.perform({
+          action: NodeAction.EDIT_NODE_NAME,
+          value: res.name,
+        });
       });
   }
 

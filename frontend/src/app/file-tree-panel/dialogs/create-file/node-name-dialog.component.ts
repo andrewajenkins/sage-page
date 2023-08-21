@@ -15,10 +15,9 @@ export class NodeNameDialog {
   title: any;
   constructor(
     public dialogRef: MatDialogRef<NodeNameDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: NodeNameDialogData,
+    @Inject(MAT_DIALOG_DATA) public data: NodeNameDialogData
   ) {}
-  submitName() {
-    this.dialogRef.close(this.data.name);
-    return this.data.name;
+  submitName(result) {
+    this.dialogRef.close({ result, name: this.data.name.trim() });
   }
 }
