@@ -38,14 +38,16 @@ export class TreeBuilderV2Service {
     const flatten = (section): any => {
       if (section.type === 'list') {
         section.items.forEach((item) => {
-          result.push(item);
           const subTokens = item?.tokens[0]?.tokens;
-          if (subTokens.length > 2) {
-            subTokens.shift();
-            subTokens.shift();
-            subTokens.forEach((token) => {
-              result.push(token);
-            });
+          for (let i = 0; i < subTokens.length; i++) {
+            const token = subTokens[i];
+            token.id = Math.floor(Math.random() * 1000000);
+            token.name = token.text;
+            if (i === 0) {
+              token.text = '- ' + token.text;
+              token.type = 'list_item';
+            }
+            result.push(token);
           }
         });
       } else if (section.type === 'paragraph') {
