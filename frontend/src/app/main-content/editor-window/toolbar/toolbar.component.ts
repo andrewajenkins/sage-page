@@ -48,4 +48,8 @@ export class ToolbarComponent {
   addSection() {
     this.commandService.perform({ action: EditorAction.ADD_NEW_SECTION });
   }
+
+  upload() {
+    this.commandService.perform({ action: EditorAction.UPLOAD });
+  }
 }

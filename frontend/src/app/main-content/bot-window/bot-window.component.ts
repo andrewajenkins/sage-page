@@ -111,7 +111,6 @@ export class BotWindowComponent implements OnInit {
         } else {
           newContents.push(
             NodeFactory.createSection({
-              type: 'section',
               name: content,
               text: content,
               selected: false,

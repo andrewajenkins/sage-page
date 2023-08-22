@@ -6,12 +6,12 @@ import {
   ContentAction,
   EditorAction,
   isContentCommand,
-  isFileCommand,
   isNodeCommand,
   isSectionCommand,
   isSectionsCommand,
   isValueCommand,
   NodeAction,
+  StateAction,
 } from '../../../common/models/command.model';
 import { ContentSection, isSection } from '../../../common/models/section.model';
 import { NodeService } from '../../../common/services/node.service';
@@ -30,15 +30,27 @@ import { Clipboard } from '@angular/cdk/clipboard';
 export class ContentContainerComponent {
   @ViewChild('scrollMe') private wikiWindow!: ElementRef;
   section!: ContentSection | FileTreeFile | undefined;
-  private selectionsSubscription: Subscription;
+  private selectionsSubscription!: Subscription;
 
   constructor(
     private commandService: CommandService,
     private nodeService: NodeService,
     private clipboard: Clipboard,
     private cdRef: ChangeDetectorRef
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.selectionsSubscription = this.commandService.action$.subscribe((cmd) => {
+      const notifyPickSection = () => {
+        if (!this.section) {
+          this.commandService.perform({
+            action: StateAction.NOTIFY,
+            value: 'Please pick a section to edit from the file tree!',
+          });
+          let section = this.section!;
+          throw new Error('No section selected');
+        }
+      };
       if (isSectionsCommand(cmd) && cmd.action === ContentAction.ADD_SECTIONS) {
         if (this.nodeService.hasCurrent() && isContentNode(this.nodeService.currentNode)) {
           this.nodeService.currentNode.sections.push(...cmd.sections);
@@ -67,17 +79,18 @@ export class ContentContainerComponent {
       } else if (cmd.action === NodeAction.DELETE_CURRENT_NODE) {
         this.section = undefined;
       } else if (isValueCommand(cmd) && isSectionCommand(cmd) && cmd.action === EditorAction.CREATE_SECTION) {
-        if (!this.section) return;
-        let index = this.section.sections.findIndex((section) => section.id === cmd.section.id);
+        if (!this.section) notifyPickSection();
+        const section = this.section!;
+        let index = section.sections.findIndex((section) => section.id === cmd.section.id);
         console.log('sections index:', index);
-        const array = index >= 0 ? this.section.sections : this.section.content;
+        const array = index >= 0 ? section.sections : section.content;
         if (index < 0) {
-          index = this.section.content.findIndex((section) => section.id === cmd.section.id);
+          index = section.content.findIndex((section) => section.id === cmd.section.id);
           console.log('content index:', index);
         }
         const newSection = NodeFactory.createSection({
           editable: true,
-          parent_id: this.section.id as number,
+          parent_id: section.id as number,
         });
         if (cmd.value == 'above') {
           console.log('above:', array.length, index);
@@ -88,28 +101,23 @@ export class ContentContainerComponent {
         }
         newSection.focused = true;
       } else if (cmd.action === EditorAction.COPY_ALL) {
-        if (this.section) {
-          const content = this.section.content.map((content) => content.text).join('  \n');
-          const section = this.section.sections.map((content) => content.text).join('  \n');
-          this.clipboard.copy(content + '  \n' + section);
-        }
+        if (!this.section) notifyPickSection();
+        const content = this.section!.content.map((content) => content.text).join('  \n');
+        const section = this.section!.sections.map((content) => content.text).join('  \n');
+        this.clipboard.copy(content + '  \n' + section);
       } else if (cmd.action === EditorAction.COPY_SELECTED) {
-        if (this.section) {
-          const content = this.section.content
-            .filter((content) => content.selected)
-            .map((content) => content.text)
-            .join('  \n');
-          const section = this.section.sections
-            .filter((content) => content.selected)
-            .map((content) => content.text)
-            .join('  \n');
-          this.clipboard.copy(content + '  \n' + section);
-        }
+        if (!this.section) notifyPickSection();
+        const content = this.section!.content.filter((content) => content.selected)
+          .map((content) => content.text)
+          .join('  \n');
+        const section = this.section!.sections.filter((content) => content.selected)
+          .map((content) => content.text)
+          .join('  \n');
+        this.clipboard.copy(content + '  \n' + section);
       } else if (cmd.action === EditorAction.SELECT_ALL) {
-        if (this.section) {
-          this.section.content.forEach((content) => (content.selected = true));
-          this.section.sections.forEach((content) => (content.selected = true));
-        }
+        if (!this.section) notifyPickSection();
+        this.section!.content.forEach((content) => (content.selected = true));
+        this.section!.sections.forEach((content) => (content.selected = true));
       } else if (cmd.action === EditorAction.DELETE_SELECTED) {
         const deleteSelected = (content: ContentSection[]) => {
           content
@@ -123,27 +131,36 @@ export class ContentContainerComponent {
             });
           return content.filter((content) => !content.selected);
         };
-        if (this.section) {
-          this.section.content = deleteSelected(this.section.content);
-          this.section.sections = deleteSelected(this.section.sections);
-        }
+        if (!this.section) notifyPickSection();
+        this.section!.content = deleteSelected(this.section!.content);
+        this.section!.sections = deleteSelected(this.section!.sections);
       } else if (cmd.action === EditorAction.DESELECT_ALL) {
-        if (this.section) {
-          this.section.content.forEach((content) => (content.selected = false));
-          this.section.sections.forEach((content) => (content.selected = false));
-        }
+        if (!this.section) notifyPickSection();
+        this.section!.content.forEach((content) => (content.selected = false));
+        this.section!.sections.forEach((content) => (content.selected = false));
       } else if (cmd.action === EditorAction.ADD_NEW_SECTION) {
-        if (this.section && this.nodeService.acceptsContent()) {
-          this.section.content.unshift(
-            NodeFactory.createSection({ parent_id: this.section.id as number, editable: true })
+        if (!this.section) notifyPickSection();
+
+        if (this.nodeService.acceptsContent()) {
+          this.section!.content.unshift(
+            NodeFactory.createSection({ parent_id: this.section!.id as number, editable: true })
           );
         } else throw new Error("Can't add section - no node selected in file tree!");
+      } else if (cmd.action === EditorAction.UPLOAD) {
+        if (!this.section) notifyPickSection();
+        navigator.clipboard.readText().then((text) => {
+          console.log('tset:', NodeFactory.createSectionsFromText(text, this.section!.id as number));
+          this.commandService.perform({
+            action: ContentAction.ADD_SECTIONS,
+            sections: NodeFactory.createSectionsFromText(text, this.section!.id as number),
+          });
+        });
       }
     });
   }
   scrollDown() {
-    this.cdRef.detectChanges();
     try {
+      this.cdRef.detectChanges();
       this.wikiWindow.nativeElement.scrollTop = this.wikiWindow.nativeElement.scrollHeight;
     } catch (e) {}
   }

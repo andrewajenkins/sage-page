@@ -41,7 +41,6 @@ export class TreeBuilderV2Service {
   }
   preCheck(parentNode) {
     for (let node of parentNode.sections) {
-      console.warn('preCheck: found content node in sections', node);
       if (node.text.startsWith('- #') || node.text.startsWith('-#')) {
         const errorMsg = 'Bulleted headers not supported.\nPlease change the starting characters in:\n' + node.text;
         this.commandService.perform({
@@ -50,13 +49,18 @@ export class TreeBuilderV2Service {
         });
         throw new Error(errorMsg);
       } else if (/^[\s]+-[\s]*[a-zA-Z]+/.test(node.text)) {
-        const errorMsg = 'Nested bullets not supported.\nPlease change the starting characters in:\n' + node.text;
-        this.commandService.perform({
-          action: StateAction.NOTIFY,
-          value: errorMsg,
-        });
-        throw new Error(errorMsg);
+        // const errorMsg = 'Nested bullets not supported.\nPlease change the starting characters in:\n' + node.text;
+        // this.commandService.perform({
+        //   action: StateAction.NOTIFY,
+        //   value: errorMsg,
+        // });
+        // throw new Error(errorMsg);
       }
+      parentNode.sections = parentNode.sections.filter((node) => node.text.trim() !== '');
+      parentNode.sections.forEach((node) => {
+        node.text = node.text.trim();
+        node.name = node.name.trim();
+      });
     }
   }
   private flattenResults(lexResult: TokensList) {

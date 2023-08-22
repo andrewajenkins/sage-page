@@ -19,6 +19,8 @@ const dummySection: ContentSection = {
   sections: [], // subsections to be created
   text: '',
   editable: false,
+  focused: false,
+  generated: false,
 };
 export function getDummyFile() {
   return cloneDeep(dummyFile);
@@ -44,9 +46,16 @@ export class NodeFactory {
     const newNode = cloneDeep(dummySection);
     newNode.type = 'section';
     newNode.id = Math.floor(Math.random() * 1000000);
+    if (!newNode.text) newNode.text = newNode.name;
     return {
       ...newNode,
       ...uniqueParams,
     };
+  }
+
+  static createSectionsFromText(text: string, id: number) {
+    return text.split('\n').map((text) => {
+      return NodeFactory.createSection({ name: text, text, parent_id: id });
+    });
   }
 }
