@@ -14,6 +14,10 @@ const ignoreList = [
   'getQueries',
   'applyMap',
   'populateMap',
+  'onMouseUp',
+  'onMouseDown',
+  'saveTreeState',
+  'scrollDown',
 ];
 export function ComponentLogger() {
   return function (constructor: Function) {

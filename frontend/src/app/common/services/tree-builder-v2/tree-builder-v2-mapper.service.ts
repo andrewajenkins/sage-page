@@ -49,7 +49,7 @@ export class TreeBuilderV2MapperService {
       newSection.name.indexOf(newSection.text || 'NO_TEXT') == -1 &&
       (newSection.text || 'NO_TEXT').indexOf(newSection.name) === -1
     )
-      console.error(
+      console.warn(
         'NAME MISMATCH: map result: ' + content + ': res:',
         res,
         content,
@@ -58,7 +58,6 @@ export class TreeBuilderV2MapperService {
         newSection
       );
   }
-
   private mapSection(resSection: any, section: ContentSection, newSections: ContentSection[]) {
     section.type = resSection?.type || '';
     const newSection = { ...section, ...resSection };

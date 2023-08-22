@@ -1,4 +1,14 @@
-import { ChangeDetectorRef, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  NgZone,
+  OnInit,
+  QueryList,
+  Renderer2,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { take } from 'rxjs';
 import { BotWindowService } from './bot-window.service';
@@ -20,6 +30,7 @@ import { Chat } from './chat.model';
 export class BotWindowComponent implements OnInit {
   @ViewChild('scrollMe') private botLogWindow!: ElementRef;
   @ViewChild('autosize') autosize!: CdkTextareaAutosize;
+  @ViewChildren('chat') chats!: ElementRef[];
 
   models: any;
   form!: FormGroup;
@@ -30,7 +41,7 @@ export class BotWindowComponent implements OnInit {
     private _ngZone: NgZone,
     private botWindowService: BotWindowService,
     private formBuilder: FormBuilder,
-    private cdRef: ChangeDetectorRef, // TODO need this cdref?
+    private cdRef: ChangeDetectorRef,
     private commandService: CommandService
   ) {}
 
@@ -57,7 +68,7 @@ export class BotWindowComponent implements OnInit {
       }
     });
     this.scrollDown();
-    // this.sendQuery(); // TODO remove
+    this.sendQuery(); // TODO remove
   }
 
   triggerResize() {
@@ -113,18 +124,18 @@ export class BotWindowComponent implements OnInit {
         content: newContents,
         id: this.log.length,
       });
-      // scroll down bot chat
-      // this.scrollDown();
-      // this.selectAll(this.log[this.log.length - 1]);
-      // this.sendSelection(this.log[this.log.length - 1]);
+      this.scrollDown();
     });
   }
 
   scrollDown() {
     this.cdRef.detectChanges();
-    // TODO needs to scroll down to top of response maybe, not bottom?
     try {
-      this.botLogWindow.nativeElement.scrollTop = this.botLogWindow.nativeElement.scrollHeight;
+      const botWindow = this.botLogWindow.nativeElement;
+      // @ts-ignore
+      const chat = this.chats.last.nativeElement;
+      this.botLogWindow.nativeElement.scrollTop = botWindow.scrollHeight;
+      this.botLogWindow.nativeElement.scrollTop -= chat.offsetHeight - botWindow.clientHeight;
     } catch (e) {}
   }
 
@@ -149,7 +160,13 @@ export class BotWindowComponent implements OnInit {
 
   getQueries() {
     const log = this.botWindowService.log;
-    const queries = log.filter((chat) => chat.user == 'user').map((entry) => entry.content);
+    const queries = [
+      ...log.filter((chat) => chat.user == 'user').map((entry) => entry.content),
+      ...[
+        'Can you write me a long diatribe about the history of the internet?',
+        'Can you write an outline for a book I am doing on the history of philosophy?',
+      ],
+    ];
     return queries;
   }
 }

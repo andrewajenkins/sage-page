@@ -11,7 +11,7 @@
       </mat-select>
     </mat-form-field>
     <div fxFlex class="bot-text-window" #scrollMe>
-      <div *ngFor="let logEntry of log" style="margin-top: 20px">
+      <div *ngFor="let logEntry of log" #chat style="margin-top: 20px">
         <div fxFlexLayout="row" fxLayoutGap="5px" class="header-functions">
           <div>
             <h2 fxFlex="none">{{ logEntry.role }}</h2>
