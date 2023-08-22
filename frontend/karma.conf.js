@@ -35,7 +35,7 @@ module.exports = function (config) {
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
     // enable / disable watching file and executing tests whenever any file changes
-    autowatch: true,
+    autowatch: false,
     // start these browsers
     // available browser launchers: https://www.npmjs.com/search?q=keywords:karma-launcher
     browsers: ["Chrome"],

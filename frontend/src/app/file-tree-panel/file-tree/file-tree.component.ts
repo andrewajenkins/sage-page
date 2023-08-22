@@ -10,6 +10,7 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { isSection } from '../../common/models/section.model';
 import { FileTreeActionHandler } from './file-tree-action-handler';
+import { NotificationService } from '../../common/services/notification.service';
 
 @Component({
   selector: 'app-file-tree',
@@ -40,10 +41,12 @@ export class FileTreeComponent {
     private nodeService: NodeService,
     private matTreeService: MatTreeService,
     private dataService: DataService,
-    private fileHandler: FileTreeActionHandler // keep, needs init
+    private fileHandler: FileTreeActionHandler, // keep, needs init
+    private notificationService: NotificationService // keep, needs init
   ) {
     this.matTreeService.registerComponent(this);
     this.fileHandler.init();
+    this.notificationService.init();
     this.curr = this.nodeService.currentNode;
     this.commandService.action$.subscribe((cmd) => {
       if (this.nodeService.currentNode) {

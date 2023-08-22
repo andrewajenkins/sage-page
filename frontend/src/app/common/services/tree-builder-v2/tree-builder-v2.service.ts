@@ -5,6 +5,8 @@ import { marked, TokensList } from 'marked';
 import { ServiceLogger } from '../../logger/loggers';
 import { TreeBuilderV2MapperService } from './tree-builder-v2-mapper.service';
 import { TreeBuilderV2BuilderService } from './tree-builder-v2-builder.service';
+import { CommandService } from '../command.service';
+import { StateAction } from '../../models/command.model';
 
 @Injectable({
   providedIn: 'root',
@@ -12,13 +14,18 @@ import { TreeBuilderV2BuilderService } from './tree-builder-v2-builder.service';
 @ServiceLogger()
 export class TreeBuilderV2Service {
   headers = ['#', '##', '###', '####', '#####', '######', '', 'NONE'];
-  constructor(private mapper: TreeBuilderV2MapperService, private builder: TreeBuilderV2BuilderService) {}
+  constructor(
+    private mapper: TreeBuilderV2MapperService,
+    private builder: TreeBuilderV2BuilderService,
+    private commandService: CommandService
+  ) {}
 
   update(rootNode: FileTreeFile | ContentSection) {
     const result = this.doUpdate(rootNode, rootNode);
   }
 
   private doUpdate(parentNode, rootNode) {
+    this.preCheck(parentNode);
     const docString: string = this.getDocString(parentNode);
     const lexResult: TokensList = marked.lexer(docString);
     const flattenResult: any = this.flattenResults(lexResult);
@@ -32,7 +39,26 @@ export class TreeBuilderV2Service {
     const updatedParentNode: ContentSection = this.replaceNode(parent, newTrees);
     return updatedParentNode;
   }
-
+  preCheck(parentNode) {
+    for (let node of parentNode.sections) {
+      console.warn('preCheck: found content node in sections', node);
+      if (node.text.startsWith('- #') || node.text.startsWith('-#')) {
+        const errorMsg = 'Bulleted headers not supported.\nPlease change the starting characters in:\n' + node.text;
+        this.commandService.perform({
+          action: StateAction.NOTIFY,
+          value: errorMsg,
+        });
+        throw new Error(errorMsg);
+      } else if (/^[\s]+-[\s]*[a-zA-Z]+/.test(node.text)) {
+        const errorMsg = 'Nested bullets not supported.\nPlease change the starting characters in:\n' + node.text;
+        this.commandService.perform({
+          action: StateAction.NOTIFY,
+          value: errorMsg,
+        });
+        throw new Error(errorMsg);
+      }
+    }
+  }
   private flattenResults(lexResult: TokensList) {
     const result: any[] = [];
     const flatten = (section): any => {

@@ -49,6 +49,7 @@ import { ReadablePipe } from './common/pipes/readable.pipe';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { QueryInputComponent } from './main-content/bot-window/query-input/query-input.component';
 import { HighlightDirective } from './file-tree-panel/file-tree/highlight.directive';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -106,6 +107,7 @@ import { HighlightDirective } from './file-tree-panel/file-tree/highlight.direct
     MatDialogModule,
     MatSlideToggleModule,
     ClipboardModule,
+    MatSnackBarModule,
   ],
   providers: [
     BotWindowService,
