@@ -27,6 +27,11 @@ app.post("/api/node", async (req: any, res: any) => {
   console.log("1 record inserted: res data:", data);
   res.send(data);
 });
+app.post("/api/nodes", async (req: any, res: any) => {
+  const data = await db.createNodes(req.body);
+  console.log(req.body, " records inserted: res data:", data);
+  res.send(data);
+});
 app.post("/api/section", async (req: any, res: any) => {
   const data = await db.createNode(req.body);
   console.log("1 record inserted: res data:", data);

@@ -29,6 +29,14 @@ class DatabaseService {
       tree: await this.getFileTree(),
     };
   }
+  async createNodes(nodes) {
+    if (!this.db) throw new Error("Database not initialized");
+    await this.db!.getRepository("TreeNode").save(nodes);
+    const results = await this.db.getRepository("TreeNode").save(nodes);
+    return {
+      tree: await this.getFileTree(),
+    };
+  }
   public async updateNode(node: any) {
     if (!this.db) throw new Error("Database not initialized");
     this.db.getRepository("TreeNode").save(node);

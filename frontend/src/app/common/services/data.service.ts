@@ -103,4 +103,8 @@ export class DataService {
   saveConversation(log: ChatLogEntry[]) {
     return this.http.post<ApiResponse>(url + '/conversation', log);
   }
+
+  createSections(contentSections: ContentSection[]) {
+    return this.http.post<ApiResponse>(url + '/nodes', contentSections);
+  }
 }
