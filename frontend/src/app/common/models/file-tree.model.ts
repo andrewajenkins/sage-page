@@ -7,7 +7,7 @@ export interface NodeType {
 }
 
 export interface FileTreeFolder {
-  id?: number;
+  id: number;
   name: string;
   parent_id: number;
   type: string;
@@ -15,9 +15,10 @@ export interface FileTreeFolder {
   generated?: boolean;
   depth?: number;
   selected?: boolean;
+  orderId?: number;
 }
 export interface FileTreeFile {
-  id?: number;
+  id: number;
   name: string;
   parent_id: number;
   text: string;
@@ -27,6 +28,7 @@ export interface FileTreeFile {
   generated?: boolean;
   depth?: number;
   selected?: boolean;
+  orderId?: number;
 }
 export type FileTreeNode = FileTreeFolder | FileTreeFile | ContentSection;
 export function isFolder(node: FileTreeNode | undefined): node is FileTreeFolder {

@@ -2,16 +2,16 @@ import { Component } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { ComponentLogger } from '../../common/logger/loggers';
-import { FileTreeFolder, FileTreeNode, isFile, isFolder } from '../../common/models/file-tree.model';
-import { isNodeCommand, isSectionCommand, NodeAction, StateAction } from '../../common/models/command.model';
+import { FileTreeNode, isFile, isFolder } from '../../common/models/file-tree.model';
+import { isNodeCommand, NodeAction, StateAction } from '../../common/models/command.model';
 import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { isSection } from '../../common/models/section.model';
+import { ContentSection, isSection } from '../../common/models/section.model';
 import { FileTreeActionHandler } from './file-tree-action-handler';
 import { NotificationService } from '../../common/services/notification.service';
-import { TreeBuilderV3Service } from 'src/app/common/services/tree-builder-v3/tree-builder-v3.service';
+import { assembleTree } from '../../common/utils/tree-utils';
 
 @Component({
   selector: 'app-file-tree',
@@ -43,8 +43,7 @@ export class FileTreeComponent {
     private matTreeService: MatTreeService,
     private dataService: DataService,
     private fileHandler: FileTreeActionHandler, // keep, needs init
-    private notificationService: NotificationService, // keep, needs init
-    private treeBuilderV3Service: TreeBuilderV3Service // keep, needs init
+    private notificationService: NotificationService // keep, needs init
   ) {
     this.matTreeService.registerComponent(this);
     this.fileHandler.init();
@@ -71,8 +70,8 @@ export class FileTreeComponent {
     });
   }
   ngOnInit() {
-    this.treeBuilderV3Service.init();
     this.dataService.getFileTree().subscribe((fileTree) => {
+      this.nodeService.nodeMap = assembleTree(fileTree, this.nodeService.currentNode as ContentSection);
       this.matTreeService.refreshTree(fileTree);
       this.treeControl.expandAll();
       this.treeControl.dataNodes.forEach((node) => {

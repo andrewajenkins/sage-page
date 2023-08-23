@@ -80,14 +80,12 @@ function makeFileNodes(contents: string[]) {
 function makeNodes(contents: string[], type?: 'file' | 'section') {
   const nodes = contents.map((stringInput) => {
     return NodeFactory.createSection({
-      id: Math.floor(Math.random() * 1000000),
       name: stringInput,
       text: stringInput,
       type: 'section',
     });
   });
   return NodeFactory.createNode({
-    id: Math.floor(Math.random() * 1000000),
     name: 'root-node-name',
     type: type,
     sections: nodes,

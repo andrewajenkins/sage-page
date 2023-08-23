@@ -2,7 +2,7 @@ import { FileTreeNode } from './file-tree.model';
 
 export interface ContentSection {
   editable: boolean;
-  id?: number;
+  id: number;
   name: string;
   parent_id: number;
   type: string;
@@ -26,6 +26,7 @@ export function isContent(node: FileTreeNode | undefined): node is ContentSectio
   return !!node && (node.type === 'content' || node.type === 'list_item' || node.type === 'text');
 }
 export const dummySection: ContentSection = {
+  id: -1,
   editable: false,
   sections: [],
   name: '',

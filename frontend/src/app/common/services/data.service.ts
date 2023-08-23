@@ -6,6 +6,9 @@ import { FileTreeFile, FileTreeFolder, FileTreeNode, isFile } from '../models/fi
 import { ChatLogEntry, ContentSection, isSection } from '../models/section.model';
 import { MatTreeService } from './mat-tree.service';
 import { getDummyFile } from '../utils/node.factory';
+import { NodeService } from './node.service';
+import { assembleTree } from '../utils/tree-utils';
+import { tap } from 'rxjs/operators';
 
 const url = 'http://localhost:4200/api';
 
@@ -20,10 +23,10 @@ export interface ApiResponse {
 })
 @ServiceLogger()
 export class DataService {
-  constructor(private http: HttpClient, private matTreeService: MatTreeService) {}
+  constructor(private http: HttpClient) {}
 
   getFileTree(): Observable<any> {
-    return this.http.get<FileTreeNode[]>(url + '/filetree').pipe(this.matTreeService.assembleTree);
+    return this.http.get<FileTreeNode[]>(url + '/filetree');
   }
 
   getNode(sub: number): Observable<FileTreeNode> {
@@ -31,15 +34,7 @@ export class DataService {
   }
 
   createNode(node: FileTreeNode) {
-    return this.http
-      .post<ApiResponse>(url + '/node', node)
-      .pipe(
-        map((response) => {
-          console.log('done - createNode', response);
-          return response.tree;
-        })
-      )
-      .pipe(this.matTreeService.assembleTree);
+    return this.http.post<ApiResponse>(url + '/node', node);
   }
 
   createSection(node: FileTreeNode) {
@@ -66,19 +61,11 @@ export class DataService {
   }
 
   deleteNode(node: FileTreeNode) {
-    return this.http
-      .delete<ApiResponse>(url + '/node?id=' + node.id + '&type=' + node.type, {
-        body: {
-          id: node.id,
-        },
-      })
-      .pipe(
-        map((response) => {
-          console.log('deleteNode', response);
-          return response.tree;
-        })
-      )
-      .pipe(this.matTreeService.assembleTree);
+    return this.http.delete<ApiResponse>(url + '/node?id=' + node.id + '&type=' + node.type, {
+      body: {
+        id: node.id,
+      },
+    });
   }
 
   saveContent(contents: ContentSection[]) {
@@ -104,7 +91,7 @@ export class DataService {
     return this.http.post<ApiResponse>(url + '/conversation', log);
   }
 
-  createSections(contentSections: ContentSection[]) {
-    return this.http.post<ApiResponse>(url + '/nodes', contentSections);
+  createSections(contentSection: ContentSection) {
+    return this.http.post<ApiResponse>(url + '/nodes', contentSection);
   }
 }

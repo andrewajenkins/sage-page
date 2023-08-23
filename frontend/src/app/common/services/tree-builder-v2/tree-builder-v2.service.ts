@@ -71,7 +71,6 @@ export class TreeBuilderV2Service {
           const subTokens = item?.tokens[0]?.tokens;
           for (let i = 0; i < subTokens.length; i++) {
             const token = subTokens[i];
-            token.id = Math.floor(Math.random() * 1000000);
             token.name = token.text;
             if (i === 0) {
               token.text = '- ' + token.text;

@@ -1,5 +1,6 @@
 import { DataSource, getManager } from "typeorm";
 import ormConfig from "../ormconfig.json" assert { type: "json" };
+import { TreeBuilderService } from "../src/services/tree-builder-v4.service.ts";
 
 class DatabaseService {
   private db: DataSource | undefined;
@@ -29,10 +30,12 @@ class DatabaseService {
       tree: await this.getFileTree(),
     };
   }
-  async createNodes(nodes) {
+  async createNodes(parent) {
     if (!this.db) throw new Error("Database not initialized");
-    await this.db!.getRepository("TreeNode").save(nodes);
-    const results = await this.db.getRepository("TreeNode").save(nodes);
+    const builder = new TreeBuilderService(this.db);
+    builder.generate(parent);
+    // await this.db!.getRepository("TreeNode").save(parent);
+    // const results = await this.db.getRepository("TreeNode").save(parent);
     return {
       tree: await this.getFileTree(),
     };

@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class TreeNode {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id!: number;
   @Column()
   type!: string;
@@ -18,4 +18,8 @@ export class TreeNode {
   depth!: number;
   @Column({ nullable: true })
   lexDepth!: number;
+  content!: TreeNode[];
+  sections!: TreeNode[];
+  @Column({ nullable: true })
+  generated!: boolean;
 }

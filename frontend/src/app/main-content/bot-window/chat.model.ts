@@ -1,9 +1,8 @@
 export class Chat {
-  id: number;
+  id!: number;
   user!: 'user' | 'assistant' | 'system';
   content!: string;
   constructor(user, content) {
-    this.id = Math.floor(Math.random() * 1000000);
     if (user == 'assistant') {
       this.user = 'assistant';
       this.content = content.choices[0].message.content;

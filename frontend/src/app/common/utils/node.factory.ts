@@ -2,7 +2,7 @@ import { FileTreeFile, FileTreeNode } from '../models/file-tree.model';
 import { ContentSection } from '../models/section.model';
 import { cloneDeep } from 'lodash';
 
-const dummyFile: FileTreeFile = {
+const dummyFile: any = {
   name: '',
   parent_id: -1,
   text: '',
@@ -10,7 +10,7 @@ const dummyFile: FileTreeFile = {
   sections: [],
   content: [],
 };
-const dummySection: ContentSection = {
+const dummySection: any = {
   name: '',
   parent_id: -1,
   type: '',
@@ -45,7 +45,6 @@ export class NodeFactory {
   static createSection(uniqueParams: Partial<ContentSection>): ContentSection {
     const newNode = cloneDeep(dummySection);
     newNode.type = 'section';
-    newNode.id = Math.floor(Math.random() * 1000000);
     if (!newNode.text) newNode.text = newNode.name;
     return {
       ...newNode,

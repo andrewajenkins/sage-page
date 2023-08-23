@@ -60,3 +60,31 @@ export function ServiceLogger() {
     }
   };
 }
+
+export function LogIO(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+
+  descriptor.value = function (...args: any[]) {
+    console.log(`Calling method: ${propertyKey}`);
+    console.log('Input arguments:', args);
+
+    const result = originalMethod.apply(this, args);
+
+    if (result instanceof Promise) {
+      // For Async functions
+      result
+        .then((response) => {
+          console.log(`Output of method: ${propertyKey}`, response);
+        })
+        .catch((error) => {
+          console.log(`Error from method: ${propertyKey}`, error);
+        });
+    } else {
+      console.log(`Output of method: ${propertyKey}`, result);
+    }
+
+    return result;
+  };
+
+  return descriptor;
+}

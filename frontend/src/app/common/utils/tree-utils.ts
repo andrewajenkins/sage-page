@@ -1,5 +1,7 @@
-import { ContentSection } from '../models/section.model';
+import { ContentSection, isContent, isSection } from '../models/section.model';
 import { remove } from 'lodash';
+import { map } from 'rxjs';
+import { FileTreeFolder, FileTreeNode, isFile, isFolder } from '../models/file-tree.model';
 
 export function recursiveDeleteNode(sections: ContentSection, idToRemove: number) {
   function clearSubNodes(node: ContentSection) {
@@ -34,4 +36,90 @@ export function recursiveDeleteNode(sections: ContentSection, idToRemove: number
   }
 
   removeNodeById(sections, idToRemove);
+}
+export const assembleTree = (nodes: FileTreeNode[], currentNode: ContentSection) => {
+  const debug = false;
+  const nodeMap = new Map<number, FileTreeNode>();
+  const rootNodes: FileTreeNode[] = [];
+  if (debug) console.log('assembleTree: nodes:', nodes);
+  initMap(nodes, nodeMap);
+  populateParents(nodeMap);
+  return nodeMap;
+};
+function populateParents(nodeMap) {
+  nodeMap.forEach((node) => {
+    console.log('node:', node, 'parent:', parent);
+    if (node?.parent_id) {
+      const parent = nodeMap.get(node.parent_id) as FileTreeNode;
+      if (isFolder(parent)) {
+        parent.subNodes.push(node);
+      } else {
+        if (node.type == 'heading') {
+          parent.sections.push(node);
+        } else {
+          parent.content.push(node);
+        }
+      }
+    }
+  });
+  // parent.sections.sort((a, b) => a.id - b.id);
+  // parent.content.sort((a, b) => a.id - b.id);
+}
+function initMap(nodes: FileTreeNode[], nodeMap: Map<number, FileTreeNode>) {
+  nodes.forEach((node) => {
+    if (isFolder(node)) {
+      node.subNodes = [];
+    } else if (isFile(node) || isSection(node) || isContent(node)) {
+      node.sections = [];
+      node.content = [];
+    }
+    nodeMap.set(node.id as number, node);
+  });
+}
+function buildTree(nodes: FileTreeNode[], rootNodes: FileTreeNode[], nodeMap) {
+  nodes
+    .sort((a, b) => a.id - b.id)
+    .forEach((node: FileTreeNode) => {
+      const findDebug = true;
+      node.generated = true;
+      node.name = node.name.replace(/^[#]+\s/, '');
+      // if (!node.parent_id) {
+      //   if (findDebug) console.log('assembleTree: pushing root node:', node);
+      //   rootNodes.push(node);
+      // } else
+      if (isFolder(node)) {
+        if (findDebug) console.log('assembleTree: pushing folder or file:', node);
+        const parent = nodeMap.get(node.parent_id) as FileTreeFolder;
+        parent.subNodes.push(node);
+      } else if (isFile(node)) {
+        if (findDebug) console.log('assembleTree: pushing file:', node);
+        const parent = nodeMap.get(node.parent_id) as FileTreeFolder;
+        parent.subNodes.push(node);
+      } else if (node.type === 'content') {
+        if (findDebug) console.log('assembleTree: pushing content:', node);
+        const parent = nodeMap.get(node.parent_id) as ContentSection;
+        if (!parent.content) parent.content = [];
+        parent.content.push(node);
+      } else if (node.type == 'heading' || isSection(node)) {
+        if (findDebug) console.log('assembleTree: pushing section:', node);
+        const parent = nodeMap.get(node.parent_id) as ContentSection;
+        if (!parent.sections) parent.sections = [];
+        parent.sections.push(node);
+      } else {
+        console.error('assembleTree: unknown node type:', node);
+      }
+    });
+  console.log('assembleTree: final tree:', rootNodes);
+  return rootNodes;
+}
+
+export function getPath(node: FileTreeNode, nodeMap) {
+  let curr: FileTreeNode = node;
+  const path: FileTreeNode[] = [];
+  while (!isFolder(curr)) {
+    console.log('getPath: curr:', curr);
+    path.unshift(curr);
+    curr = nodeMap.get(curr.parent_id) as FileTreeNode;
+  }
+  return path;
 }
