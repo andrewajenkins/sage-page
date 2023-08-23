@@ -1,17 +1,22 @@
 import { Injectable } from '@angular/core';
 import { CommandService } from './command.service';
-import { isFileCommand, isNodeCommand, NodeAction, StateAction } from '../models/command.model';
+import { StateAction } from '../models/command.model';
 import { FileTreeFile, FileTreeNode, isFile } from '../models/file-tree.model';
-import { MatTreeService } from './mat-tree.service';
-import { isSection } from '../models/section.model';
-import { TreeBuilderV2Service } from './tree-builder-v2/tree-builder-v2.service';
-import { DataService } from './data.service';
+import { ContentSection, isSection } from '../models/section.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NodeService {
   prev!: FileTreeNode | undefined;
+  private _map!: Map<number, ContentSection>;
+  get map(): Map<number, ContentSection> {
+    return this._map;
+  }
+
+  set map(value: Map<number, ContentSection>) {
+    this._map = value;
+  }
   private _currentNode!: FileTreeNode | undefined;
   get currentNode(): FileTreeNode | undefined {
     return this._currentNode;
@@ -46,26 +51,9 @@ export class NodeService {
   }
   constructor(
     // private fileTreeBuilder: FileTreeBuilderService,
-    private commandService: CommandService,
-    private matTreeService: MatTreeService,
-    private treeBuilderV2Service: TreeBuilderV2Service,
-    private dataService: DataService
+    private commandService: CommandService
   ) {}
 
-  init() {
-    this.commandService.action$.subscribe(async (cmd) => {
-      if (cmd.action == NodeAction.GENERATE_FILE_SECTIONS) {
-        if (this._currentNode && (isFile(this._currentNode) || isSection(this._currentNode))) {
-          this.treeBuilderV2Service.update(this._currentNode);
-        } else {
-          this.treeBuilderV2Service.update(this.currentFile);
-        }
-        this.dataService.getFileTree().subscribe((resp) => {
-          this.matTreeService.refreshTree(resp.tree);
-        });
-      }
-    });
-  }
   hasCurrent(): boolean {
     return !!this._currentNode;
   }

@@ -25,8 +25,10 @@ export function ComponentLogger() {
       const originalMethod = constructor.prototype[key];
       if (typeof originalMethod === 'function') {
         constructor.prototype[key] = function (...args: any[]) {
-          if (ignoreList.indexOf(key) === -1) console.log('--', constructor.name, key, 'Arguments:', args, '\n');
-          return originalMethod.apply(this, args);
+          if (ignoreList.indexOf(key) === -1) console.log('--', constructor.name, key, 'args:', args, '\n');
+          const result = originalMethod.apply(this, args);
+          if (ignoreList.indexOf(key) === -1) console.log('---', constructor.name, key, 'res:', result, '\n');
+          return result;
         };
       }
     }
@@ -38,8 +40,10 @@ export function ServiceLogger() {
       const originalMethod = constructor.prototype[key];
       if (typeof originalMethod === 'function') {
         constructor.prototype[key] = function (...args: any[]) {
-          if (ignoreList.indexOf(key) === -1) console.log('---', constructor.name, key, 'Arguments:', args, '\n');
-          return originalMethod.apply(this, args);
+          if (ignoreList.indexOf(key) === -1) console.log('---', constructor.name, key, 'args:', args, '\n');
+          const result = originalMethod.apply(this, args);
+          if (ignoreList.indexOf(key) === -1) console.log('---', constructor.name, key, 'res:', result, '\n');
+          return result;
         };
       }
     }
@@ -47,9 +51,10 @@ export function ServiceLogger() {
       const originalMethod = constructor[key];
       if (typeof originalMethod === 'function') {
         constructor[key] = function (...args: any[]) {
-          if (ignoreList.indexOf(key) === -1)
-            console.log('---', constructor.name, key, 'Static Arguments:', args, '\n');
-          return originalMethod.apply(this, args);
+          if (ignoreList.indexOf(key) === -1) console.log('---', constructor.name, key, 'statid:', args, '\n');
+          const result = originalMethod.apply(this, args);
+          if (ignoreList.indexOf(key) === -1) console.log('---', constructor.name, key, 'res:', result, '\n');
+          return result;
         };
       }
     }

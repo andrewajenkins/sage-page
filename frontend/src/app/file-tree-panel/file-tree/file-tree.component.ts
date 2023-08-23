@@ -11,6 +11,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { isSection } from '../../common/models/section.model';
 import { FileTreeActionHandler } from './file-tree-action-handler';
 import { NotificationService } from '../../common/services/notification.service';
+import { TreeBuilderV3Service } from 'src/app/common/services/tree-builder-v3/tree-builder-v3.service';
 
 @Component({
   selector: 'app-file-tree',
@@ -42,7 +43,8 @@ export class FileTreeComponent {
     private matTreeService: MatTreeService,
     private dataService: DataService,
     private fileHandler: FileTreeActionHandler, // keep, needs init
-    private notificationService: NotificationService // keep, needs init
+    private notificationService: NotificationService, // keep, needs init
+    private treeBuilderV3Service: TreeBuilderV3Service // keep, needs init
   ) {
     this.matTreeService.registerComponent(this);
     this.fileHandler.init();
@@ -69,7 +71,7 @@ export class FileTreeComponent {
     });
   }
   ngOnInit() {
-    this.nodeService.init();
+    this.treeBuilderV3Service.init();
     this.dataService.getFileTree().subscribe((fileTree) => {
       this.matTreeService.refreshTree(fileTree);
       this.treeControl.expandAll();
@@ -95,6 +97,7 @@ export class FileTreeComponent {
   }
   nodeSelect(node: FileTreeNode) {
     this.nodeSelectHighlight(node);
+    this.curr = node;
     this.commandService.perform({
       action: NodeAction.LOAD_NODE,
       node: node,
@@ -117,7 +120,7 @@ export class FileTreeComponent {
   getClass(node: FileTreeNode) {
     return this.currentElement && node.id === this.nodeService.currentNode?.id;
   }
-  hasSub = (_: number, node: FileTreeFolder) =>
+  hasSub = (_: number, node: FileTreeNode) =>
     node?.type == 'heading' || isFolder(node) || isFile(node) || isSection(node);
 
   getIcon(node) {
