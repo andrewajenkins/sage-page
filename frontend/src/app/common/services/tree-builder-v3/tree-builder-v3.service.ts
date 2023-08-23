@@ -41,7 +41,7 @@ export class TreeBuilderV3Service {
     // adjust nodes
     // map parent_id,
     const { populatedParent, map } = this.buildMap(parseResult);
-    this.nodeService.map = map;
+    this.matTreeService.nodeMap = map;
     this.nodeService.currentNode = parent;
     this.dataService.createSections(Array.from(map.values())).subscribe(() => {});
     return parent;
@@ -60,12 +60,15 @@ export class TreeBuilderV3Service {
         localParent!.sections.push(node);
         node.parent_id = localParent.id as number;
         node.generated = true;
+        node.type = 'heading';
         depthMap.set(node.depth, node);
         map.set(node.id as number, node);
-        while (sections[i + 1] && !sections[i + 1].depth) {
+        while (sections[i + 1] && sections[i + 1].depth == undefined) {
           const subNode = sections[++i];
+          console.log('CONTENT WITH DEPTH:', subNode.depth, subNode);
           subNode.parent_id = node.id as number;
           subNode.generated = true;
+          subNode.type = 'content';
           map.set(subNode.id as number, subNode);
           node.content.push(subNode);
         }

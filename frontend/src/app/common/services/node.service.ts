@@ -9,14 +9,6 @@ import { ContentSection, isSection } from '../models/section.model';
 })
 export class NodeService {
   prev!: FileTreeNode | undefined;
-  private _map!: Map<number, ContentSection>;
-  get map(): Map<number, ContentSection> {
-    return this._map;
-  }
-
-  set map(value: Map<number, ContentSection>) {
-    this._map = value;
-  }
   private _currentNode!: FileTreeNode | undefined;
   get currentNode(): FileTreeNode | undefined {
     return this._currentNode;
