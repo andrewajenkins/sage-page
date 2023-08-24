@@ -28,6 +28,7 @@ app.post("/api/node", async (req: any, res: any) => {
   res.send(data);
 });
 app.post("/api/nodes", async (req: any, res: any) => {
+  console.log("creating nodes:", req.body);
   const data = await db.createNodes(req.body);
   console.log(req.body, " records inserted: res data:", data);
   res.send(data);

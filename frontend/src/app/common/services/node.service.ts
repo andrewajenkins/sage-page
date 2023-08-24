@@ -55,22 +55,7 @@ export class NodeService {
     private dataService: DataService,
     private matTreeService: MatTreeService
   ) {}
-  init() {
-    this.commandService.action$.subscribe(async (cmd) => {
-      if (cmd.action == NodeAction.GENERATE_FILE_SECTIONS) {
-        const currentNode = this.currentNode;
-        if (currentNode && (isFile(currentNode) || isSection(currentNode))) {
-          this.dataService.createSections(currentNode as ContentSection).subscribe((resp) => {
-            this.matTreeService.refreshTree(resp.tree);
-          });
-        } else
-          this.commandService.perform({
-            action: StateAction.NOTIFY,
-            value: 'Failed to generate sections, current node is not a file or section',
-          });
-      }
-    });
-  }
+
   hasCurrent(): boolean {
     return !!this._currentNode;
   }

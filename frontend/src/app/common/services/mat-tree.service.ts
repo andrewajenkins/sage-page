@@ -22,18 +22,36 @@ export class MatTreeService {
   registerComponent(component) {
     this.fileTreeComponent = component;
   }
-  refreshTree(data?) {
-    if (!data) {
-      data = this.fileTreeComponent.dataSource.data;
+  refreshTree(data?: FileTreeNode[]) {
+    let temp;
+    if (!data) temp = this.fileTreeComponent.dataSource.data;
+    else {
+      temp = this.fileTreeComponent.dataSource.data;
+      if (!this.isRootData(data)) temp = this.insertData(data!, temp);
+      else temp = data;
     }
-    // const state: Map<number, boolean> = this.saveTreeState();
-    const temp = data;
     this.fileTreeComponent.dataSource.data = [];
-    this.fileTreeComponent.dataSource.data = temp;
-    this.fileTreeComponent.treeControl.dataNodes = temp;
+    this.fileTreeComponent.dataSource.data = temp!;
+    this.fileTreeComponent.treeControl.dataNodes = temp!;
     this.applyTreeState(this.state);
   }
-
+  insertData(data: FileTreeNode[], treeData: FileTreeNode[]) {
+    const targetNode = data[0] as ContentSection;
+    const queue = cloneDeep(treeData);
+    while (queue.length > 0) {
+      let node = queue.shift();
+      if (node?.id === targetNode.id) {
+        node = targetNode;
+        return treeData;
+      }
+      if (isFolder(node)) queue.push(...node?.subNodes!);
+      if (isSection(node)) queue.push(...node?.sections!);
+    }
+    return treeData;
+  }
+  isRootData(data) {
+    return data[0]?.parent_id === null;
+  }
   deleteNode(id) {
     this.fileTreeComponent.dataSource.data;
     this.fileTreeComponent.treeControl.dataNodes = this.fileTreeComponent.treeControl.dataNodes.filter(

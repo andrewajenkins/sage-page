@@ -4,11 +4,7 @@ import { map, Observable } from 'rxjs';
 import { ServiceLogger } from '../logger/loggers';
 import { FileTreeFile, FileTreeFolder, FileTreeNode, isFile } from '../models/file-tree.model';
 import { ChatLogEntry, ContentSection, isSection } from '../models/section.model';
-import { MatTreeService } from './mat-tree.service';
 import { getDummyFile } from '../utils/node.factory';
-import { NodeService } from './node.service';
-import { assembleTree } from '../utils/tree-utils';
-import { tap } from 'rxjs/operators';
 
 const url = 'http://localhost:4200/api';
 

@@ -5,7 +5,7 @@ import {
   NodeAction,
   StateAction,
 } from '../../common/models/command.model';
-import { FileTreeFile, FileTreeNode } from '../../common/models/file-tree.model';
+import { FileTreeFile } from '../../common/models/file-tree.model';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { Injectable } from '@angular/core';
@@ -14,7 +14,6 @@ import { MatTreeService } from '../../common/services/mat-tree.service';
 import { NodeFactory } from '../../common/utils/node.factory';
 import { assembleTree } from '../../common/utils/tree-utils';
 import { ContentSection } from '../../common/models/section.model';
-import { APIResponse } from '@playwright/test';
 
 @Injectable({
   providedIn: 'root',
@@ -92,8 +91,8 @@ export class FileTreeActionHandler {
     });
   }
   handleTreeUpdate(resp: any) {
-    this.nodeService.nodeMap = assembleTree(resp.tree, this.nodeService.currentNode as ContentSection);
-    const tree = [...this.nodeService.nodeMap.entries()].map((v, k) => v[1]).filter((node) => node.parent_id == null);
+    const { nodeMap, rootNodes } = assembleTree(resp.tree, this.nodeService.currentNode as ContentSection);
+    const tree = [...nodeMap.entries()].map((v, k) => v[1]).filter((node) => node.parent_id == null);
     this.matTreeService.refreshTree(tree);
   }
 }

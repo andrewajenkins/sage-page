@@ -43,27 +43,26 @@ export const assembleTree = (nodes: FileTreeNode[], currentNode: ContentSection)
   const rootNodes: FileTreeNode[] = [];
   if (debug) console.log('assembleTree: nodes:', nodes);
   initMap(nodes, nodeMap);
-  populateParents(nodeMap);
-  return nodeMap;
+  return populateParents(nodeMap);
 };
 function populateParents(nodeMap) {
+  const rootNodes: FileTreeNode[] = [];
   nodeMap.forEach((node) => {
     console.log('node:', node, 'parent:', parent);
     if (node?.parent_id) {
       const parent = nodeMap.get(node.parent_id) as FileTreeNode;
       if (isFolder(parent)) {
         parent.subNodes.push(node);
+      } else if (isSection(node)) {
+        parent.sections.push(node);
       } else {
-        if (node.type == 'heading') {
-          parent.sections.push(node);
-        } else {
-          parent.content.push(node);
-        }
+        parent.content.push(node);
       }
-    }
+    } else rootNodes.push(node);
   });
   // parent.sections.sort((a, b) => a.id - b.id);
   // parent.content.sort((a, b) => a.id - b.id);
+  return { nodeMap, rootNodes };
 }
 function initMap(nodes: FileTreeNode[], nodeMap: Map<number, FileTreeNode>) {
   nodes.forEach((node) => {

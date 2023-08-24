@@ -24,8 +24,7 @@ class DatabaseService {
 
   public async createNode(createNode: any) {
     if (!this.db) throw new Error("Database not initialized");
-    const node = await this.db.getRepository("TreeNode").create(createNode);
-    const results = await this.db.getRepository("TreeNode").save(node);
+    await this.db.getRepository("TreeNode").save(createNode);
     return {
       tree: await this.getFileTree(),
     };
@@ -33,11 +32,10 @@ class DatabaseService {
   async createNodes(parent) {
     if (!this.db) throw new Error("Database not initialized");
     const builder = new TreeBuilderService(this.db);
-    builder.generate(parent);
-    // await this.db!.getRepository("TreeNode").save(parent);
-    // const results = await this.db.getRepository("TreeNode").save(parent);
+    const { populatedParent } = await builder.generate(parent);
     return {
-      tree: await this.getFileTree(),
+      tree: populatedParent,
+      array: [await this.getFileTree()],
     };
   }
   public async updateNode(node: any) {

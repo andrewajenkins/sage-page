@@ -16,10 +16,12 @@ import {
 import { ContentSection, isSection } from '../../../common/models/section.model';
 import { NodeService } from '../../../common/services/node.service';
 import { FileTreeFile, isContentNode, isFile, isFolder } from '../../../common/models/file-tree.model';
-import { recursiveDeleteNode } from '../../../common/utils/tree-utils';
+import { assembleTree, recursiveDeleteNode } from '../../../common/utils/tree-utils';
 import { remove } from 'lodash';
 import { NodeFactory } from '../../../common/utils/node.factory';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { DataService } from '../../../common/services/data.service';
+import { MatTreeService } from '../../../common/services/mat-tree.service';
 
 @Component({
   selector: 'app-content-container',
@@ -36,6 +38,8 @@ export class ContentContainerComponent {
     private commandService: CommandService,
     private nodeService: NodeService,
     private clipboard: Clipboard,
+    private dataService: DataService,
+    private matTreeService: MatTreeService,
     private cdRef: ChangeDetectorRef
   ) {}
 
@@ -58,13 +62,17 @@ export class ContentContainerComponent {
         this.scrollDown();
       } else if (cmd.action === EditorAction.SAVE_CONTENT) {
         if (!this.nodeService.currentNode) return;
-        if (isFile(this.nodeService.currentNode) || isSection(this.nodeService.currentNode)) {
-          this.nodeService.currentNode.sections = this.section?.sections || [];
-          this.nodeService.currentNode.content = this.section?.content || [];
-          this.commandService.perform({
-            action: NodeAction.GENERATE_FILE_SECTIONS,
+        const currentNode = this.nodeService.currentNode;
+        if (isFile(currentNode) || isSection(currentNode)) {
+          this.dataService.createSections(currentNode as ContentSection).subscribe((resp: any) => {
+            const { tree, array } = resp;
+            this.matTreeService.refreshTree([tree]);
           });
-        }
+        } else
+          this.commandService.perform({
+            action: StateAction.NOTIFY,
+            value: 'Failed to generate sections, current node is not a file or section',
+          });
       } else if (isNodeCommand(cmd) && cmd.action === NodeAction.LOAD_NODE) {
         if (isFolder(cmd.node)) this.section = undefined;
         if (isFile(cmd.node) || isSection(cmd.node)) this.section = cmd.node;
