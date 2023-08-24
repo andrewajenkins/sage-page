@@ -66,6 +66,10 @@ export class ContentContainerComponent {
         if (isFile(currentNode) || isSection(currentNode)) {
           this.dataService.createSections(currentNode as ContentSection).subscribe((resp: any) => {
             const { tree, array } = resp;
+            this.nodeService.nodeMap = new Map<number, ContentSection>();
+            array.forEach((node) => {
+              this.nodeService.nodeMap.set(node.id as number, node);
+            });
             this.matTreeService.refreshTree([tree]);
           });
         } else
