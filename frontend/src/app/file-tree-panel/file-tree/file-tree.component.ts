@@ -73,7 +73,7 @@ export class FileTreeComponent {
     this.dataService.getFileTree().subscribe((fileTree) => {
       const { nodeMap, rootNodes } = assembleTree(fileTree, this.nodeService.currentNode as ContentSection);
       this.nodeService.nodeMap = nodeMap; // const tree = [...this.nodeService.nodeMap.entries()].map((v, k) => v[1]).filter((node) => node.parent_id == null);
-      this.matTreeService.refreshTree(rootNodes);
+      this.matTreeService.refreshTree(rootNodes as ContentSection[]);
       this.treeControl.expandAll();
       this.treeControl.dataNodes.forEach((node) => {
         this.treeControl.collapse(node);

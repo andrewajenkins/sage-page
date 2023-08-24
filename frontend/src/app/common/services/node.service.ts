@@ -50,11 +50,7 @@ export class NodeService {
       flag: true,
     });
   }
-  constructor(
-    private commandService: CommandService,
-    private dataService: DataService,
-    private matTreeService: MatTreeService
-  ) {}
+  constructor(private commandService: CommandService) {}
 
   hasCurrent(): boolean {
     return !!this._currentNode;

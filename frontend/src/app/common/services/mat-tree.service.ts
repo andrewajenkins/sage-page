@@ -18,17 +18,18 @@ export class MatTreeService {
   private fileTreeComponent!: FileTreeComponent;
   private state!: Map<number, boolean>;
 
-  constructor() {}
+  constructor(private nodeService: NodeService) {}
   registerComponent(component) {
     this.fileTreeComponent = component;
   }
-  refreshTree(data?: FileTreeNode[]) {
+  refreshTree(data?: ContentSection[]) {
     let temp;
     if (!data) temp = this.fileTreeComponent.dataSource.data;
     else {
       temp = this.fileTreeComponent.dataSource.data;
-      if (!this.isRootData(data)) temp = this.insertData(data!, temp);
-      else temp = data;
+      if (!this.isRootData(data)) {
+        this.insertData(data!, temp);
+      } else temp = data;
     }
     this.fileTreeComponent.dataSource.data = [];
     this.fileTreeComponent.dataSource.data = temp!;
@@ -37,17 +38,19 @@ export class MatTreeService {
   }
   insertData(data: FileTreeNode[], treeData: FileTreeNode[]) {
     const targetNode = data[0] as ContentSection;
-    const queue = cloneDeep(treeData);
-    while (queue.length > 0) {
-      let node = queue.shift();
-      if (node?.id === targetNode.id) {
-        node = targetNode;
-        return treeData;
+    for (let i = 0; i < treeData.length; i++) {
+      if (treeData[i].id === targetNode.id) {
+        treeData.splice(i, 1, targetNode);
+        return;
       }
-      if (isFolder(node)) queue.push(...node?.subNodes!);
-      if (isSection(node)) queue.push(...node?.sections!);
     }
-    return treeData;
+    treeData.forEach((node) => {
+      if (isFolder(node)) {
+        return this.insertData(data, node.subNodes);
+      } else if (isFile(node) || isSection(node) || isContent(node)) {
+        return this.insertData(data, node.sections);
+      }
+    });
   }
   isRootData(data) {
     return data[0]?.parent_id === null;
