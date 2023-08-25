@@ -8,12 +8,12 @@ import { getDummyFile } from '../utils/node.factory';
 
 const url = 'http://localhost:4200/api';
 
-export interface ApiResponse {
-  id: number;
-  tree: FileTreeNode[];
-  node: FileTreeFile;
-}
-
+// export interface ApiResponse {
+//   id: number;
+//   tree: FileTreeNode[];
+//   node: FileTreeFile;
+// }
+//
 @Injectable({
   providedIn: 'root',
 })
@@ -26,15 +26,15 @@ export class DataService {
   }
 
   getNode(sub: number): Observable<FileTreeNode> {
-    return this.http.get<ApiResponse>(url + '/node?id=' + sub).pipe(map((res) => res.node));
+    return this.http.get<ContentSection>(url + '/node?id=' + sub);
   }
 
   createNode(node: FileTreeNode) {
-    return this.http.post<ApiResponse>(url + '/node', node);
+    return this.http.post<ContentSection[]>(url + '/node', node);
   }
 
   createSection(node: FileTreeNode) {
-    return this.http.post<ApiResponse>(url + '/node', node).pipe(
+    return this.http.post<ContentSection>(url + '/node', node).pipe(
       map((response) => {
         console.log('done - createSection: id:', response.id);
         return response.id;
@@ -57,7 +57,7 @@ export class DataService {
   }
 
   deleteNode(node: FileTreeNode) {
-    return this.http.delete<ApiResponse>(url + '/node?id=' + node.id + '&type=' + node.type, {
+    return this.http.delete<ContentSection[]>(url + '/node?id=' + node.id + '&type=' + node.type, {
       body: {
         id: node.id,
       },
@@ -65,7 +65,7 @@ export class DataService {
   }
 
   saveContent(contents: ContentSection[]) {
-    return this.http.post<ApiResponse>(url + '/content', contents);
+    return this.http.post<ContentSection[]>(url + '/content', contents);
   }
 
   getFile(fileID: number): Observable<FileTreeFile> {
@@ -84,10 +84,10 @@ export class DataService {
   }
 
   saveConversation(log: ChatLogEntry[]) {
-    return this.http.post<ApiResponse>(url + '/conversation', log);
+    return this.http.post<ContentSection[]>(url + '/conversation', log);
   }
 
   createSections(contentSection: ContentSection) {
-    return this.http.post<ApiResponse>(url + '/nodes', contentSection);
+    return this.http.post<ContentSection[]>(url + '/nodes', contentSection);
   }
 }
