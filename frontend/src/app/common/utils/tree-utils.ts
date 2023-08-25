@@ -221,6 +221,14 @@ function parse(node: ContentSection) {
   } else if (text.startsWith('# ')) {
     node.depth = 1;
     node.name = text.substring(2);
+  } else if (/^[0-9]+\./.test(text)) {
+    try {
+      node.depth = 1;
+      const name = text.match(/^\d+\.\s(.+)$/)![1];
+      node.name = name;
+    } catch (e) {
+      console.error('parseNodes: skipped - error parsing:', text);
+    }
   } else if (text.startsWith('- [')) {
     node.name = text.replace(/.*\[(.*?)\.*]/g, '$1');
   } else if (text.startsWith('- ')) {

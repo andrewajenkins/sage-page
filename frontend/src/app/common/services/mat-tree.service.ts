@@ -23,11 +23,11 @@ export class MatTreeService {
     this.fileTreeComponent = component;
   }
   refreshTree(data?: ContentSection[]) {
-    let temp;
+    let temp, expandCurrent;
     if (!data || data.length == 0) temp = this.fileTreeComponent.dataSource.data;
     else {
       temp = this.fileTreeComponent.dataSource.data;
-      if (!this.isRootData(data)) {
+      if ((expandCurrent = !this.isRootData(data))) {
         this.insertData(data!, temp);
       } else temp = data;
     }
@@ -35,6 +35,7 @@ export class MatTreeService {
     this.fileTreeComponent.dataSource.data = temp!;
     this.fileTreeComponent.treeControl.dataNodes = temp!;
     this.applyTreeState(this.state);
+    if (expandCurrent) this.fileTreeComponent.treeControl.expand(this.nodeService.currentNode!);
   }
   insertData(data: FileTreeNode[], treeData: FileTreeNode[]) {
     const targetNode = data[0] as ContentSection;

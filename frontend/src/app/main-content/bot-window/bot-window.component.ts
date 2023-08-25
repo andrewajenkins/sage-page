@@ -20,6 +20,7 @@ import { CommandService } from '../../common/services/command.service';
 import { ChatLogEntry, ContentSection } from '../../common/models/section.model';
 import { NodeFactory } from '../../common/utils/node.factory';
 import { Chat } from './chat.model';
+import { NodeService } from '../../common/services/node.service';
 
 @Component({
   selector: 'app-bot-window',
@@ -42,7 +43,8 @@ export class BotWindowComponent implements OnInit {
     private botWindowService: BotWindowService,
     private formBuilder: FormBuilder,
     private cdRef: ChangeDetectorRef,
-    private commandService: CommandService
+    private commandService: CommandService,
+    private nodeService: NodeService
   ) {}
 
   ngOnInit() {
@@ -64,7 +66,7 @@ export class BotWindowComponent implements OnInit {
       if (isFlagCommand(cmd) && cmd.action === StateAction.SET_FILE_SELECTED) {
         this.contentSectionSelected = cmd.flag as boolean;
       } else if (isFlagCommand(cmd) && cmd.action === StateAction.SET_NODE_SELECTED) {
-        this.contentSectionSelected = cmd.flag as boolean;
+        if (this.nodeService.acceptsContent()) this.contentSectionSelected = cmd.flag as boolean;
       }
     });
     this.scrollDown();
