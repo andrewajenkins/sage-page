@@ -92,34 +92,7 @@ export class BotWindowComponent implements OnInit {
           }),
         ],
       });
-      const contentArray = response.choices[0].message.content.split('\n');
-      const contents = [...contentArray];
-      const newContents: ContentSection[] = [];
-      let isCode = false;
-      for (let i = 0; i < contents.length; i++) {
-        const content = contents[i];
-        if (!content) continue;
-        if (content.indexOf('```') !== -1) {
-          isCode = !isCode;
-          continue;
-        }
-        if (isCode) {
-          newContents.push(
-            NodeFactory.createSection({
-              name: content,
-              text: content,
-            })
-          );
-        } else {
-          newContents.push(
-            NodeFactory.createSection({
-              name: content,
-              text: content,
-              selected: false,
-            })
-          );
-        }
-      }
+      const newContents = this.parseResults(response);
       this.log.push({
         role: 'Sage:',
         content: newContents,
@@ -127,6 +100,46 @@ export class BotWindowComponent implements OnInit {
       });
       this.scrollDown();
     });
+  }
+
+  parseResults(response) {
+    const contentArray = response.choices[0].message.content.split('\n');
+    const contents = [...contentArray];
+    const newContents: ContentSection[] = [];
+    let insideCodeBlock = false;
+    let code = '';
+    let codeType = '';
+    for (let i = 0; i < contents.length; i++) {
+      const content = contents[i];
+      if (!content) continue;
+      if (content.startsWith('```')) {
+        if (insideCodeBlock) {
+          newContents.push(
+            NodeFactory.createSection({
+              name: codeType + ' code',
+              text: code,
+            })
+          );
+          code = '';
+          codeType = '';
+          insideCodeBlock = false;
+        } else {
+          insideCodeBlock = true;
+          codeType = content.replace('```', '').trim();
+        }
+      } else if (insideCodeBlock) {
+        code += content + '\n';
+      } else {
+        newContents.push(
+          NodeFactory.createSection({
+            name: content,
+            text: content.trim(),
+            selected: false,
+          })
+        );
+      }
+    }
+    return newContents;
   }
 
   scrollDown() {

@@ -10,6 +10,9 @@ mat-tree-node {
   min-height: 20px;
   z-index: 2;
   position: relative;
+  max-width: 500px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .small-icon {
