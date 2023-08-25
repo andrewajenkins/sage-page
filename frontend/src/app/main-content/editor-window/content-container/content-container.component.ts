@@ -63,6 +63,13 @@ export class ContentContainerComponent {
       } else if (cmd.action === EditorAction.SAVE_CONTENT) {
         if (!this.nodeService.currentNode) return;
         const currentNode = this.nodeService.currentNode;
+        if (!this.hasNewSections(currentNode)) {
+          this.commandService.perform({
+            action: StateAction.NOTIFY,
+            value: 'Nothing to save',
+          });
+          return;
+        }
         if (isFile(currentNode) || isSection(currentNode)) {
           const parseResult = parseNodes(currentNode as ContentSection);
           const sectionNodes = buildMapV2(parseResult as ContentSection);
@@ -172,6 +179,11 @@ export class ContentContainerComponent {
       }
     });
   }
+
+  hasNewSections(node) {
+    return !!node.sections?.some((section) => !section.generated);
+  }
+
   scrollDown() {
     try {
       this.cdRef.detectChanges();
