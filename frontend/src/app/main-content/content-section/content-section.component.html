@@ -1,9 +1,8 @@
 <div fxLayout="row" style="background: white">
   <div
-    class="content-section"
+    class="content-section content-text"
     appContentSection
     fxLayoutAlign="start center"
-    class="content-text"
     (click)="toggleSelection()"
     [isSelected]="!!contentSection?.selected">
     {{ !contentSection.generated && !hideEditorContent ? " * " : "" }}

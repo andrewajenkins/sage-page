@@ -78,7 +78,7 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
     } else {
       if (node.type === 'heading') {
         console.log('buildFromDepths: heading:', node.text);
-        const parent = depthMap.get(node.depth - 1); // Get the parent at the previous depth
+        const parent = node.parent_id ? nodeMap.get(node.parent_id) : depthMap.get(node.depth - 1); // Get the parent at the previous depth
         if (!parent.sections) {
           parent.sections = [];
         }
@@ -88,7 +88,7 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
         clearLowerDepths(node.depth);
       } else {
         const maxDepth = Math.max(...depthMap.keys());
-        const parent = depthMap.get(maxDepth);
+        const parent = node.parent_id ? nodeMap.get(node.parent_id) : depthMap.get(maxDepth);
         if (!parent.contents) {
           parent.contents = [];
         }
@@ -100,28 +100,6 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
   return { nodeMap, rootNodes };
 }
 
-// Sample Usage:
-function populateParents(nodeMap) {
-  const rootNodes: FileTreeNode[] = [];
-  nodeMap.forEach((node) => {
-    if (node?.parent_id) {
-      const parent = nodeMap.get(node.parent_id) as FileTreeNode;
-      console.log('node:', node, 'parent:', parent);
-      if (isFolder(parent)) {
-        parent.subNodes.push(node);
-      } else if (isSection(node)) {
-        parent.sections.push(node);
-      } else {
-        parent.contents.push(node);
-      }
-      nodeMap.set(parent.id, parent);
-    } else {
-      node.depth = 0;
-      rootNodes.push(node);
-    }
-  });
-  return { nodeMap, rootNodes };
-}
 function initMap(nodes: FileTreeNode[], nodeMap: Map<number, FileTreeNode>) {
   nodes.forEach((node) => {
     if (isFolder(node)) {
@@ -162,19 +140,15 @@ export function buildMapV2(parent: ContentSection) {
         }
         oldSections.push(cloneDeep(subNode));
       }
+    } else {
+      node.generated = true;
+      node.type = 'content';
+      node.parent_id = parent.id;
+      parent.sections.push(node);
+      oldSections.push(cloneDeep(node));
     }
   }
   return oldSections;
-}
-function getParent(depthMap: Map<number, ContentSection>, depth: number): ContentSection {
-  //adjust for parent depth
-  const startIndex = depth ? depth - 1 : depthMap.size;
-  for (let i = depth - 1; i >= 1; i--) {
-    if (depthMap.has(i)) {
-      return depthMap.get(i) as ContentSection;
-    }
-  }
-  return depthMap.get(0) as ContentSection;
 }
 export function parseNodes(parent: ContentSection) {
   parent.sections.forEach((node) => {
