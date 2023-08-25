@@ -16,7 +16,7 @@ import {
 import { ContentSection, isSection } from '../../../common/models/section.model';
 import { NodeService } from '../../../common/services/node.service';
 import { FileTreeFile, isContentNode, isFile, isFolder } from '../../../common/models/file-tree.model';
-import { assembleTree, recursiveDeleteNode } from '../../../common/utils/tree-utils';
+import { assembleTree, buildMapV2, parseNodes, recursiveDeleteNode } from '../../../common/utils/tree-utils';
 import { remove } from 'lodash';
 import { NodeFactory } from '../../../common/utils/node.factory';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -64,9 +64,10 @@ export class ContentContainerComponent {
         if (!this.nodeService.currentNode) return;
         const currentNode = this.nodeService.currentNode;
         if (isFile(currentNode) || isSection(currentNode)) {
-          currentNode.sections.forEach((node) => {
-            node.parent_id = currentNode.id;
-          });
+          const parseResult = parseNodes(currentNode as ContentSection);
+          const sectionNodes = buildMapV2(parseResult as ContentSection);
+          currentNode.sections = sectionNodes;
+          console.log('currentNode:', currentNode);
           this.dataService.createSections(currentNode as ContentSection).subscribe((fileTree: any) => {
             const { nodeMap, rootNodes } = assembleTree(fileTree, this.nodeService.currentNode as ContentSection);
             this.nodeService.nodeMap = nodeMap;
@@ -173,7 +174,8 @@ export class ContentContainerComponent {
   scrollDown() {
     try {
       this.cdRef.detectChanges();
-      this.wikiWindow.nativeElement.scrollTop = this.wikiWindow.nativeElement.scrollHeight;
+      if (this.wikiWindow?.nativeElement)
+        this.wikiWindow.nativeElement.scrollTop = this.wikiWindow?.nativeElement.scrollHeight;
     } catch (e) {}
   }
 

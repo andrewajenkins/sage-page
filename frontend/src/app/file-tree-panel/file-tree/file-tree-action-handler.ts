@@ -49,6 +49,7 @@ export class FileTreeActionHandler {
           name: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
           text: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
           parent_id: currentNode.id as number,
+          depth: 0,
         });
         this.dataService.createNode(newNode).subscribe((resp) => {
           this.handleTreeUpdate(resp);

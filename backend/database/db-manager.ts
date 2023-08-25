@@ -30,6 +30,8 @@ class DatabaseService {
     if (!this.db) throw new Error("Database not initialized");
     for (let node of parent.sections) {
       console.log("createNodes: inserting node:", node.text);
+      if ((node.type == "file" || node.type == "section") && !node.depth)
+        throw new Error("Bad node: " + JSON.stringify(node));
       await this.db.getRepository("TreeNode").save(node);
     }
     return await this.getFileTree();

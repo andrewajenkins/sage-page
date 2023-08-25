@@ -132,9 +132,11 @@ export class BotWindowComponent implements OnInit {
     try {
       const botWindow = this.botLogWindow.nativeElement;
       // @ts-ignore
-      const chat = this.chats.last.nativeElement;
-      this.botLogWindow.nativeElement.scrollTop = botWindow.scrollHeight;
-      this.botLogWindow.nativeElement.scrollTop -= chat.offsetHeight - botWindow.clientHeight;
+      const chat = this.chats.last?.nativeElement;
+      if (chat) {
+        this.botLogWindow.nativeElement.scrollTop = botWindow.scrollHeight;
+        this.botLogWindow.nativeElement.scrollTop -= chat.offsetHeight - botWindow.clientHeight;
+      }
     } catch (e) {}
   }
 

@@ -47,7 +47,5 @@ mat-tree-node {
 }
 
 .current-node {
-  background-color: var(
-    --mat-standard-button-toggle-selected-state-background-color
-  );
+  background-color: var(--mat-standard-button-toggle-selected-state-background-color);
 }

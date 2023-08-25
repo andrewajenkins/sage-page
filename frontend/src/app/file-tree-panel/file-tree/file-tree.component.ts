@@ -122,8 +122,13 @@ export class FileTreeComponent {
   getClass(node: FileTreeNode) {
     return this.currentElement && node.id === this.nodeService.currentNode?.id;
   }
-  hasSub = (_: number, node: FileTreeNode) =>
-    node?.type == 'heading' || isFolder(node) || isFile(node) || isSection(node);
+  hasSub = (_: number, node: FileTreeNode) => {
+    if (isFolder(node)) return node.subNodes.filter((subNode) => this.isValid(subNode)).length > 0;
+    else {
+      return node.sections.filter((subNode) => this.isValid(subNode)).length > 0;
+    }
+  };
+  // node?.type == 'heading' || isFolder(node) || isFile(node) || isSection(node);
 
   getIcon(node) {
     if (node.type == 'folder') return 'folder';
@@ -135,5 +140,9 @@ export class FileTreeComponent {
   getSectionSymbol(node) {
     if (node.sections?.length == 0) return '';
     return this.treeControl.isExpanded(node) ? 'chevron_right' : 'expand_more';
+  }
+
+  isValid(node: FileTreeNode) {
+    return isFolder(node) || isFile(node) || node.generated;
   }
 }

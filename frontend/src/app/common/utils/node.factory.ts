@@ -8,14 +8,14 @@ const dummyFile: any = {
   text: '',
   type: '',
   sections: [],
-  content: [],
+  contents: [],
 };
 const dummySection: any = {
   name: '',
   parent_id: -1,
   type: '',
   selected: false,
-  content: [], // section text that goes between the name and subsections
+  contents: [], // section text that goes between the name and subsections
   sections: [], // subsections to be created
   text: '',
   editable: false,
