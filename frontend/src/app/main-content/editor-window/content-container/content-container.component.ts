@@ -71,6 +71,7 @@ export class ContentContainerComponent {
           this.dataService.createSections(currentNode as ContentSection).subscribe((fileTree: any) => {
             const { nodeMap, rootNodes } = assembleTree(fileTree, this.nodeService.currentNode as ContentSection);
             this.nodeService.nodeMap = nodeMap;
+            for (let node of nodeMap.values()) this.dataService.updateNode(node).subscribe((node) => {});
             this.matTreeService.refreshTree(rootNodes as ContentSection[]);
           });
         } else

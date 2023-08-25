@@ -92,6 +92,7 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
         if (!parent.contents) {
           parent.contents = [];
         }
+        node.parent_id = parent.id;
         parent.contents.push(node);
       }
     }
