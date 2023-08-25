@@ -45,10 +45,8 @@ app.put("/api/node", async (req: any, res: any) => {
 });
 app.delete("/api/node", async (req: any, res: any) => {
   console.log(req.body, req.query);
-  const data = {
-    tree: await db.deleteNode(req.body.id),
-  };
-  console.log("1 record inserted: res data:", data);
+  const data = await db.deleteNode(req.body.id);
+  console.log("1 record deleted: res data:", data);
   res.send(data);
 });
 app.get("/api/filetree", async (req: any, res: any) => {
