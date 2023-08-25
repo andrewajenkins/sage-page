@@ -9,14 +9,67 @@ export class TreeBuilderService {
 
   async generate(parent: TreeNode) {
     console.log("generating:", parent);
+    if (!parent) return { populatedParent: parent };
     const parseResult = this.parseNodes(parent);
-    // adjust nodes
-    // map parent_id
     const populatedParent = await this.buildMap(parseResult);
     return populatedParent;
   }
 
   private async buildMap(parent: TreeNode) {
+    if (parent?.type == "folder") {
+      for (let node of parent.subNodes) {
+        if (node.type == "folder") {
+          console.log("buildMap: folder:", node);
+          await this.buildFolder(node);
+        } else {
+          console.log("buildMap: section:", node);
+          await this.build(node);
+        }
+      }
+    } else if (parent?.sections?.length > 0) {
+      for (let node of parent.sections) {
+        console.log("buildMap: section:", node);
+        await this.build(node);
+      }
+    }
+    console.log("buildMap: returning parent:", parent);
+    return { populatedParent: parent };
+  }
+  private async buildFolder(parent) {
+    const depthMap = new Map<number, TreeNode>();
+    const subNodes = parent.subNodes;
+    parent.subNodes = [];
+    depthMap.set(0, parent);
+    if (!this.db) throw new Error("Database not initialized");
+    console.log("buildFolder: subNodes:", subNodes);
+    for (let i = 0; i < subNodes?.length; i++) {
+      const node = subNodes[i];
+      if (node.type == "folder") {
+        const localParent = this.getParent(depthMap, node.depth);
+        node.generated = true;
+        node.type = "folder";
+        node.parent_id = localParent.id;
+        console.log("buildFolder: folder:", node);
+        const result = await this.db.getRepository("TreeNode").save(node);
+        localParent!.subNodes.push(result);
+        depthMap.set(result.depth, result);
+        console.log("buildFolder: folder: final:", node);
+        await this.buildFolder(result);
+      } else {
+        const localParent = this.getParent(depthMap, node.depth);
+        node.generated = true;
+        node.type = "section";
+        node.parent_id = localParent.id;
+        console.log("buildFolder: section:", node);
+        const result = await this.db.getRepository("TreeNode").save(node);
+        localParent!.sections.push(result);
+        depthMap.set(result.depth, result);
+        console.log("buildFolder: section: final:", node);
+        await this.build(result);
+      }
+    }
+  }
+  private async build(parent: TreeNode) {
     const depthMap = new Map<number, TreeNode>();
     const sections = parent.sections;
     parent.sections = [];
@@ -47,7 +100,7 @@ export class TreeBuilderService {
         }
       }
     }
-    return { populatedParent: parent };
+    // return { populatedParent: parent };
   }
   private getParent(depthMap: Map<number, TreeNode>, depth: number): TreeNode {
     //adjust for parent depth
@@ -60,9 +113,15 @@ export class TreeBuilderService {
     return depthMap.get(0) as TreeNode;
   }
   private parseNodes(parent: TreeNode) {
-    parent.sections.forEach((node) => {
-      this.parse(node);
-    });
+    if (parent.type === "folder" && parent.subNodes?.length > 0) {
+      parent.subNodes.forEach((node) => {
+        this.parse(node);
+      });
+    } else if (parent.sections?.length > 0) {
+      parent.sections.forEach((node) => {
+        this.parse(node);
+      });
+    }
     return parent;
   }
   private parse(node: TreeNode) {

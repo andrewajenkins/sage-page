@@ -24,7 +24,7 @@ export class MatTreeService {
   }
   refreshTree(data?: ContentSection[]) {
     let temp;
-    if (!data) temp = this.fileTreeComponent.dataSource.data;
+    if (!data || data.length == 0) temp = this.fileTreeComponent.dataSource.data;
     else {
       temp = this.fileTreeComponent.dataSource.data;
       if (!this.isRootData(data)) {
@@ -53,7 +53,7 @@ export class MatTreeService {
     });
   }
   isRootData(data) {
-    return data[0]?.parent_id === null;
+    return !data[0]?.parent_id;
   }
   deleteNode(id) {
     this.fileTreeComponent.dataSource.data;
@@ -83,6 +83,7 @@ export class MatTreeService {
   }
   applyMap(dataNodes: FileTreeNode[], savedState: Map<number, boolean>) {
     console.log('dataNodes:', dataNodes);
+    if (!dataNodes) return;
     dataNodes?.forEach((node) => {
       if (node.id) {
         if (savedState.get(node.id)) {

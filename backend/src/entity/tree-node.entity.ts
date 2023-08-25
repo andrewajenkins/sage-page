@@ -20,6 +20,7 @@ export class TreeNode {
   lexDepth!: number;
   content!: TreeNode[];
   sections!: TreeNode[];
+  subNodes!: TreeNode[];
   @Column({ nullable: true })
   generated!: boolean;
 }

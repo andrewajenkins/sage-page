@@ -91,8 +91,13 @@ export class FileTreeActionHandler {
     });
   }
   handleTreeUpdate(resp: any) {
-    const { nodeMap, rootNodes } = assembleTree(resp.tree, this.nodeService.currentNode as ContentSection);
-    const tree = [...nodeMap.entries()].map((v, k) => v[1]).filter((node) => node.parent_id == null);
-    this.matTreeService.refreshTree(tree);
+    // const { nodeMap, rootNodes } = assembleTree(resp.tree, this.nodeService.currentNode as ContentSection);
+    // const tree = [...nodeMap.entries()].map((v, k) => v[1]).filter((node) => node.parent_id == null);
+    const { tree, array } = resp;
+    this.nodeService.nodeMap = new Map<number, ContentSection>();
+    array?.forEach((node) => {
+      this.nodeService.nodeMap.set(node.id as number, node);
+    });
+    this.matTreeService.refreshTree([tree]);
   }
 }

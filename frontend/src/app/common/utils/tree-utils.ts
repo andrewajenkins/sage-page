@@ -38,10 +38,11 @@ export function recursiveDeleteNode(sections: ContentSection, idToRemove: number
   removeNodeById(sections, idToRemove);
 }
 export const assembleTree = (nodes: FileTreeNode[], currentNode: ContentSection) => {
-  const debug = false;
+  const debug = true;
   const nodeMap = new Map<number, FileTreeNode>();
   const rootNodes: FileTreeNode[] = [];
   if (debug) console.log('assembleTree: nodes:', nodes);
+  if (!nodes || nodes.length == 0) return { nodeMap, rootNodes };
   initMap(nodes, nodeMap);
   return populateParents(nodeMap);
 };
@@ -113,12 +114,13 @@ function buildTree(nodes: FileTreeNode[], rootNodes: FileTreeNode[], nodeMap) {
 }
 
 export function getPath(node: FileTreeNode, nodeMap) {
-  let curr: FileTreeNode = node;
-  const path: FileTreeNode[] = [];
-  while (!isFolder(curr)) {
-    console.log('getPath: curr:', curr);
-    path.unshift(curr);
-    curr = nodeMap.get(curr.parent_id) as FileTreeNode;
-  }
-  return path;
+  // let curr: FileTreeNode = node;
+  // const path: FileTreeNode[] = [];
+  // while (!isFolder(curr)) {
+  //   console.log('getPath: curr:', curr);
+  //   path.unshift(curr);
+  //   curr = nodeMap.get(curr.parent_id) as FileTreeNode;
+  // }
+  // return path;
+  return [];
 }

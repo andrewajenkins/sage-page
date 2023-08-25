@@ -71,13 +71,20 @@ export class FileTreeComponent {
   }
   ngOnInit() {
     this.dataService.getFileTree().subscribe((fileTree) => {
-      const { nodeMap, rootNodes } = assembleTree(fileTree, this.nodeService.currentNode as ContentSection);
-      this.nodeService.nodeMap = nodeMap; // const tree = [...this.nodeService.nodeMap.entries()].map((v, k) => v[1]).filter((node) => node.parent_id == null);
-      this.matTreeService.refreshTree(rootNodes as ContentSection[]);
-      this.treeControl.expandAll();
-      this.treeControl.dataNodes.forEach((node) => {
-        this.treeControl.collapse(node);
+      // const { nodeMap, rootNodes } = assembleTree(fileTree, this.nodeService.currentNode as ContentSection);
+      // this.nodeService.nodeMap = nodeMap; // const tree = [...this.nodeService.nodeMap.entries()].map((v, k) => v[1]).filter((node) => node.parent_id == null);
+      const { tree, array } = fileTree;
+      this.nodeService.nodeMap = new Map<number, ContentSection>();
+      array.forEach((node) => {
+        this.nodeService.nodeMap.set(node.id as number, node);
       });
+      this.matTreeService.refreshTree([tree] as ContentSection[]);
+      if (this.treeControl.dataNodes && this.treeControl.dataNodes.length > 0) {
+        this.treeControl.expandAll();
+        this.treeControl.dataNodes?.forEach((node) => {
+          this.treeControl.collapse(node);
+        });
+      }
     });
   }
   nodeHighlight(event: MouseEvent, newNode: FileTreeNode) {
