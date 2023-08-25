@@ -114,13 +114,13 @@ function buildTree(nodes: FileTreeNode[], rootNodes: FileTreeNode[], nodeMap) {
 }
 
 export function getPath(node: FileTreeNode, nodeMap) {
-  // let curr: FileTreeNode = node;
-  // const path: FileTreeNode[] = [];
-  // while (!isFolder(curr)) {
-  //   console.log('getPath: curr:', curr);
-  //   path.unshift(curr);
-  //   curr = nodeMap.get(curr.parent_id) as FileTreeNode;
-  // }
-  // return path;
-  return [];
+  let curr: FileTreeNode = node;
+  const path: FileTreeNode[] = [];
+  while (!isFolder(curr)) {
+    console.log('getPath: curr:', curr);
+    path.unshift(curr);
+    if (!curr.parent_id) throw new Error('getPath: no parent_id: ' + JSON.stringify(curr));
+    curr = nodeMap.get(curr.parent_id) as FileTreeNode;
+  }
+  return path;
 }
