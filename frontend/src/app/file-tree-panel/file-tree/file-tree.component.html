@@ -11,10 +11,12 @@
           [isSelected]="node.selected">
           <button mat-button>
             <span class="small-icon material-symbols-outlined" style="font-size: 18px">
-              {{ treeControl.isExpanded(node) ? "chevron_right" : "expand_more" }}
+              {{ getSectionSymbol(node) }}
             </span>
           </button>
-          <span class="material-symbols-outlined icon-spacing">article</span>
+          <span class="material-symbols-outlined icon-spacing">{{
+            getIcon(node) // node.type == "folder" ? "folder" : "description"
+          }}</span>
           {{ node.name }}
         </div>
       </ng-container>

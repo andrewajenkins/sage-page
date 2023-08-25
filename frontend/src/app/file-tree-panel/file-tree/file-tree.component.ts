@@ -138,8 +138,9 @@ export class FileTreeComponent {
   }
 
   getSectionSymbol(node) {
-    if (node.sections?.length == 0) return '';
-    return this.treeControl.isExpanded(node) ? 'chevron_right' : 'expand_more';
+    if (node.subNodes?.length > 0 || node.sections?.length > 0)
+      return this.treeControl.isExpanded(node) ? 'chevron_right' : 'expand_more';
+    else return '';
   }
 
   isValid(node: FileTreeNode) {
