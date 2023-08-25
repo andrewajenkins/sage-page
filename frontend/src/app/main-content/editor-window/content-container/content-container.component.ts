@@ -64,6 +64,9 @@ export class ContentContainerComponent {
         if (!this.nodeService.currentNode) return;
         const currentNode = this.nodeService.currentNode;
         if (isFile(currentNode) || isSection(currentNode)) {
+          currentNode.sections.forEach((node) => {
+            node.parent_id = currentNode.id;
+          });
           this.dataService.createSections(currentNode as ContentSection).subscribe((fileTree: any) => {
             const { nodeMap, rootNodes } = assembleTree(fileTree, this.nodeService.currentNode as ContentSection);
             this.nodeService.nodeMap = nodeMap;

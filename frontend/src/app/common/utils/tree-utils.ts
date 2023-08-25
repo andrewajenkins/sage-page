@@ -53,16 +53,19 @@ function populateParents(nodeMap) {
     if (node?.parent_id) {
       const parent = nodeMap.get(node.parent_id) as FileTreeNode;
       if (isFolder(parent)) {
+        if (isFile(node)) node.depth = 0;
         parent.subNodes.push(node);
       } else if (isSection(node)) {
+        node.depth = parent.depth! + 1;
         parent.sections.push(node);
       } else {
         parent.contents.push(node);
       }
-    } else rootNodes.push(node);
+    } else {
+      node.depth = 0;
+      rootNodes.push(node);
+    }
   });
-  // parent.sections.sort((a, b) => a.id - b.id);
-  // parent.content.sort((a, b) => a.id - b.id);
   return { nodeMap, rootNodes };
 }
 function initMap(nodes: FileTreeNode[], nodeMap: Map<number, FileTreeNode>) {

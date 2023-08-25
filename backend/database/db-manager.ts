@@ -28,6 +28,10 @@ class DatabaseService {
   }
   async createNodes(parent) {
     if (!this.db) throw new Error("Database not initialized");
+    for (let node of parent.sections) {
+      console.log("createNodes: inserting node:", node.text);
+      await this.db.getRepository("TreeNode").save(node);
+    }
     return await this.getFileTree();
   }
   public async updateNode(node: any) {
