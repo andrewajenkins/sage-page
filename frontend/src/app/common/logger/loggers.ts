@@ -19,11 +19,12 @@ const ignoreList = [
   'saveTreeState',
   'scrollDown',
 ];
+const isTestMode = true;
 export function ComponentLogger() {
   return function (constructor: Function) {
     for (const key of Object.getOwnPropertyNames(constructor.prototype)) {
       const originalMethod = constructor.prototype[key];
-      if (typeof originalMethod === 'function') {
+      if (typeof originalMethod === 'function' && !isTestMode) {
         constructor.prototype[key] = function (...args: any[]) {
           if (ignoreList.indexOf(key) === -1) console.log('--', constructor.name, key, 'args:', args, '\n');
           const result = originalMethod.apply(this, args);
@@ -38,7 +39,7 @@ export function ServiceLogger() {
   return function (constructor: Function) {
     for (const key of Object.getOwnPropertyNames(constructor.prototype)) {
       const originalMethod = constructor.prototype[key];
-      if (typeof originalMethod === 'function') {
+      if (typeof originalMethod === 'function' && !isTestMode) {
         constructor.prototype[key] = function (...args: any[]) {
           if (ignoreList.indexOf(key) === -1) console.log('---', constructor.name, key, 'args:', args, '\n');
           const result = originalMethod.apply(this, args);
@@ -49,7 +50,7 @@ export function ServiceLogger() {
     }
     for (const key of Object.getOwnPropertyNames(constructor)) {
       const originalMethod = constructor[key];
-      if (typeof originalMethod === 'function') {
+      if (typeof originalMethod === 'function' && !isTestMode) {
         constructor[key] = function (...args: any[]) {
           if (ignoreList.indexOf(key) === -1) console.log('---', constructor.name, key, 'statid:', args, '\n');
           const result = originalMethod.apply(this, args);

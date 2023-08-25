@@ -11,11 +11,11 @@ export function recursiveDeleteNode(sections: ContentSection, idToRemove: number
       }
       node.sections.length = 0;
     }
-    if (node.content) {
-      for (const subNode of node.content) {
+    if (node.contents) {
+      for (const subNode of node.contents) {
         clearSubNodes(subNode);
       }
-      node.content.length = 0;
+      node.contents.length = 0;
     }
   }
 
@@ -28,8 +28,8 @@ export function recursiveDeleteNode(sections: ContentSection, idToRemove: number
       if (node.sections) {
         removeNodeById(node.sections, idToRemove);
       }
-      if (node.content) {
-        removeNodeById(node.content, idToRemove);
+      if (node.contents) {
+        removeNodeById(node.contents, idToRemove);
       }
       return false;
     });
@@ -57,7 +57,7 @@ function populateParents(nodeMap) {
       } else if (isSection(node)) {
         parent.sections.push(node);
       } else {
-        parent.content.push(node);
+        parent.contents.push(node);
       }
     } else rootNodes.push(node);
   });
@@ -71,7 +71,7 @@ function initMap(nodes: FileTreeNode[], nodeMap: Map<number, FileTreeNode>) {
       node.subNodes = [];
     } else if (isFile(node) || isSection(node) || isContent(node)) {
       node.sections = [];
-      node.content = [];
+      node.contents = [];
     }
     nodeMap.set(node.id as number, node);
   });
@@ -98,8 +98,8 @@ function buildTree(nodes: FileTreeNode[], rootNodes: FileTreeNode[], nodeMap) {
       } else if (node.type === 'content') {
         if (findDebug) console.log('assembleTree: pushing content:', node);
         const parent = nodeMap.get(node.parent_id) as ContentSection;
-        if (!parent.content) parent.content = [];
-        parent.content.push(node);
+        if (!parent.contents) parent.contents = [];
+        parent.contents.push(node);
       } else if (node.type == 'heading' || isSection(node)) {
         if (findDebug) console.log('assembleTree: pushing section:', node);
         const parent = nodeMap.get(node.parent_id) as ContentSection;

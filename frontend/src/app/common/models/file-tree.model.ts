@@ -1,11 +1,5 @@
 import { ContentSection, isSection } from './section.model';
 
-export interface NodeType {
-  FILE;
-  FOLDER;
-  SECTION;
-}
-
 export interface FileTreeFolder {
   id: number;
   name: string;
@@ -24,7 +18,7 @@ export interface FileTreeFile {
   text: string;
   type: string;
   sections: ContentSection[];
-  content: ContentSection[];
+  contents: ContentSection[];
   generated?: boolean;
   depth?: number;
   selected?: boolean;

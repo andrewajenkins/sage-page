@@ -7,7 +7,7 @@ export interface ContentSection {
   parent_id: number;
   type: string;
   selected: boolean;
-  content: ContentSection[]; // section text that goes between the name and subsections
+  contents: ContentSection[]; // section text that goes between the name and subsections
   sections: ContentSection[]; // subsections to be created
   text?: string; // store the raw input strings
   depth?: number;
@@ -31,7 +31,7 @@ export const dummySection: ContentSection = {
   sections: [],
   name: '',
   parent_id: -1,
-  content: [],
+  contents: [],
   type: '',
   selected: false,
 };

@@ -86,7 +86,7 @@ export class ContentContainerComponent {
         }
         if (isSection(this.section) || isFile(this.section)) {
           remove(this.section.sections, (section) => section.text === cmd.content.text);
-          remove(this.section.content, (content) => content.text === cmd.content.text);
+          remove(this.section.contents, (content) => content.text === cmd.content.text);
         }
       } else if (cmd.action === NodeAction.DELETE_CURRENT_NODE) {
         this.section = undefined;
@@ -95,9 +95,9 @@ export class ContentContainerComponent {
         const section = this.section!;
         let index = section.sections.findIndex((section) => section.id === cmd.section.id);
         console.log('sections index:', index);
-        const array = index >= 0 ? section.sections : section.content;
+        const array = index >= 0 ? section.sections : section.contents;
         if (index < 0) {
-          index = section.content.findIndex((section) => section.id === cmd.section.id);
+          index = section.contents.findIndex((section) => section.id === cmd.section.id);
           console.log('content index:', index);
         }
         const newSection = NodeFactory.createSection({
@@ -114,12 +114,12 @@ export class ContentContainerComponent {
         newSection.focused = true;
       } else if (cmd.action === EditorAction.COPY_ALL) {
         if (!this.section) notifyPickSection();
-        const content = this.section!.content.map((content) => content.text).join('  \n');
+        const content = this.section!.contents.map((content) => content.text).join('  \n');
         const section = this.section!.sections.map((content) => content.text).join('  \n');
         this.clipboard.copy(content + '  \n' + section);
       } else if (cmd.action === EditorAction.COPY_SELECTED) {
         if (!this.section) notifyPickSection();
-        const content = this.section!.content.filter((content) => content.selected)
+        const content = this.section!.contents.filter((content) => content.selected)
           .map((content) => content.text)
           .join('  \n');
         const section = this.section!.sections.filter((content) => content.selected)
@@ -128,7 +128,7 @@ export class ContentContainerComponent {
         this.clipboard.copy(content + '  \n' + section);
       } else if (cmd.action === EditorAction.SELECT_ALL) {
         if (!this.section) notifyPickSection();
-        this.section!.content.forEach((content) => (content.selected = true));
+        this.section!.contents.forEach((content) => (content.selected = true));
         this.section!.sections.forEach((content) => (content.selected = true));
       } else if (cmd.action === EditorAction.DELETE_SELECTED) {
         const deleteSelected = (content: ContentSection[]) => {
@@ -144,17 +144,17 @@ export class ContentContainerComponent {
           return content.filter((content) => !content.selected);
         };
         if (!this.section) notifyPickSection();
-        this.section!.content = deleteSelected(this.section!.content);
+        this.section!.contents = deleteSelected(this.section!.contents);
         this.section!.sections = deleteSelected(this.section!.sections);
       } else if (cmd.action === EditorAction.DESELECT_ALL) {
         if (!this.section) notifyPickSection();
-        this.section!.content.forEach((content) => (content.selected = false));
+        this.section!.contents.forEach((content) => (content.selected = false));
         this.section!.sections.forEach((content) => (content.selected = false));
       } else if (cmd.action === EditorAction.ADD_NEW_SECTION) {
         if (!this.section) notifyPickSection();
 
         if (this.nodeService.acceptsContent()) {
-          this.section!.content.unshift(
+          this.section!.contents.unshift(
             NodeFactory.createSection({ parent_id: this.section!.id as number, editable: true })
           );
         } else throw new Error("Can't add section - no node selected in file tree!");

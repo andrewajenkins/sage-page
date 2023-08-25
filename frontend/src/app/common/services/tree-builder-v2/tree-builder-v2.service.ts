@@ -100,14 +100,14 @@ export class TreeBuilderV2Service {
     while (index < annotatedNodes.length) {
       const node = annotatedNodes[index];
       if (node.type && contentTypes.indexOf(node.type) !== -1) {
-        parent.content.push(annotatedNodes.shift() as ContentSection);
+        parent.contents.push(annotatedNodes.shift() as ContentSection);
       } else break;
     }
     return { docNodes: annotatedNodes, parent };
   }
 
   private getDocString(parent: ContentSection): string {
-    const contentString = parent.content.map((content) => content.text).join('  \n');
+    const contentString = parent.contents.map((content) => content.text).join('  \n');
     const sectionString = parent.sections.map((section) => section.text).join('  \n');
     const docString = contentString + '  \n' + sectionString;
     return docString;
@@ -121,7 +121,7 @@ export class TreeBuilderV2Service {
 
   handleContentSectionChange(parent: ContentSection) {
     const sectionIds = parent.sections.map((section) => section.id);
-    parent.content = parent.content.filter((content) => sectionIds.indexOf(content.id) === -1);
+    parent.contents = parent.contents.filter((content) => sectionIds.indexOf(content.id) === -1);
   }
   private adjustNodes(docNodes: ContentSection[], parent: ContentSection) {
     docNodes = this.adjustForDoc(docNodes);

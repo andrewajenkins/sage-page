@@ -74,7 +74,7 @@ export class TreeBuilderV2BuilderService {
   }
   private pushContent(node: ContentSection, parent: ContentSection, _rootNode, _ancestors: ContentSection[]) {
     this.removeDupesSection(parent, node);
-    parent.content.push(node);
+    parent.contents.push(node);
   }
   private write(node: ContentSection, parent: ContentSection) {
     node.parent_id = parent.id || -1;

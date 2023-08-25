@@ -1,7 +1,5 @@
-import { DataSource, getManager } from "typeorm";
+import { DataSource } from "typeorm";
 import ormConfig from "../ormconfig.json" assert { type: "json" };
-import { TreeBuilderService } from "../src/services/tree-builder-v4.service.ts";
-import { TreeNode } from "../src/entity/tree-node.entity.ts";
 
 class DatabaseService {
   private db: DataSource | undefined;
@@ -26,18 +24,11 @@ class DatabaseService {
   public async createNode(createNode: any) {
     if (!this.db) throw new Error("Database not initialized");
     await this.db.getRepository("TreeNode").save(createNode);
-    return {
-      tree: await this.getFileTree(),
-    };
+    return this.getFileTree();
   }
   async createNodes(parent) {
     if (!this.db) throw new Error("Database not initialized");
-    const builder = new TreeBuilderService(this.db);
-    const { populatedParent } = await builder.generate(parent);
-    return {
-      tree: populatedParent,
-      array: [await this.getFileTree()],
-    };
+    return await this.getFileTree();
   }
   public async updateNode(node: any) {
     if (!this.db) throw new Error("Database not initialized");
@@ -46,17 +37,7 @@ class DatabaseService {
 
   public async getFileTree() {
     if (!this.db) throw new Error("Database not initialized");
-    const fileTree = await this.db.getRepository("TreeNode").find();
-    const parent = fileTree.shift();
-    if (parent) {
-      parent["subNodes"] = fileTree;
-      const builder = new TreeBuilderService(this.db);
-      const { populatedParent } = await builder.generate(parent as TreeNode);
-      return {
-        tree: populatedParent,
-        array: [fileTree],
-      };
-    } else return null;
+    return this.db.getRepository("TreeNode").find();
   }
 
   public async deleteNode(id: number) {

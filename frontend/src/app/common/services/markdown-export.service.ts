@@ -27,8 +27,8 @@ export const dfs = function (file: FileTreeFile) {
     if (node.text) {
       result.push(headers[node.depth || -1] + ' ' + node.text + '  \n');
     }
-    if (node.content) {
-      node.content.forEach((content: ContentSection) => {
+    if (node.contents) {
+      node.contents.forEach((content: ContentSection) => {
         if (content.text) {
           result.push(content.text + '  \n');
         }

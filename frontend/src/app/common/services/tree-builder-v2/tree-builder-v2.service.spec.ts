@@ -69,7 +69,7 @@ describe('TreeBuilderV2Service', () => {
   });
 });
 function expectContentCount(rootNode: ContentSection, count: number) {
-  expect(rootNode.content.length).toEqual(count);
+  expect(rootNode.contents.length).toEqual(count);
 }
 function expectSectionCount(rootNode: ContentSection, count: number) {
   expect(rootNode.sections.length).toEqual(count);
@@ -113,9 +113,9 @@ export const dfsVerify = function (file: ContentSection, golden: ContentSection)
   const processNode = (node: ContentSection, gNode: ContentSection) => {
     // node.content.forEach((content: ContentSection) => {
     let result = true;
-    for (let i = 0; i < node.content.length; i++) {
-      const content = node.content[i];
-      const golden = gNode.content[i];
+    for (let i = 0; i < node.contents.length; i++) {
+      const content = node.contents[i];
+      const golden = gNode.contents[i];
       const localResult = shallowCompare(content, golden);
       if (localResult) console.log('shallowCompare: content:', content, golden);
       else console.error('shallowCompare: content:', content, golden);

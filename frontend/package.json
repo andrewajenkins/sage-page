@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "derp": "karma run"
+    "derp": "karma run",
+    "one-off": "karma start --single-run --reporters kjhtml"
   },
   "private": true,
   "dependencies": {
@@ -38,6 +39,7 @@
     "@angular/cli": "~16.1.0",
     "@angular/compiler-cli": "^16.1.0",
     "@types/jasmine": "~4.3.0",
+    "@types/node": "^20.5.6",
     "@types/puppeteer": "^7.0.4",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",

@@ -26,8 +26,7 @@ module.exports = function (config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://www.npmjs.com/search?q=keywords:karma-reporter
-    reporters: ["progress"],
-    // web server port
+    reporters: ["progress", "kjhtml"], // web server port
     port: 9876,
     // enable / disable colors in the output (reporters and logs)
     colors: true,
@@ -41,7 +40,7 @@ module.exports = function (config) {
     browsers: ["Chrome"],
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: true,
     // Concurrency level
     // how many browser instances should be started simultaneously
     concurrency: Infinity,
@@ -50,6 +49,7 @@ module.exports = function (config) {
       require("karma-chrome-launcher"),
       require("karma-jasmine-html-reporter"),
       // require("karma-coverage-istanbul-reporter"),
+      require("karma-jasmine-html-reporter"),
       require("@angular-devkit/build-angular"),
       require("@angular-devkit/build-angular/plugins/karma"),
     ],
@@ -58,6 +58,12 @@ module.exports = function (config) {
     // },
     mime: {
       "text/x-typescript": ["ts", "tsx"],
+    },
+    client: {
+      jasmine: {
+        random: false,
+        suppressAll: true,
+      },
     },
   });
 };
