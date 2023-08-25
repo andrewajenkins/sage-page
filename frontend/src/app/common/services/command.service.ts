@@ -6,7 +6,6 @@ import { ServiceLogger } from '../logger/loggers';
 @Injectable({
   providedIn: 'root',
 })
-@ServiceLogger()
 export class CommandService implements OnInit {
   private readonly UNDO_KEY = 'UNDO_STACK';
 
@@ -24,6 +23,7 @@ export class CommandService implements OnInit {
   }
 
   perform(command: Command<BaseAction>) {
+    console.log('- CommandService: perform', command.action, command);
     this.actionSubject.next(command);
   }
 }
