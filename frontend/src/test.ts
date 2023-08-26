@@ -8,7 +8,7 @@ declare const require: any;
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
-// Then we find all the tests.
+// Then we find all the test.
 const context = require.context('./', true, /app.component.spec\.ts/);
 
 // And load the modules.

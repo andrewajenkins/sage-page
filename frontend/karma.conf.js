@@ -14,7 +14,7 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     // files: [
     //   {
-    //     pattern: "./src/app/app.component.spec.ts",
+    //     pattern: "./src/app/app.component.disabled.ts",
     //     type: "js",
     //   },
     // ],
@@ -33,13 +33,13 @@ module.exports = function (config) {
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
-    // enable / disable watching file and executing tests whenever any file changes
+    // enable / disable watching file and executing test whenever any file changes
     autowatch: false,
     // start these browsers
     // available browser launchers: https://www.npmjs.com/search?q=keywords:karma-launcher
     browsers: ["Chrome"],
     // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
+    // if true, Karma captures browsers, runs the test and exits
     singleRun: true,
     // Concurrency level
     // how many browser instances should be started simultaneously

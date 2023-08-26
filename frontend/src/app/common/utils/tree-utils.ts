@@ -37,7 +37,7 @@ export function recursiveDeleteNode(sections: ContentSection, idToRemove: number
 
   removeNodeById(sections, idToRemove);
 }
-export const assembleTree = (nodes: FileTreeNode[], currentNode: ContentSection) => {
+export const assembleTree = (nodes: FileTreeNode[], currentNode?: ContentSection) => {
   const debug = true;
   const nodeMap = new Map<number, FileTreeNode>();
   const rootNodes: FileTreeNode[] = [];
