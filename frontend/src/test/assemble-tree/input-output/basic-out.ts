@@ -193,3 +193,38 @@ export const outNestedHeaders = [
     ],
   },
 ] as unknown as ContentNode[];
+
+export const outUpdatedNestedHeader = [
+  {
+    id: 1,
+    type: 'folder',
+    name: 'root-folder',
+    subNodes: [
+      {
+        id: 2,
+        type: 'file',
+        parent_id: 1,
+        name: 'sub-file',
+        depth: 0,
+        sections: [
+          {
+            id: 3,
+            name: 'heading 1',
+            type: 'heading',
+            parent_id: 2,
+            depth: 1,
+            sections: [
+              {
+                id: 4,
+                name: 'heading 2',
+                type: 'heading',
+                parent_id: 3,
+                depth: 2,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+] as unknown as ContentNode[];

@@ -77,20 +77,16 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
     } else {
       if (node.type === 'heading') {
         console.log('buildFromDepths: heading:', node.text, node);
-        const parent = node.parent_id > 0 ? nodeMap.get(node.parent_id) : getParent(node.depth - 1, depthMap); // Get the parent at the previous depth
-        if (!parent.sections) {
-          parent.sections = [];
-        }
+        const parent = getParent(node.depth - 1, depthMap); // Get the parent at the previous depth
+        if (!parent.sections) parent.sections = [];
         node.parent_id = parent.id;
         parent.sections.push(node);
         depthMap.set(node.depth, node);
         clearLowerDepths(node.depth);
       } else {
         const maxDepth = Math.max(...depthMap.keys());
-        const parent = node.parent_id > 0 ? nodeMap.get(node.parent_id) : getParent(node.depth - 1, depthMap);
-        if (!parent.contents) {
-          parent.contents = [];
-        }
+        const parent = getParent(node.depth - 1, depthMap);
+        if (!parent.contents) parent.contents = [];
         node.parent_id = parent.id;
         parent.contents.push(node);
       }

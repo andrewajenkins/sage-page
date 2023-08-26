@@ -17,7 +17,7 @@ describe('buildMap', () => {
       const parseResult = parseNodes(currentNode);
       const sectionNodes = buildMapV2(parseResult);
       const expected = data['out' + title];
-      expect(deepEqualWithDebug(expected, sectionNodes)).toBe(true);
+      expect(deepEqualWithDebug(sectionNodes, expected)).toBe(true);
     });
   }
 });

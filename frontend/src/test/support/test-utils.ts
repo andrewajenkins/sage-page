@@ -1,5 +1,5 @@
 // test
-export function deepEqualWithDebug(expected, found, level = 0) {
+export function deepEqualWithDebug(found, expected, level = 0) {
   if (expected === found) return true;
   if (typeof expected !== 'object' || typeof found !== 'object') {
     console.error(' '.repeat(level * 2), 'Not equal:', expected, found);
@@ -23,7 +23,7 @@ export function deepEqualWithDebug(expected, found, level = 0) {
       return false;
     }
     console.log(' '.repeat(level * 2), 'Checking key:', key, 'values:', expected[key], found[key]);
-    if (!deepEqualWithDebug(expected[key], found[key], level + 1)) {
+    if (!deepEqualWithDebug(found[key], expected[key], level + 1)) {
       if (Array.isArray(expected[key]) && Array.isArray(found[key])) {
         console.error(' '.repeat(level * 2), 'Values are not equal: array:');
         for (let i = 0; i < expected[key].length; i++) {
