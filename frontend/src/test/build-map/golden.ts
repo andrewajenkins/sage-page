@@ -15,3 +15,23 @@ export const outFileContents = [
     type: 'content',
   },
 ];
+
+export const inBasicPromotion: string = `
+### Basic Promotion
+#### promo sub-header
+`;
+
+export const outBasicPromotion = [
+  {
+    name: 'Basic Promotion',
+    text: '### Basic Promotion',
+    type: 'heading',
+    depth: 1,
+  },
+  {
+    name: 'promo sub-header',
+    text: '#### promo sub-header',
+    type: 'heading',
+    depth: 2,
+  },
+];

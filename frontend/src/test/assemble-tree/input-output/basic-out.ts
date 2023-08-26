@@ -195,3 +195,38 @@ export const outRootFileHeadersContent = [
     ],
   },
 ] as unknown as FileTreeNode[];
+
+export const outHeaderPromotion = [
+  {
+    id: 1,
+    type: 'folder',
+    name: 'root-folder',
+    subNodes: [
+      {
+        id: 2,
+        type: 'file',
+        parent_id: 1,
+        name: 'sub-file',
+        depth: 0,
+        sections: [
+          {
+            id: 3,
+            name: 'heading1',
+            type: 'heading',
+            parent_id: 2,
+            depth: 1,
+            sections: [
+              {
+                id: 4,
+                name: 'heading2',
+                type: 'heading',
+                parent_id: 3,
+                depth: 1,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+] as unknown as FileTreeNode[];

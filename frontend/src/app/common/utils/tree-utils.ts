@@ -78,7 +78,7 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
     } else {
       if (node.type === 'heading') {
         console.log('buildFromDepths: heading:', node.text);
-        const parent = node.parent_id ? nodeMap.get(node.parent_id) : depthMap.get(node.depth - 1); // Get the parent at the previous depth
+        const parent = node.parent_id ? nodeMap.get(node.parent_id) : getParent(node.depth - 1, depthMap); // Get the parent at the previous depth
         if (!parent.sections) {
           parent.sections = [];
         }
@@ -88,7 +88,7 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
         clearLowerDepths(node.depth);
       } else {
         const maxDepth = Math.max(...depthMap.keys());
-        const parent = node.parent_id ? nodeMap.get(node.parent_id) : depthMap.get(maxDepth);
+        const parent = node.parent_id ? nodeMap.get(node.parent_id) : getParent(node.depth - 1, depthMap);
         if (!parent.contents) {
           parent.contents = [];
         }
@@ -121,13 +121,13 @@ export function buildMapV2(parent: ContentSection) {
   for (let i = 0; i < sections.length; i++) {
     const node = sections[i];
     if (node.depth) {
-      const localParent = depthMap.get(node.depth - 1);
+      const localParent = getParent(node.depth - 1, depthMap);
       if (!localParent) throw new Error('buildMapV2: no localParent for node:' + JSON.stringify(node));
       node.generated = true;
       node.type = 'heading';
       node.depth = localParent.depth! + 1;
       localParent!.sections.push(node);
-      depthMap.set(node.depth, node);
+      depthMap.set(node.depth!, node);
       oldSections.push(cloneDeep(node));
       while (sections[i + 1] && sections[i + 1].depth == undefined) {
         const subNode = sections[++i];
@@ -149,6 +149,14 @@ export function buildMapV2(parent: ContentSection) {
     }
   }
   return oldSections;
+}
+function getParent(depth, depthMap) {
+  let i = depth;
+  while (!depthMap.get(i)) {
+    i--;
+    if (i < 0) throw new Error('getParent: no parent found');
+  }
+  return depthMap.get(i);
 }
 export function parseNodes(parent: ContentSection) {
   parent.sections.forEach((node) => {
