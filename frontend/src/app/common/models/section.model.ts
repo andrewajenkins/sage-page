@@ -1,6 +1,8 @@
 export interface ContentNode {
-  editable: boolean;
   id: number;
+  feId?: string;
+  orderId?: string;
+  editable: boolean;
   name: string;
   parent_id: number;
   type: string;
@@ -13,6 +15,7 @@ export interface ContentNode {
   focused?: boolean;
   generated?: boolean;
 }
+
 export interface ChatLogEntry {
   role: string;
   content: ContentNode[];
