@@ -4,7 +4,7 @@ import { deepEqualWithDebug } from '../support/test-utils';
 import * as data from './golden';
 import { NodeFactory } from '../../app/common/utils/node.factory';
 
-const testsToRun = ['HeaderPromotion'];
+const testsToRun = [];
 
 describe('buildMap', () => {
   const inputKeys = Object.keys(data).filter((key) => key.includes('in'));
