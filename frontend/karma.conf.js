@@ -12,12 +12,12 @@ module.exports = function (config) {
     // available frameworks: https://www.npmjs.com/search?q=keywords:karma-adapter
     frameworks: ["jasmine", "@angular-devkit/build-angular"],
     // list of files / patterns to load in the browser
-    // files: [
-    //   {
-    //     pattern: "./src/app/app.component.disabled.ts",
-    //     type: "js",
-    //   },
-    // ],
+    files: [
+      {
+        pattern: "./src/test/**/*.spec.ts",
+        type: "ts",
+      },
+    ],
     // list of files / patterns to exclude
     exclude: [],
     // preprocess matching files before serving them to the browser
