@@ -76,8 +76,8 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
       depthMap.set(0, node);
     } else {
       if (node.type === 'heading') {
-        console.log('buildFromDepths: heading:', node.text);
-        const parent = node.parent_id ? nodeMap.get(node.parent_id) : getParent(node.depth - 1, depthMap); // Get the parent at the previous depth
+        console.log('buildFromDepths: heading:', node.text, node);
+        const parent = node.parent_id > 0 ? nodeMap.get(node.parent_id) : getParent(node.depth - 1, depthMap); // Get the parent at the previous depth
         if (!parent.sections) {
           parent.sections = [];
         }
@@ -87,7 +87,7 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
         clearLowerDepths(node.depth);
       } else {
         const maxDepth = Math.max(...depthMap.keys());
-        const parent = node.parent_id ? nodeMap.get(node.parent_id) : getParent(node.depth - 1, depthMap);
+        const parent = node.parent_id > 0 ? nodeMap.get(node.parent_id) : getParent(node.depth - 1, depthMap);
         if (!parent.contents) {
           parent.contents = [];
         }
@@ -102,10 +102,10 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
 function initMap(nodes: ContentNode[], nodeMap: Map<number, ContentNode>) {
   nodes.forEach((node) => {
     if (isFolder(node)) {
-      node.subNodes = [];
+      if (!node.subNodes) node.subNodes = [];
     } else if (isFile(node) || isSection(node) || isContent(node)) {
-      node.sections = [];
-      node.contents = [];
+      if (!node.sections) node.sections = [];
+      if (!node.contents) node.contents = [];
     }
     nodeMap.set(node.id as number, node);
   });
@@ -150,9 +150,11 @@ export function buildMapV2(parent: ContentNode) {
   return oldSections;
 }
 function getParent(depth, depthMap) {
-  let i = depth;
+  let i = depth >= 0 ? depth : depthMap.size;
+  console.log('getParent: depth:', depth, depthMap.get(depth));
   while (!depthMap.get(i)) {
     i--;
+    console.log('getParent: depth:', depth, depthMap.get(depth));
     if (i < 0) throw new Error('getParent: no parent found');
   }
   return depthMap.get(i);
