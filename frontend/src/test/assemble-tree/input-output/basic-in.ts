@@ -120,7 +120,7 @@ export const inRootFileHeadersContent = [
   {
     id: 6,
     type: 'content2',
-    parent_id: 2,
+    parent_id: 4,
   },
 ] as unknown as FileTreeNode[];
 
