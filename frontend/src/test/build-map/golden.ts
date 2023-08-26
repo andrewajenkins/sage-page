@@ -16,12 +16,12 @@ export const outFileContents = [
   },
 ];
 
-export const inBasicPromotion: string = `
+export const inHeaderPromotion: string = `
 ### Basic Promotion
 #### promo sub-header
 `;
 
-export const outBasicPromotion = [
+export const outHeaderPromotion = [
   {
     name: 'Basic Promotion',
     text: '### Basic Promotion',

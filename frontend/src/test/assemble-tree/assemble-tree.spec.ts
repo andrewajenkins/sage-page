@@ -1,7 +1,7 @@
 import { assembleTree } from '../../app/common/utils/tree-utils';
 import * as input from './input-output/basic-in';
 import * as output from './input-output/basic-out';
-import { deepEqualWithDebug } from '../support/utils';
+import { deepEqualWithDebug } from '../support/test-utils';
 
 describe('assembleTree', () => {
   const inputs = Object.keys(input);
