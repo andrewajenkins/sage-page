@@ -1,14 +1,14 @@
 import { FileTreeNode } from './file-tree.model';
 
-export interface ContentSection {
+export interface ContentNode {
   editable: boolean;
   id: number;
   name: string;
   parent_id: number;
   type: string;
   selected: boolean;
-  contents: ContentSection[]; // section text that goes between the name and subsections
-  sections: ContentSection[]; // subsections to be created
+  contents: ContentNode[]; // section text that goes between the name and subsections
+  sections: ContentNode[]; // subsections to be created
   text?: string; // store the raw input strings
   depth?: number;
   focused?: boolean;
@@ -16,16 +16,16 @@ export interface ContentSection {
 }
 export interface ChatLogEntry {
   role: string;
-  content: ContentSection[];
+  content: ContentNode[];
   id: number;
 }
-export function isSection(node: FileTreeNode | undefined): node is ContentSection {
+export function isSection(node: FileTreeNode | undefined): node is ContentNode {
   return (!!node && node.type === 'section') || (!!node && node.type === 'heading');
 }
-export function isContent(node: FileTreeNode | undefined): node is ContentSection {
+export function isContent(node: FileTreeNode | undefined): node is ContentNode {
   return !!node && (node.type === 'content' || node.type === 'list_item' || node.type === 'text');
 }
-export const dummySection: ContentSection = {
+export const dummySection: ContentNode = {
   id: -1,
   editable: false,
   sections: [],

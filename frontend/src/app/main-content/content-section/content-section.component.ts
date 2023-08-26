@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnChanges, ViewChild } from '@angular/core';
 
-import { ContentSection, dummySection } from '../../common/models/section.model';
+import { ContentNode, dummySection } from '../../common/models/section.model';
 import { NodeAction } from '../../common/models/command.model';
 import { CommandService } from '../../common/services/command.service';
 
@@ -10,7 +10,7 @@ import { CommandService } from '../../common/services/command.service';
   styleUrls: ['./content-section.component.scss'],
 })
 export class ContentSectionComponent implements OnChanges {
-  @Input() contentSection: ContentSection = dummySection;
+  @Input() contentSection: ContentNode = dummySection;
 
   @ViewChild('textContent', { static: false }) textContent!: ElementRef;
   @Input() hideEditorContent: boolean = false;

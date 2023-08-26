@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ServiceLogger } from '../logger/loggers';
 import { FileTreeFile, FileTreeFolder, FileTreeNode, isFile } from '../models/file-tree.model';
-import { ChatLogEntry, ContentSection, isSection } from '../models/section.model';
+import { ChatLogEntry, ContentNode, isSection } from '../models/section.model';
 import { getDummyFile } from '../utils/node.factory';
 
 const url = 'http://localhost:4200/api';
@@ -26,15 +26,15 @@ export class DataService {
   }
 
   getNode(sub: number): Observable<FileTreeNode> {
-    return this.http.get<ContentSection>(url + '/node?id=' + sub);
+    return this.http.get<ContentNode>(url + '/node?id=' + sub);
   }
 
   createNode(node: FileTreeNode) {
-    return this.http.post<ContentSection[]>(url + '/node', node);
+    return this.http.post<ContentNode[]>(url + '/node', node);
   }
 
   createSection(node: FileTreeNode) {
-    return this.http.post<ContentSection>(url + '/node', node).pipe(
+    return this.http.post<ContentNode>(url + '/node', node).pipe(
       map((response) => {
         console.log('done - createSection: id:', response.id);
         return response.id;
@@ -57,15 +57,15 @@ export class DataService {
   }
 
   deleteNode(node: FileTreeNode) {
-    return this.http.delete<ContentSection[]>(url + '/node?id=' + node.id + '&type=' + node.type, {
+    return this.http.delete<ContentNode[]>(url + '/node?id=' + node.id + '&type=' + node.type, {
       body: {
         id: node.id,
       },
     });
   }
 
-  saveContent(contents: ContentSection[]) {
-    return this.http.post<ContentSection[]>(url + '/content', contents);
+  saveContent(contents: ContentNode[]) {
+    return this.http.post<ContentNode[]>(url + '/content', contents);
   }
 
   getFile(fileID: number): Observable<FileTreeFile> {
@@ -84,10 +84,10 @@ export class DataService {
   }
 
   saveConversation(log: ChatLogEntry[]) {
-    return this.http.post<ContentSection[]>(url + '/conversation', log);
+    return this.http.post<ContentNode[]>(url + '/conversation', log);
   }
 
-  createSections(contentSection: ContentSection) {
-    return this.http.post<ContentSection[]>(url + '/nodes', contentSection);
+  createSections(contentSection: ContentNode) {
+    return this.http.post<ContentNode[]>(url + '/nodes', contentSection);
   }
 }

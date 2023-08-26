@@ -1,5 +1,5 @@
 import { FileTreeFile, FileTreeNode } from './file-tree.model';
-import { ContentSection } from './section.model';
+import { ContentNode } from './section.model';
 
 interface BaseCommand<TAction> {
   action: TAction;
@@ -48,10 +48,10 @@ export interface ValueCommand<TAction> extends BaseCommand<TAction> {
   value: string;
 }
 export interface SectionCommand<TAction> extends BaseCommand<TAction> {
-  section: ContentSection;
+  section: ContentNode;
 }
 export interface ContentCommand<TAction> extends BaseCommand<TAction> {
-  content: ContentSection;
+  content: ContentNode;
 }
 export interface NodeCommand<TAction> extends BaseCommand<TAction> {
   node: FileTreeNode;
@@ -63,7 +63,7 @@ export interface FileCommand<TAction> extends BaseCommand<TAction> {
   file: FileTreeFile;
 }
 export interface SectionsCommand<TAction> extends BaseCommand<TAction> {
-  sections: ContentSection[];
+  sections: ContentNode[];
 }
 export type Command<TAction> =
   | BaseCommand<TAction>

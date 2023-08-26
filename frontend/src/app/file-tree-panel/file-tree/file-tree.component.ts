@@ -8,7 +8,7 @@ import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { ContentSection, isSection } from '../../common/models/section.model';
+import { ContentNode, isSection } from '../../common/models/section.model';
 import { FileTreeActionHandler } from './file-tree-action-handler';
 import { NotificationService } from '../../common/services/notification.service';
 import { assembleTree } from '../../common/utils/tree-utils';
@@ -71,9 +71,9 @@ export class FileTreeComponent {
   }
   ngOnInit() {
     this.dataService.getFileTree().subscribe((fileTree) => {
-      const { nodeMap, rootNodes } = assembleTree(fileTree, this.nodeService.currentNode as ContentSection);
+      const { nodeMap, rootNodes } = assembleTree(fileTree, this.nodeService.currentNode as ContentNode);
       this.nodeService.nodeMap = nodeMap;
-      this.matTreeService.refreshTree(rootNodes as ContentSection[]);
+      this.matTreeService.refreshTree(rootNodes as ContentNode[]);
       if (this.treeControl.dataNodes && this.treeControl.dataNodes.length > 0) {
         this.treeControl.expandAll();
         this.treeControl.dataNodes?.forEach((node) => {

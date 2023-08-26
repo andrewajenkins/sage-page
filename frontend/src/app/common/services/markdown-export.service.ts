@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FileTreeFile } from '../models/file-tree.model';
-import { ContentSection } from '../models/section.model';
+import { ContentNode } from '../models/section.model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,19 +23,19 @@ export class MarkdownExportService {
 const headers = ['#', '##', '###', '####', '#####', '######'];
 export const dfs = function (file: FileTreeFile) {
   let result: string[] = [];
-  const processNode = (node: FileTreeFile | ContentSection) => {
+  const processNode = (node: FileTreeFile | ContentNode) => {
     if (node.text) {
       result.push(headers[node.depth || -1] + ' ' + node.text + '  \n');
     }
     if (node.contents) {
-      node.contents.forEach((content: ContentSection) => {
+      node.contents.forEach((content: ContentNode) => {
         if (content.text) {
           result.push(content.text + '  \n');
         }
       });
     }
     if (node.sections) {
-      node.sections.forEach((section: ContentSection) => {
+      node.sections.forEach((section: ContentNode) => {
         processNode(section);
       });
     }

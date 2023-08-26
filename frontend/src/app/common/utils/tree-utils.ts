@@ -1,10 +1,10 @@
-import { ContentSection, isContent, isSection } from '../models/section.model';
+import { ContentNode, isContent, isSection } from '../models/section.model';
 import { cloneDeep, remove } from 'lodash';
 import { map } from 'rxjs';
 import { FileTreeFolder, FileTreeNode, isFile, isFolder } from '../models/file-tree.model';
 
-export function recursiveDeleteNode(sections: ContentSection, idToRemove: number) {
-  function clearSubNodes(node: ContentSection) {
+export function recursiveDeleteNode(sections: ContentNode, idToRemove: number) {
+  function clearSubNodes(node: ContentNode) {
     if (node.sections) {
       for (const subNode of node.sections) {
         clearSubNodes(subNode);
@@ -20,7 +20,7 @@ export function recursiveDeleteNode(sections: ContentSection, idToRemove: number
   }
 
   function removeNodeById(tree, idToRemove) {
-    remove(tree, (node: ContentSection) => {
+    remove(tree, (node: ContentNode) => {
       if (node.id === idToRemove) {
         clearSubNodes(node);
         return true; // Remove this node
@@ -37,7 +37,7 @@ export function recursiveDeleteNode(sections: ContentSection, idToRemove: number
 
   removeNodeById(sections, idToRemove);
 }
-export const assembleTree = (nodes: FileTreeNode[], currentNode?: ContentSection) => {
+export const assembleTree = (nodes: FileTreeNode[], currentNode?: ContentNode) => {
   const debug = true;
   const nodeMap = new Map<number, FileTreeNode>();
   const rootNodes: FileTreeNode[] = [];
@@ -112,9 +112,9 @@ function initMap(nodes: FileTreeNode[], nodeMap: Map<number, FileTreeNode>) {
   });
 }
 
-export function buildMapV2(parent: ContentSection) {
-  const oldSections: ContentSection[] = [];
-  const depthMap = new Map<number, ContentSection>();
+export function buildMapV2(parent: ContentNode) {
+  const oldSections: ContentNode[] = [];
+  const depthMap = new Map<number, ContentNode>();
   const sections = parent.sections;
   parent.sections = [];
   depthMap.set(0, parent);
@@ -158,13 +158,13 @@ function getParent(depth, depthMap) {
   }
   return depthMap.get(i);
 }
-export function parseNodes(parent: ContentSection) {
+export function parseNodes(parent: ContentNode) {
   parent.sections.forEach((node) => {
     parse(node);
   });
   return parent;
 }
-function parse(node: ContentSection) {
+function parse(node: ContentNode) {
   const text = node.text;
   if (!text) return;
   if (text.startsWith('- ###### ')) {

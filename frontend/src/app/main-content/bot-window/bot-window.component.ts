@@ -17,7 +17,7 @@ import { cloneDeep } from 'lodash';
 import { ComponentLogger } from '../../common/logger/loggers';
 import { ContentAction, isFlagCommand, StateAction } from '../../common/models/command.model';
 import { CommandService } from '../../common/services/command.service';
-import { ChatLogEntry, ContentSection } from '../../common/models/section.model';
+import { ChatLogEntry, ContentNode } from '../../common/models/section.model';
 import { NodeFactory } from '../../common/utils/node.factory';
 import { Chat } from './chat.model';
 import { NodeService } from '../../common/services/node.service';
@@ -105,7 +105,7 @@ export class BotWindowComponent implements OnInit {
   parseResults(response) {
     const contentArray = response.choices[0].message.content.split('\n');
     const contents = [...contentArray];
-    const newContents: ContentSection[] = [];
+    const newContents: ContentNode[] = [];
     let insideCodeBlock = false;
     let code = '';
     let codeType = '';
@@ -164,7 +164,7 @@ export class BotWindowComponent implements OnInit {
   }
 
   sendSelection(logEntry: ChatLogEntry) {
-    const selected: ContentSection[] = cloneDeep(logEntry.content.filter((content) => content.selected));
+    const selected: ContentNode[] = cloneDeep(logEntry.content.filter((content) => content.selected));
     selected.forEach((content) => {
       content.selected = false;
     });

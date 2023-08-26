@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CommandService } from './command.service';
 import { NodeAction, StateAction } from '../models/command.model';
 import { FileTreeFile, FileTreeNode, isFile, isFolder } from '../models/file-tree.model';
-import { ContentSection, isSection } from '../models/section.model';
+import { ContentNode, isSection } from '../models/section.model';
 import { DataService } from './data.service';
 import { MatTreeService } from './mat-tree.service';
 

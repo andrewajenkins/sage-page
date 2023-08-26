@@ -1,4 +1,4 @@
-import { ContentSection, isSection } from './section.model';
+import { ContentNode, isSection } from './section.model';
 
 export interface FileTreeFolder {
   id: number;
@@ -17,20 +17,20 @@ export interface FileTreeFile {
   parent_id: number;
   text: string;
   type: string;
-  sections: ContentSection[];
-  contents: ContentSection[];
+  sections: ContentNode[];
+  contents: ContentNode[];
   generated?: boolean;
   depth?: number;
   selected?: boolean;
   orderId?: number;
 }
-export type FileTreeNode = FileTreeFolder | FileTreeFile | ContentSection;
+export type FileTreeNode = FileTreeFolder | FileTreeFile | ContentNode;
 export function isFolder(node: FileTreeNode | undefined): node is FileTreeFolder {
   return !!node && node.type === 'folder';
 }
 export function isFile(node: FileTreeNode | undefined): node is FileTreeFile {
   return !!node && node.type === 'file';
 }
-export function isContentNode(node: FileTreeNode | undefined): node is FileTreeFile | ContentSection {
+export function isContentNode(node: FileTreeNode | undefined): node is FileTreeFile | ContentNode {
   return isFile(node) || isSection(node);
 }

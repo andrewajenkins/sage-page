@@ -13,7 +13,7 @@ import {
   NodeAction,
   StateAction,
 } from '../../../common/models/command.model';
-import { ContentSection, isSection } from '../../../common/models/section.model';
+import { ContentNode, isSection } from '../../../common/models/section.model';
 import { NodeService } from '../../../common/services/node.service';
 import { FileTreeFile, isContentNode, isFile, isFolder } from '../../../common/models/file-tree.model';
 import { assembleTree, buildMapV2, parseNodes, recursiveDeleteNode } from '../../../common/utils/tree-utils';
@@ -31,7 +31,7 @@ import { MatTreeService } from '../../../common/services/mat-tree.service';
 @ComponentLogger()
 export class ContentContainerComponent {
   @ViewChild('scrollMe') private wikiWindow!: ElementRef;
-  section!: ContentSection | FileTreeFile | undefined;
+  section!: ContentNode | FileTreeFile | undefined;
   private selectionsSubscription!: Subscription;
 
   constructor(
@@ -71,15 +71,15 @@ export class ContentContainerComponent {
           return;
         }
         if (isFile(currentNode) || isSection(currentNode)) {
-          const parseResult = parseNodes(currentNode as ContentSection);
-          const sectionNodes = buildMapV2(parseResult as ContentSection);
+          const parseResult = parseNodes(currentNode as ContentNode);
+          const sectionNodes = buildMapV2(parseResult as ContentNode);
           currentNode.sections = sectionNodes;
           console.log('currentNode:', currentNode);
-          this.dataService.createSections(currentNode as ContentSection).subscribe((fileTree: any) => {
-            const { nodeMap, rootNodes } = assembleTree(fileTree, this.nodeService.currentNode as ContentSection);
+          this.dataService.createSections(currentNode as ContentNode).subscribe((fileTree: any) => {
+            const { nodeMap, rootNodes } = assembleTree(fileTree, this.nodeService.currentNode as ContentNode);
             this.nodeService.nodeMap = nodeMap;
             for (let node of nodeMap.values()) this.dataService.updateNode(node).subscribe((node) => {});
-            this.matTreeService.refreshTree(rootNodes as ContentSection[]);
+            this.matTreeService.refreshTree(rootNodes as ContentNode[]);
           });
         } else
           this.commandService.perform({
@@ -91,7 +91,7 @@ export class ContentContainerComponent {
         if (isFile(cmd.node) || isSection(cmd.node)) this.section = cmd.node;
       } else if (isContentCommand(cmd) && cmd.action === NodeAction.DELETE_NODE) {
         if (cmd.content.id) {
-          recursiveDeleteNode(this.section as ContentSection, cmd.content.id);
+          recursiveDeleteNode(this.section as ContentNode, cmd.content.id);
         }
         if (isSection(this.section) || isFile(this.section)) {
           remove(this.section.sections, (section) => section.text === cmd.content.text);
@@ -140,7 +140,7 @@ export class ContentContainerComponent {
         this.section!.contents.forEach((content) => (content.selected = true));
         this.section!.sections.forEach((content) => (content.selected = true));
       } else if (cmd.action === EditorAction.DELETE_SELECTED) {
-        const deleteSelected = (content: ContentSection[]) => {
+        const deleteSelected = (content: ContentNode[]) => {
           content
             .filter((content) => content.selected)
             .forEach((content) => {

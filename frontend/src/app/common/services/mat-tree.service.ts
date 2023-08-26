@@ -3,7 +3,7 @@ import { ServiceLogger } from '../logger/loggers';
 import { FileTreeComponent } from '../../file-tree-panel/file-tree/file-tree.component';
 import { map } from 'rxjs';
 import { FileTreeFolder, FileTreeNode, isFile, isFolder } from '../models/file-tree.model';
-import { ContentSection, isContent, isSection } from '../models/section.model';
+import { ContentNode, isContent, isSection } from '../models/section.model';
 import { cloneDeep } from 'lodash';
 import { NodeService } from './node.service';
 import { CommandService } from './command.service';
@@ -22,7 +22,7 @@ export class MatTreeService {
   registerComponent(component) {
     this.fileTreeComponent = component;
   }
-  refreshTree(data?: ContentSection[]) {
+  refreshTree(data?: ContentNode[]) {
     let temp, expandCurrent;
     if (!data || data.length == 0) temp = this.fileTreeComponent.dataSource.data;
     else {
@@ -38,7 +38,7 @@ export class MatTreeService {
     if (expandCurrent) this.fileTreeComponent.treeControl.expand(this.nodeService.currentNode!);
   }
   insertData(data: FileTreeNode[], treeData: FileTreeNode[]) {
-    const targetNode = data[0] as ContentSection;
+    const targetNode = data[0] as ContentNode;
     for (let i = 0; i < treeData.length; i++) {
       if (treeData[i].id === targetNode.id) {
         treeData.splice(i, 1, targetNode);

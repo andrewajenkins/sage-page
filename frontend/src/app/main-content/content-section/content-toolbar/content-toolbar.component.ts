@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommandService } from '../../../common/services/command.service';
 import { EditorAction, NodeAction } from '../../../common/models/command.model';
-import { ContentSection } from '../../../common/models/section.model';
+import { ContentNode } from '../../../common/models/section.model';
 
 @Component({
   selector: 'app-content-toolbar',
@@ -10,7 +10,7 @@ import { ContentSection } from '../../../common/models/section.model';
 })
 export class ContentToolbarComponent {
   contentMenu: any;
-  @Input() contentSection!: ContentSection;
+  @Input() contentSection!: ContentNode;
   @Input() hideEditorContent: boolean = false;
   @Output() contentToolbarEvent = new EventEmitter();
 

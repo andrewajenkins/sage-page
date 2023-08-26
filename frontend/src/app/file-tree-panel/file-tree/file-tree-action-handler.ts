@@ -13,7 +13,7 @@ import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
 import { NodeFactory } from '../../common/utils/node.factory';
 import { assembleTree } from '../../common/utils/tree-utils';
-import { ContentSection } from '../../common/models/section.model';
+import { ContentNode } from '../../common/models/section.model';
 
 @Injectable({
   providedIn: 'root',
@@ -92,8 +92,8 @@ export class FileTreeActionHandler {
     });
   }
   handleTreeUpdate(resp: any) {
-    const { nodeMap, rootNodes } = assembleTree(resp, this.nodeService.currentNode as ContentSection);
+    const { nodeMap, rootNodes } = assembleTree(resp, this.nodeService.currentNode as ContentNode);
     const tree = [...nodeMap.entries()].map((v, k) => v[1]).filter((node) => node.parent_id == null);
-    this.matTreeService.refreshTree(rootNodes as ContentSection[]);
+    this.matTreeService.refreshTree(rootNodes as ContentNode[]);
   }
 }

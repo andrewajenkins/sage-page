@@ -1,5 +1,5 @@
 import { FileTreeFile, FileTreeNode } from '../models/file-tree.model';
-import { ContentSection } from '../models/section.model';
+import { ContentNode } from '../models/section.model';
 import { cloneDeep } from 'lodash';
 
 const dummyFile: any = {
@@ -42,7 +42,7 @@ export class NodeFactory {
     };
   }
 
-  static createSection(uniqueParams: Partial<ContentSection>): ContentSection {
+  static createSection(uniqueParams: Partial<ContentNode>): ContentNode {
     const newNode = cloneDeep(dummySection);
     newNode.type = 'section';
     if (!newNode.text) newNode.text = newNode.name;
