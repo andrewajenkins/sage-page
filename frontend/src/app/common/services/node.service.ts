@@ -1,30 +1,29 @@
 import { Injectable } from '@angular/core';
 import { CommandService } from './command.service';
-import { NodeAction, StateAction } from '../models/command.model';
-import { FileTreeFile, FileTreeNode, isFile, isFolder } from '../models/file-tree.model';
+import { StateAction } from '../models/command.model';
+import { isContentNode, isFile } from '../models/file-tree.model';
 import { ContentNode, isSection } from '../models/section.model';
-import { DataService } from './data.service';
-import { MatTreeService } from './mat-tree.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NodeService {
-  private _nodeMap!: Map<number, FileTreeNode>;
-  get nodeMap(): Map<number, FileTreeNode> {
+  private _nodeMap!: Map<number, ContentNode>;
+  get nodeMap(): Map<number, ContentNode> {
     return this._nodeMap;
   }
-  set nodeMap(value: Map<number, FileTreeNode>) {
+  set nodeMap(value: Map<number, ContentNode>) {
     this._nodeMap = value;
   }
-  prev!: FileTreeNode | undefined;
-  private _currentNode!: FileTreeNode | undefined;
-  get currentNode(): FileTreeNode | undefined {
+  prev!: ContentNode | undefined;
+  private _currentNode!: ContentNode | undefined;
+  get currentNode(): ContentNode | undefined {
     return this._currentNode;
   }
-  set currentNode(value: FileTreeNode | undefined) {
+  private _currentFile!: ContentNode;
+  set currentNode(value: ContentNode | undefined) {
     this._currentNode = value;
-    if (isFile(this._currentNode)) {
+    if (isContentNode(this._currentNode) && isFile(this._currentNode)) {
       this.currentFile = this._currentNode;
     }
     this.commandService.perform({
@@ -33,17 +32,17 @@ export class NodeService {
       flag: true,
     });
   }
+  get currentFile(): ContentNode {
+    return this._currentFile;
+  }
   acceptsContent() {
     if (!this._currentNode) {
       return false;
     }
     return isFile(this._currentNode) || isSection(this._currentNode) || !!this._currentFile;
   }
-  private _currentFile!: FileTreeFile;
-  get currentFile(): FileTreeFile {
-    return this._currentFile;
-  }
-  set currentFile(value: FileTreeFile) {
+
+  set currentFile(value: ContentNode) {
     this._currentFile = value;
     this.commandService.perform({
       action: StateAction.SET_FILE_SELECTED,

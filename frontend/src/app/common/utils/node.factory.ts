@@ -1,4 +1,3 @@
-import { FileTreeFile, FileTreeNode } from '../models/file-tree.model';
 import { ContentNode } from '../models/section.model';
 import { cloneDeep } from 'lodash';
 
@@ -26,14 +25,14 @@ export function getDummyFile() {
   return cloneDeep(dummyFile);
 }
 export class NodeFactory {
-  static createNode(uniqueParams: Partial<FileTreeNode>): FileTreeNode {
+  static createNode(uniqueParams: Partial<ContentNode>): ContentNode {
     return {
       ...getDummyFile(),
       ...uniqueParams,
     };
   }
 
-  static createFile(uniqueParams: Partial<FileTreeNode>) {
+  static createFile(uniqueParams: Partial<ContentNode>) {
     const newNode = getDummyFile();
     newNode.type = 'file';
     return {

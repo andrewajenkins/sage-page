@@ -1,4 +1,4 @@
-import { FileTreeNode } from '../../../app/common/models/file-tree.model';
+import { ContentNode } from '../../../app/common/models/section.model';
 
 export const inNestedFolders = [
   {
@@ -11,7 +11,7 @@ export const inNestedFolders = [
     type: 'folder',
     parent_id: 1,
   },
-] as unknown as FileTreeNode[];
+] as unknown as ContentNode[];
 
 export const inNestedFoldersFile = [
   {
@@ -31,7 +31,7 @@ export const inNestedFoldersFile = [
     parent_id: 2,
     name: 'sub-file',
   },
-] as unknown as FileTreeNode[];
+] as unknown as ContentNode[];
 export const inRootFileContent = [
   {
     id: 1,
@@ -54,7 +54,7 @@ export const inRootFileContent = [
     type: 'content2',
     parent_id: 2,
   },
-] as unknown as FileTreeNode[];
+] as unknown as ContentNode[];
 
 export const inRootFileHeaders = [
   {
@@ -83,7 +83,7 @@ export const inRootFileHeaders = [
     parent_id: 2,
     depth: 1,
   },
-] as unknown as FileTreeNode[];
+] as unknown as ContentNode[];
 
 export const inRootFileHeadersContent = [
   {
@@ -122,7 +122,7 @@ export const inRootFileHeadersContent = [
     type: 'content2',
     parent_id: 4,
   },
-] as unknown as FileTreeNode[];
+] as unknown as ContentNode[];
 
 export const inNestedHeaders = [
   {
@@ -149,4 +149,4 @@ export const inNestedHeaders = [
     type: 'heading',
     depth: 2,
   },
-] as unknown as FileTreeNode[];
+] as unknown as ContentNode[];

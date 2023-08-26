@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ServiceLogger } from '../logger/loggers';
-import { FileTreeFile, FileTreeFolder, FileTreeNode, isFile } from '../models/file-tree.model';
+import { isFile } from '../models/file-tree.model';
 import { ChatLogEntry, ContentNode, isSection } from '../models/section.model';
 import { getDummyFile } from '../utils/node.factory';
 
@@ -22,18 +22,18 @@ export class DataService {
   constructor(private http: HttpClient) {}
 
   getFileTree(): Observable<any> {
-    return this.http.get<FileTreeNode[]>(url + '/filetree');
+    return this.http.get<ContentNode[]>(url + '/filetree');
   }
 
-  getNode(sub: number): Observable<FileTreeNode> {
+  getNode(sub: number): Observable<ContentNode> {
     return this.http.get<ContentNode>(url + '/node?id=' + sub);
   }
 
-  createNode(node: FileTreeNode) {
+  createNode(node: ContentNode) {
     return this.http.post<ContentNode[]>(url + '/node', node);
   }
 
-  createSection(node: FileTreeNode) {
+  createSection(node: ContentNode) {
     return this.http.post<ContentNode>(url + '/node', node).pipe(
       map((response) => {
         console.log('done - createSection: id:', response.id);
@@ -42,7 +42,7 @@ export class DataService {
     );
   }
 
-  updateNode(node: FileTreeNode) {
+  updateNode(node: ContentNode) {
     const updateNode = {
       id: node.id,
       name: node.name,
@@ -53,10 +53,10 @@ export class DataService {
       updateNode['text'] = node.text;
     }
     console.log('UPDATE_NODE:', updateNode);
-    return this.http.put<FileTreeNode[]>(url + '/node', updateNode);
+    return this.http.put<ContentNode[]>(url + '/node', updateNode);
   }
 
-  deleteNode(node: FileTreeNode) {
+  deleteNode(node: ContentNode) {
     return this.http.delete<ContentNode[]>(url + '/node?id=' + node.id + '&type=' + node.type, {
       body: {
         id: node.id,
@@ -68,7 +68,7 @@ export class DataService {
     return this.http.post<ContentNode[]>(url + '/content', contents);
   }
 
-  getFile(fileID: number): Observable<FileTreeFile> {
+  getFile(fileID: number): Observable<ContentNode> {
     return this.getNode(fileID).pipe(
       map((newNode) => {
         if (isFile(newNode)) {
@@ -79,8 +79,8 @@ export class DataService {
     );
   }
 
-  getFolder(folderID: number): Observable<FileTreeFolder> {
-    return this.getNode(folderID) as Observable<FileTreeFolder>;
+  getFolder(folderID: number): Observable<ContentNode> {
+    return this.getNode(folderID) as Observable<ContentNode>;
   }
 
   saveConversation(log: ChatLogEntry[]) {

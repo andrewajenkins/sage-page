@@ -5,7 +5,6 @@ import {
   NodeAction,
   StateAction,
 } from '../../common/models/command.model';
-import { FileTreeFile } from '../../common/models/file-tree.model';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { Injectable } from '@angular/core';
@@ -45,7 +44,7 @@ export class FileTreeActionHandler {
       } else if (isValueCommand(cmd) && action === NodeAction.CREATE_FILE) {
         const currentNode = this.nodeService.currentNode;
         if (!currentNode) return;
-        const newNode: FileTreeFile = NodeFactory.createFile({
+        const newNode: ContentNode = NodeFactory.createFile({
           name: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
           text: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
           parent_id: currentNode.id as number,

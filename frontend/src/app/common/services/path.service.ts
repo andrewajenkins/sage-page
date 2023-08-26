@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { CommandService } from './command.service';
-import { FileTreeNode } from '../models/file-tree.model';
+import { ContentNode } from '../models/file-tree.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PathService {
-  private _currentPath: FileTreeNode[] = [];
+  private _currentPath: ContentNode[] = [];
   private _currentIndex = 0;
-  get currentPath(): FileTreeNode[] {
+  get currentPath(): ContentNode[] {
     return this._currentPath;
   }
-  set currentPath(path: FileTreeNode[]) {
+  set currentPath(path: ContentNode[]) {
     this._currentPath = path;
   }
   constructor(private commandService: CommandService) {}
-  pathTo(node: FileTreeNode) {
+  pathTo(node: ContentNode) {
     this._currentPath.push(node);
     this._currentIndex++;
   }

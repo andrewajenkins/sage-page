@@ -1,14 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ServiceLogger } from '../logger/loggers';
 import { FileTreeComponent } from '../../file-tree-panel/file-tree/file-tree.component';
-import { map } from 'rxjs';
-import { FileTreeFolder, FileTreeNode, isFile, isFolder } from '../models/file-tree.model';
+import { isFile, isFolder } from '../models/file-tree.model';
 import { ContentNode, isContent, isSection } from '../models/section.model';
-import { cloneDeep } from 'lodash';
 import { NodeService } from './node.service';
-import { CommandService } from './command.service';
-import { NodeAction, StateAction } from '../models/command.model';
-import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +32,7 @@ export class MatTreeService {
     this.applyTreeState(this.state);
     if (expandCurrent) this.fileTreeComponent.treeControl.expand(this.nodeService.currentNode!);
   }
-  insertData(data: FileTreeNode[], treeData: FileTreeNode[]) {
+  insertData(data: ContentNode[], treeData: ContentNode[]) {
     const targetNode = data[0] as ContentNode;
     for (let i = 0; i < treeData.length; i++) {
       if (treeData[i].id === targetNode.id) {
@@ -45,10 +40,10 @@ export class MatTreeService {
         return;
       }
     }
-    treeData.forEach((node) => {
+    treeData.forEach((node: ContentNode) => {
       if (isFolder(node)) {
         return this.insertData(data, node.subNodes);
-      } else if (isFile(node) || isSection(node) || isContent(node)) {
+      } else if (isSection(node)) {
         return this.insertData(data, node.sections);
       }
     });
@@ -68,7 +63,7 @@ export class MatTreeService {
     this.populateMap(this.fileTreeComponent.treeControl.dataNodes, state);
     this.state = state;
   }
-  populateMap(dataNodes: FileTreeNode[], state: Map<number, boolean>) {
+  populateMap(dataNodes: ContentNode[], state: Map<number, boolean>) {
     dataNodes?.forEach((node) => {
       state.set(node.id as number, this.fileTreeComponent.treeControl.isExpanded(node));
       if (isFolder(node)) {
@@ -82,7 +77,7 @@ export class MatTreeService {
     if (!savedState) return;
     this.applyMap(this.fileTreeComponent.treeControl.dataNodes, savedState);
   }
-  applyMap(dataNodes: FileTreeNode[], savedState: Map<number, boolean>) {
+  applyMap(dataNodes: ContentNode[], savedState: Map<number, boolean>) {
     console.log('dataNodes:', dataNodes);
     if (!dataNodes) return;
     dataNodes?.forEach((node) => {

@@ -1,4 +1,4 @@
-import { FileTreeNode } from '../../../app/common/models/file-tree.model';
+import { ContentNode } from '../../../app/common/models/file-tree.model';
 
 export const inSiblingHeaders = [
   {
@@ -27,4 +27,4 @@ export const inSiblingHeaders = [
     parent_id: 2,
     depth: 1,
   },
-] as unknown as FileTreeNode[];
+] as unknown as ContentNode[];

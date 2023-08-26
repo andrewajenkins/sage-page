@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { FileTreeFile } from '../models/file-tree.model';
 import { ContentNode } from '../models/section.model';
 
 @Injectable({
@@ -8,7 +7,7 @@ import { ContentNode } from '../models/section.model';
 export class MarkdownExportService {
   constructor() {}
 
-  downloadMarkdown(file: FileTreeFile, fileName: string = 'markdown.md') {
+  downloadMarkdown(file: ContentNode, fileName: string = 'markdown.md') {
     const contentArray = dfs(file);
     const blob = new Blob([...contentArray], { type: 'text/plain' });
     const url = window.URL.createObjectURL(blob);
@@ -21,9 +20,9 @@ export class MarkdownExportService {
   }
 }
 const headers = ['#', '##', '###', '####', '#####', '######'];
-export const dfs = function (file: FileTreeFile) {
+export const dfs = function (file: ContentNode) {
   let result: string[] = [];
-  const processNode = (node: FileTreeFile | ContentNode) => {
+  const processNode = (node: ContentNode | ContentNode) => {
     if (node.text) {
       result.push(headers[node.depth || -1] + ' ' + node.text + '  \n');
     }

@@ -1,7 +1,6 @@
 import { ContentNode, isContent, isSection } from '../models/section.model';
 import { cloneDeep, remove } from 'lodash';
-import { map } from 'rxjs';
-import { FileTreeFolder, FileTreeNode, isFile, isFolder } from '../models/file-tree.model';
+import { isFile, isFolder } from '../models/file-tree.model';
 
 export function recursiveDeleteNode(sections: ContentNode, idToRemove: number) {
   function clearSubNodes(node: ContentNode) {
@@ -37,10 +36,10 @@ export function recursiveDeleteNode(sections: ContentNode, idToRemove: number) {
 
   removeNodeById(sections, idToRemove);
 }
-export const assembleTree = (nodes: FileTreeNode[], currentNode?: ContentNode) => {
+export const assembleTree = (nodes: ContentNode[], currentNode?: ContentNode) => {
   const debug = true;
-  const nodeMap = new Map<number, FileTreeNode>();
-  const rootNodes: FileTreeNode[] = [];
+  const nodeMap = new Map<number, ContentNode>();
+  const rootNodes: ContentNode[] = [];
   if (debug) console.log('assembleTree: nodes:', nodes);
   if (!nodes || nodes.length == 0) return { nodeMap, rootNodes };
   initMap(nodes, nodeMap);
@@ -58,7 +57,7 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
     }
   }
   for (let node of nodes) {
-    if (node.type === 'folder') {
+    if (isFolder(node)) {
       // If it's a root folder
       if (!node.parent_id) {
         rootNodes.push(node);
@@ -100,7 +99,7 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
   return { nodeMap, rootNodes };
 }
 
-function initMap(nodes: FileTreeNode[], nodeMap: Map<number, FileTreeNode>) {
+function initMap(nodes: ContentNode[], nodeMap: Map<number, ContentNode>) {
   nodes.forEach((node) => {
     if (isFolder(node)) {
       node.subNodes = [];
@@ -224,7 +223,7 @@ function parse(node: ContentNode) {
   }
   return node;
 }
-export function getPath(node: FileTreeNode, nodeMap) {
+export function getPath(node: ContentNode, nodeMap) {
   return [];
   // let curr: FileTreeNode = node;
   // const path: FileTreeNode[] = [];

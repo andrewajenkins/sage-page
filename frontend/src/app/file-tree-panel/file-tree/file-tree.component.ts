@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { ComponentLogger } from '../../common/logger/loggers';
-import { FileTreeNode, isFile, isFolder } from '../../common/models/file-tree.model';
+import { isFile, isFolder } from '../../common/models/file-tree.model';
 import { isNodeCommand, NodeAction, StateAction } from '../../common/models/command.model';
 import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
@@ -22,12 +22,12 @@ import { assembleTree } from '../../common/utils/tree-utils';
 export class FileTreeComponent {
   // element node references
   highlightElement!: HTMLElement | undefined;
-  highlightNode!: FileTreeNode | undefined;
+  highlightNode!: ContentNode | undefined;
   currentElement!: HTMLElement;
-  curr!: FileTreeNode | undefined;
+  curr!: ContentNode | undefined;
 
-  dataSource = new MatTreeNestedDataSource<FileTreeNode>();
-  treeControl = new NestedTreeControl<FileTreeNode>((node) => {
+  dataSource = new MatTreeNestedDataSource<ContentNode>();
+  treeControl = new NestedTreeControl<ContentNode>((node) => {
     if (isFolder(node)) {
       return node.subNodes;
     } else if (node.type == 'heading' || isSection(node) || isFile(node)) {
@@ -82,7 +82,7 @@ export class FileTreeComponent {
       }
     });
   }
-  nodeHighlight(event: MouseEvent, newNode: FileTreeNode) {
+  nodeHighlight(event: MouseEvent, newNode: ContentNode) {
     const previousNode = this.highlightNode;
     const currentNode = this.nodeService.hasCurrent() ? this.nodeService.currentNode : undefined;
 
@@ -97,7 +97,7 @@ export class FileTreeComponent {
     if (this.highlightElement && newNode.id !== currentNode?.id)
       this.highlightElement.style.backgroundColor = 'whitesmoke';
   }
-  nodeSelect(node: FileTreeNode) {
+  nodeSelect(node: ContentNode) {
     this.nodeSelectHighlight(node);
     this.curr = node;
     this.commandService.perform({
@@ -105,24 +105,24 @@ export class FileTreeComponent {
       node: node,
     });
   }
-  nodeSelectHighlight(node: FileTreeNode) {
+  nodeSelectHighlight(node: ContentNode) {
     if (this.nodeService.prev) this.nodeService.prev.selected = false;
     if (this.nodeService.currentNode) this.nodeService.prev = this.nodeService.currentNode;
     this.nodeService.currentNode = node;
     node.selected = true;
   }
 
-  nodeUnHighlight($event: MouseEvent, previousNode: FileTreeNode) {
+  nodeUnHighlight($event: MouseEvent, previousNode: ContentNode) {
     if (this.highlightElement && previousNode && previousNode.id !== this.nodeService.currentNode?.id)
       this.highlightElement.style.backgroundColor = 'white';
     this.highlightNode = undefined;
     this.highlightElement = undefined;
   }
 
-  getClass(node: FileTreeNode) {
+  getClass(node: ContentNode) {
     return this.currentElement && node.id === this.nodeService.currentNode?.id;
   }
-  hasSub = (_: number, node: FileTreeNode) => {
+  hasSub = (_: number, node: ContentNode) => {
     if (isFolder(node)) return node.subNodes.filter((subNode) => this.isValid(subNode)).length > 0;
     else {
       return node.sections.filter((subNode) => this.isValid(subNode)).length > 0;
@@ -143,7 +143,7 @@ export class FileTreeComponent {
     else return '';
   }
 
-  isValid(node: FileTreeNode) {
+  isValid(node: ContentNode) {
     return isFolder(node) || isFile(node) || node.generated;
   }
 }

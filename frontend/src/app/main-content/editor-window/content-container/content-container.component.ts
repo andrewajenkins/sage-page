@@ -15,7 +15,7 @@ import {
 } from '../../../common/models/command.model';
 import { ContentNode, isSection } from '../../../common/models/section.model';
 import { NodeService } from '../../../common/services/node.service';
-import { FileTreeFile, isContentNode, isFile, isFolder } from '../../../common/models/file-tree.model';
+import { isContentNode, isFile, isFolder } from '../../../common/models/file-tree.model';
 import { assembleTree, buildMapV2, parseNodes, recursiveDeleteNode } from '../../../common/utils/tree-utils';
 import { remove } from 'lodash';
 import { NodeFactory } from '../../../common/utils/node.factory';
@@ -31,7 +31,7 @@ import { MatTreeService } from '../../../common/services/mat-tree.service';
 @ComponentLogger()
 export class ContentContainerComponent {
   @ViewChild('scrollMe') private wikiWindow!: ElementRef;
-  section!: ContentNode | FileTreeFile | undefined;
+  section!: ContentNode | ContentNode | undefined;
   private selectionsSubscription!: Subscription;
 
   constructor(
@@ -93,7 +93,7 @@ export class ContentContainerComponent {
         if (cmd.content.id) {
           recursiveDeleteNode(this.section as ContentNode, cmd.content.id);
         }
-        if (isSection(this.section) || isFile(this.section)) {
+        if (isContentNode(this.section) && (isSection(this.section) || isFile(this.section))) {
           remove(this.section.sections, (section) => section.text === cmd.content.text);
           remove(this.section.contents, (content) => content.text === cmd.content.text);
         }

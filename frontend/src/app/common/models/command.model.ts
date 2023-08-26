@@ -1,4 +1,3 @@
-import { FileTreeFile, FileTreeNode } from './file-tree.model';
 import { ContentNode } from './section.model';
 
 interface BaseCommand<TAction> {
@@ -54,13 +53,13 @@ export interface ContentCommand<TAction> extends BaseCommand<TAction> {
   content: ContentNode;
 }
 export interface NodeCommand<TAction> extends BaseCommand<TAction> {
-  node: FileTreeNode;
+  node: ContentNode;
 }
 export interface FlagCommand<TAction> extends BaseCommand<TAction> {
   flag: boolean;
 }
 export interface FileCommand<TAction> extends BaseCommand<TAction> {
-  file: FileTreeFile;
+  file: ContentNode;
 }
 export interface SectionsCommand<TAction> extends BaseCommand<TAction> {
   sections: ContentNode[];
