@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
-import { DataService } from '../../common/services/data.service';
 import { ComponentLogger } from '../../common/logger/loggers';
 import { isNodeCommand, NodeAction, StateAction } from '../../common/models/command.model';
 import { TreeService } from '../../common/services/tree.service';
@@ -52,6 +51,9 @@ export class FileTreeComponent {
     this.dataSource = this.treeService.tree.dataSource;
     this.treeControl = this.treeService.tree.treeControl;
   }
+  ngAfterViewInit() {
+    // this.treeService.treeState.refreshTree(this.treeService.tree);
+  }
   nodeHighlight(event: MouseEvent, newNode: ContentNode) {
     const previousNode = this.highlightNode;
     const currentNode = this.treeService.currentNode;
@@ -73,6 +75,10 @@ export class FileTreeComponent {
     this.commandService.perform({
       action: NodeAction.LOAD_NODE,
       node: node,
+    });
+    this.commandService.perform({
+      action: StateAction.SET_NODE_SELECTED,
+      flag: true,
     });
   }
   nodeSelectHighlight(node: ContentNode) {

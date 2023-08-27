@@ -59,15 +59,15 @@ export class TreeService {
     this.dataService.getFileTree().subscribe((fileTree) => {
       const { nodeMap, rootNodes } = this.treeBuilder.assembleTree(this._tree.currentNode!, fileTree);
       this.nodeMap = nodeMap;
-      for (let node of nodeMap.values()) this.dataService.updateNode(node).subscribe((node) => {});
+      // for (let node of nodeMap.values()) this.dataService.updateNode(node).subscribe((node) => {});
       this._treeState.refreshTree(rootNodes as ContentNode[]);
-      const treeControl = this._tree.treeControl;
-      if (treeControl.dataNodes && treeControl.dataNodes.length > 0) {
-        treeControl.expandAll();
-        treeControl.dataNodes?.forEach((node) => {
-          treeControl.collapse(node);
-        });
-      }
+      // const treeControl = this._tree.treeControl;
+      // if (treeControl.dataNodes && treeControl.dataNodes.length > 0) {
+      //   treeControl.expandAll();
+      //   treeControl.dataNodes?.forEach((node) => {
+      //     treeControl.collapse(node);
+      //   });
+      // }
     });
     return Promise.resolve();
   }

@@ -2,10 +2,12 @@ import { DataService } from './data.service';
 import { Injectable } from '@angular/core';
 import { ContentNode } from '../models/content-node.model';
 import { cloneDeep } from 'lodash';
+import { ServiceLogger } from '../logger/loggers';
 
 @Injectable({
   providedIn: 'root',
 })
+@ServiceLogger()
 export class TreeBuilderV6Service {
   constructor(private dataService: DataService) {}
 

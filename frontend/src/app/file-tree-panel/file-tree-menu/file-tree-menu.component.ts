@@ -30,7 +30,7 @@ export class FileTreeMenuComponent {
     })
       .afterClosed()
       .subscribe((res) => {
-        if (res.result != 'submit') return;
+        if (res?.result != 'submit') return;
         this.commandService.perform({
           action: NodeAction.CREATE_FOLDER,
           value: res.name,

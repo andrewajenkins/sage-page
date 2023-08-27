@@ -28,12 +28,12 @@ export class FileTreeActionHandler {
       this.treeService.treeState.saveTreeState();
       const currentNode = this.treeService.currentNode;
       if (isValueCommand(cmd) && action === NodeAction.CREATE_FOLDER) {
-        const newNode: any = {
+        const newNode: ContentNode = new ContentNode({
           name: cmd.value || '' + this.fileIndex++,
           subNodes: [],
           type: 'folder',
           parent_id: currentNode?.id as number,
-        };
+        });
         this.dataService.createNode(newNode).subscribe((resp) => {
           this.treeService.handleTreeUpdate(resp);
         });

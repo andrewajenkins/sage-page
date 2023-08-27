@@ -22,4 +22,7 @@ export class Tree {
     this.currentNode = this.dataSource.data[0];
     this.nodeMap = new Map<number, ContentNode>();
   }
+  setRootNodes(rootNodes: ContentNode[]) {
+    this.dataSource.data = rootNodes;
+  }
 }

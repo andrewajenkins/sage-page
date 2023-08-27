@@ -31,5 +31,11 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "types": [
+    "node",
+    "jasmine",
+    "jasminewd2",
+    "jest"
+  ],
 }

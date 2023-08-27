@@ -15,37 +15,37 @@ export class TreeState {
   }
 
   refreshTree(data?: ContentNode[]) {
-    let temp, expandCurrent;
-    if (!data || data.length == 0) temp = this.dataSource.data;
-    else {
-      temp = this.dataSource.data;
-      if ((expandCurrent = !this.isRootData(data))) {
-        this.insertData(data!, temp);
-      } else temp = data;
-    }
+    if (!data || data.length == 0) data = this.dataSource.data; //, expandCurrent;
+    // if (!data || data.length == 0) temp = this.dataSource.data;
+    // else {
+    //   temp = this.dataSource.data;
+    //   if ((expandCurrent = !this.isRootData(data))) {
+    //     this.insertData(data!, temp);
+    //   } else temp = data;
+    // }
     this.dataSource.data = [];
-    this.dataSource.data = temp!;
-    this.treeControl.dataNodes = temp!;
+    this.dataSource.data = data!;
+    this.treeControl.dataNodes = data!;
     this.applyTreeState(this.state);
     // if (expandCurrent) this.treeControl.expand(this.tree.currentNode!);
   }
 
-  private insertData(data: ContentNode[], treeData: ContentNode[]) {
-    const targetNode = data[0] as ContentNode;
-    for (let i = 0; i < treeData.length; i++) {
-      if (treeData[i].id === targetNode.id) {
-        treeData.splice(i, 1, targetNode);
-        return;
-      }
-    }
-    treeData.forEach((node: ContentNode) => {
-      if (node.isFolder()) {
-        return this.insertData(data, node.subNodes);
-      } else if (node.isSection()) {
-        return this.insertData(data, node.sections);
-      }
-    });
-  }
+  // private insertData(data: ContentNode[], treeData: ContentNode[]) {
+  //   const targetNode = data[0] as ContentNode;
+  //   for (let i = 0; i < treeData.length; i++) {
+  //     if (treeData[i].id === targetNode.id) {
+  //       treeData.splice(i, 1, targetNode);
+  //       return;
+  //     }
+  //   }
+  //   treeData.forEach((node: ContentNode) => {
+  //     if (node.isFolder()) {
+  //       return this.insertData(data, node.subNodes);
+  //     } else if (node.isSection()) {
+  //       return this.insertData(data, node.sections);
+  //     }
+  //   });
+  // }
   private isRootData(data) {
     return !data[0]?.parent_id;
   }
