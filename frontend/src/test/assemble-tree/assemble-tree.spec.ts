@@ -13,30 +13,17 @@ import { DataService } from '../../app/common/services/data.service';
 import { of } from 'rxjs';
 
 const titlesToRun = []; //['RootFileHeadersContent'];
-const dataServiceMock = {
-  createNode: jest.fn(),
-  getFileTree: jest.fn(),
-};
-
 describe('assembleTree', () => {
   let builderService: TreeBuilderV6Service;
-  let fixture: ComponentFixture<FileTreeComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [FileTreeComponent],
       imports: [AppModule, HttpClientTestingModule],
-      providers: [
-        TreeBuilderV6Service,
-        TreeService,
-        CommandService,
-        FileTreeActionHandler,
-        { provide: DataService, useValue: dataServiceMock },
-      ],
+      providers: [TreeBuilderV6Service],
     });
-    jest.spyOn(dataServiceMock, 'getFileTree').mockReturnValue(of([]));
     builderService = TestBed.inject(TreeBuilderV6Service);
-    fixture = TestBed.createComponent(FileTreeComponent);
+    TestBed.createComponent(FileTreeComponent);
   });
 
   const inputs = Object.keys(input);
