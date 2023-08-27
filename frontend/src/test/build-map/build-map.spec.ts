@@ -12,7 +12,7 @@ describe('buildMap', () => {
   console.log('running titles:', titles);
   for (let title of testsToRun.length > 0 ? testsToRun : titles) {
     it(title, () => {
-      const nodes = NodeFactory.createSectionsFromText(data['in' + title].trim(), 0);
+      const nodes = NodeFactory.createSectionsFromText(data['in' + title].trim(), 'asdf1234');
       const currentNode = getCurrentNode(nodes);
       const parseResult = parseNodes(currentNode);
       const sectionNodes = buildMapV2(parseResult);

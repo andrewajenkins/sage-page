@@ -51,9 +51,9 @@ export class NodeFactory {
     };
   }
 
-  static createSectionsFromText(text: string, id: number) {
+  static createSectionsFromText(text: string, feId: string) {
     return text.split('\n').map((text) => {
-      return new ContentNode({ name: text, text, parent_id: id });
+      return new ContentNode({ name: text, text, parent_id: feId });
     });
   }
 }

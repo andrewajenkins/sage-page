@@ -26,7 +26,7 @@ export class TreeState {
     this.dataSource.data = [];
     this.dataSource.data = data!;
     this.treeControl.dataNodes = data!;
-    this.applyTreeState(this.state);
+    // this.applyTreeState(this.state);
     // if (expandCurrent) this.treeControl.expand(this.tree.currentNode!);
   }
 

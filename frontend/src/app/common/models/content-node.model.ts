@@ -5,7 +5,7 @@ export class ContentNode {
   feId: string;
   editable!: boolean;
   name!: string;
-  parent_id!: number;
+  parent_id!: string;
   type!: string;
   selected!: boolean;
   contents!: ContentNode[];
@@ -18,21 +18,22 @@ export class ContentNode {
   orderId?: number;
 
   constructor(newNode: Partial<ContentNode>) {
-    this.feId = generateRandomAlphanumeric(10);
-    this.id = newNode.id || -1;
-    this.editable = newNode.editable || false;
-    this.name = newNode.name || 'DEFAULT_NAME';
-    this.parent_id = newNode.parent_id || -1;
-    this.type = newNode.type || 'section';
-    this.selected = newNode.selected || false;
-    this.contents = newNode.contents || [];
-    this.sections = newNode.sections || [];
-    this.subNodes = newNode.subNodes || [];
-    this.text = newNode.text;
-    this.depth = newNode.depth;
-    this.focused = newNode.focused;
-    this.generated = newNode.generated;
-    this.orderId = newNode.orderId;
+    if (!newNode.feId) this.feId = generateRandomAlphanumeric(10);
+    else this.feId = newNode.feId;
+    this.id = newNode?.id || -1;
+    this.editable = newNode?.editable || false;
+    this.name = newNode?.name || 'DEFAULT_NAME';
+    this.parent_id = newNode?.parent_id || '';
+    this.type = newNode?.type || 'section';
+    this.selected = newNode?.selected || false;
+    this.contents = newNode?.contents || [];
+    this.sections = newNode?.sections || [];
+    this.subNodes = newNode?.subNodes || [];
+    this.text = newNode?.text;
+    this.depth = newNode?.depth;
+    this.focused = newNode?.focused;
+    this.generated = newNode?.generated;
+    this.orderId = newNode?.orderId;
   }
 
   isSection(): boolean {
@@ -51,21 +52,20 @@ export class ContentNode {
     return this.type === 'file' || this.isSection();
   }
   hasParent(): boolean {
-    return this.parent_id !== -1;
+    return this.parent_id !== '';
   }
-  dummySection: any = {
-    id: -1,
-    editable: false,
-    name: '',
-    parent_id: -1,
-    contents: [],
-    sections: [],
-    subNodes: [],
-    type: '',
-    selected: false,
-  };
 }
-
+const dummySection: any = {
+  id: -1,
+  editable: false,
+  name: '',
+  parent_id: -1,
+  contents: [],
+  sections: [],
+  subNodes: [],
+  type: '',
+  selected: false,
+};
 export interface ChatLogEntry {
   role: string;
   content: ContentNode[];

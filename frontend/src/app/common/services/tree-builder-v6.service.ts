@@ -13,13 +13,13 @@ export class TreeBuilderV6Service {
 
   assembleTree(currentNode: ContentNode, nodeDatas: ContentNode[]) {
     const rootNodes: ContentNode[] = [];
-    const nodeMap = new Map<number, ContentNode>();
+    const nodeMap = new Map<string, ContentNode>();
     if (!nodeDatas || nodeDatas.length == 0) return { nodeMap, rootNodes };
     const nodes = this.initNodes(nodeDatas);
     this.initMap(nodes, nodeMap);
     return this.buildFromIds(nodes, nodeMap, rootNodes);
   }
-  private buildFromIds(nodes: ContentNode[], nodeMap: Map<number, ContentNode>, rootNodes: ContentNode[]) {
+  private buildFromIds(nodes: ContentNode[], nodeMap: Map<string, ContentNode>, rootNodes: ContentNode[]) {
     for (let node of nodes) {
       if (node.isFolder()) {
         if (!node.hasParent()) rootNodes.push(node);
@@ -40,7 +40,7 @@ export class TreeBuilderV6Service {
     }
     return { nodeMap, rootNodes };
   }
-  getNodeParent(node, nodeMap) {
+  private getNodeParent(node, nodeMap) {
     const result = nodeMap.get(node.parent_id);
     if (!result) throw new Error('getNodeParent: no parent found for node:' + JSON.stringify(node));
     return result;
@@ -52,7 +52,7 @@ export class TreeBuilderV6Service {
     }
     return nodes;
   }
-  private initMap(nodes: ContentNode[], nodeMap: Map<number, ContentNode>) {
+  private initMap(nodes: ContentNode[], nodeMap: Map<string, ContentNode>) {
     nodes.forEach((node) => {
       if (node.isFolder()) {
         if (!node.subNodes) node.subNodes = [];
@@ -60,7 +60,7 @@ export class TreeBuilderV6Service {
         if (!node.sections) node.sections = [];
         if (!node.contents) node.contents = [];
       }
-      nodeMap.set(node.id as number, node);
+      nodeMap.set(node.feId, node);
     });
   }
   buildTree(parent, nodes) {
@@ -71,7 +71,7 @@ export class TreeBuilderV6Service {
   }
   private build(parent: ContentNode, nodes) {
     const depthMap = new Map<number, ContentNode>();
-    const nodeMap = new Map<number, ContentNode>();
+    const nodeMap = new Map<string, ContentNode>();
     const rootNodes: ContentNode[] = [];
     const updateSections: ContentNode[] = [];
     parent.sections = [];
@@ -88,7 +88,7 @@ export class TreeBuilderV6Service {
         localParent!.sections.push(node);
         depthMap.set(node.depth!, node);
         updateSections.push(cloneDeep(node));
-        nodeMap.set(node.id as number, node);
+        nodeMap.set(node.feId, node);
         while (nodes[i + 1] && nodes[i + 1].depth == undefined) {
           const subNode = nodes[++i];
           subNode.generated = true;
@@ -101,7 +101,7 @@ export class TreeBuilderV6Service {
             localParent.contents.push(subNode);
           }
           updateSections.push(cloneDeep(subNode));
-          nodeMap.set(subNode.id as number, subNode);
+          nodeMap.set(subNode.feId, subNode);
         }
       } else {
         node.generated = true;
@@ -109,7 +109,7 @@ export class TreeBuilderV6Service {
         node.parent_id = parent.feId;
         parent.sections.push(node);
         updateSections.push(cloneDeep(node));
-        nodeMap.set(node.id as number, node);
+        nodeMap.set(node.feId, node);
       }
     }
     return { nodeMap, rootNodes, updateSections };
@@ -130,7 +130,7 @@ export class TreeBuilderV6Service {
     });
     return nodes;
   }
-  parse(node: ContentNode) {
+  private parse(node: ContentNode) {
     const text = node.text;
     if (!text) return;
     if (text.startsWith('- ###### ')) {

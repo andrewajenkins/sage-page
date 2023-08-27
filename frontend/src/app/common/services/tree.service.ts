@@ -16,10 +16,10 @@ import { cloneDeep } from 'lodash';
 export class TreeService {
   private _tree!: Tree;
   private _treeState!: TreeState;
-  get nodeMap(): Map<number, ContentNode> {
+  get nodeMap(): Map<string, ContentNode> {
     return this._tree?.nodeMap;
   }
-  set nodeMap(value: Map<number, ContentNode>) {
+  set nodeMap(value: Map<string, ContentNode>) {
     this._tree.nodeMap = value;
   }
   get currentNode(): ContentNode | undefined {

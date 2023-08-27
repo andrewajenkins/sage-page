@@ -85,7 +85,7 @@ export class ContentContainerComponent {
         }
         const newSection = new ContentNode({
           editable: true,
-          parent_id: section.id as number,
+          parent_id: section.feId,
         });
         if (cmd.value == 'above') {
           console.log('above:', array.length, index);
@@ -137,15 +137,15 @@ export class ContentContainerComponent {
         if (!this.section) notifyPickSection();
 
         if (this.treeService.currentNode?.isContentNode()) {
-          this.section!.contents.unshift(new ContentNode({ parent_id: this.section!.id as number, editable: true }));
+          this.section!.contents.unshift(new ContentNode({ parent_id: this.section!.feId, editable: true }));
         } else throw new Error("Can't add section - no node selected in file tree!");
       } else if (cmd.action === EditorAction.UPLOAD) {
         if (!this.section) notifyPickSection();
         navigator.clipboard.readText().then((text) => {
-          console.log('tset:', NodeFactory.createSectionsFromText(text, this.section!.id as number));
+          console.log('tset:', NodeFactory.createSectionsFromText(text, this.section!.feId));
           this.commandService.perform({
             action: ContentAction.ADD_SECTIONS,
-            sections: NodeFactory.createSectionsFromText(text, this.section!.id as number),
+            sections: NodeFactory.createSectionsFromText(text, this.section!.feId),
           });
         });
       }

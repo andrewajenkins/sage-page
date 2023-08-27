@@ -4,7 +4,6 @@
       <ng-container *ngIf="isValid(node)">
         <div
           class="mat-tree-node"
-          auto="file-name"
           [attr.name]="node.name"
           (click)="nodeSelect(node)"
           appHighlight
@@ -17,15 +16,14 @@
           <span class="material-symbols-outlined icon-spacing">{{
             getIcon(node) // node.type == "folder" ? "folder" : "description"
           }}</span>
-          {{ node.name }}
+          <span class="node-name">{{ node.name }}</span>
         </div>
       </ng-container>
     </mat-tree-node>
     <mat-nested-tree-node *matTreeNodeDef="let node; when: hasSub">
       <ng-container *ngIf="isValid(node)">
         <div
-          class="mat-tree-node"
-          auto="folder-name"
+          class="mat-tree-node nested-tree-node"
           [attr.name]="node.name"
           (click)="nodeSelect(node)"
           appHighlight
@@ -38,7 +36,7 @@
           <span class="material-symbols-outlined icon-spacing">{{
             getIcon(node) // node.type == "folder" ? "folder" : "description"
           }}</span>
-          {{ node.name }}
+          <span class="nested-name">{{ node.name }}</span>
           <span class="material-symbols-outlined icon-spacing">
             {{ node.content?.length > 0 ? "article" : "" }}
           </span>

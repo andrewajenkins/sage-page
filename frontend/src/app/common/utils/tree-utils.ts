@@ -144,7 +144,7 @@ export function buildMapV2(parent: ContentNode) {
     } else {
       node.generated = true;
       node.type = 'content';
-      node.parent_id = parent.id;
+      node.parent_id = parent.feId;
       parent.sections.push(node);
       oldSections.push(cloneDeep(node));
     }

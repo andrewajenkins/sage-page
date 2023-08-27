@@ -32,7 +32,7 @@ export class FileTreeActionHandler {
           name: cmd.value || '' + this.fileIndex++,
           subNodes: [],
           type: 'folder',
-          parent_id: currentNode?.id as number,
+          parent_id: currentNode?.feId,
         });
         this.dataService.createNode(newNode).subscribe((resp) => {
           this.treeService.handleTreeUpdate(resp);
@@ -42,7 +42,7 @@ export class FileTreeActionHandler {
         const newNode: ContentNode = new ContentNode({
           name: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
           text: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
-          parent_id: currentNode.id as number,
+          parent_id: currentNode.feId,
           depth: 0,
         });
         this.dataService.createNode(newNode).subscribe((resp) => {

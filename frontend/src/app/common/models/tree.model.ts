@@ -7,7 +7,7 @@ export class Tree {
   previousNode!: ContentNode | undefined;
   dataSource: MatTreeNestedDataSource<ContentNode>;
   treeControl: NestedTreeControl<ContentNode, ContentNode>;
-  nodeMap!: Map<number, ContentNode>;
+  nodeMap!: Map<string, ContentNode>;
 
   constructor() {
     this.dataSource = new MatTreeNestedDataSource<ContentNode>();
@@ -20,7 +20,7 @@ export class Tree {
       return [];
     });
     this.currentNode = this.dataSource.data[0];
-    this.nodeMap = new Map<number, ContentNode>();
+    this.nodeMap = new Map<string, ContentNode>();
   }
   setRootNodes(rootNodes: ContentNode[]) {
     this.dataSource.data = rootNodes;
