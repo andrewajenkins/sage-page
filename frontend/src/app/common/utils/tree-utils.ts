@@ -1,6 +1,5 @@
-import { ContentNode, isContent, isSection } from '../models/content-node.model';
+import { ContentNode } from '../models/content-node.model';
 import { cloneDeep, remove } from 'lodash';
-import { isFile, isFolder } from '../models/file-tree.model';
 
 export function recursiveDeleteNode(sections: ContentNode, idToRemove: number) {
   function clearSubNodes(node: ContentNode) {
@@ -36,17 +35,24 @@ export function recursiveDeleteNode(sections: ContentNode, idToRemove: number) {
 
   removeNodeById(sections, idToRemove);
 }
-export const assembleTree = (nodes: ContentNode[], currentNode?: ContentNode) => {
+export const assembleTree = (nodeDatas: ContentNode[], currentNode?: ContentNode) => {
   const debug = true;
   const nodeMap = new Map<number, ContentNode>();
   const rootNodes: ContentNode[] = [];
-  if (debug) console.log('assembleTree: nodes:', nodes);
-  if (!nodes || nodes.length == 0) return { nodeMap, rootNodes };
+  if (debug) console.log('assembleTree: nodes:', nodeDatas);
+  if (!nodeDatas || nodeDatas.length == 0) return { nodeMap, rootNodes };
+  const nodes = initNodes(nodeDatas);
   initMap(nodes, nodeMap);
   // return populateParents(nodeMap);
   return buildFromDepths(nodes, nodeMap, rootNodes);
 };
-
+function initNodes(nodeDatas) {
+  const nodes: ContentNode[] = [];
+  for (let nodeData of nodeDatas) {
+    nodes.push(new ContentNode(nodeData));
+  }
+  return nodes;
+}
 function buildFromDepths(nodes, nodeMap, rootNodes) {
   // Process folders first.
   let depthMap = new Map();
@@ -57,9 +63,9 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
     }
   }
   for (let node of nodes) {
-    if (isFolder(node)) {
+    if (node.isFolder()) {
       // If it's a root folder
-      if (!node.parent_id) {
+      if (!node.hasParent()) {
         rootNodes.push(node);
       } else {
         // Add it to its parent folder's subNodes
@@ -69,7 +75,7 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
         }
         parent.subNodes.push(node);
       }
-    } else if (isFile(node)) {
+    } else if (node.isFile()) {
       const parent = nodeMap.get(node.parent_id);
       parent.subNodes.push(node);
       depthMap.clear();
@@ -97,9 +103,9 @@ function buildFromDepths(nodes, nodeMap, rootNodes) {
 
 function initMap(nodes: ContentNode[], nodeMap: Map<number, ContentNode>) {
   nodes.forEach((node) => {
-    if (isFolder(node)) {
+    if (node.isFolder()) {
       if (!node.subNodes) node.subNodes = [];
-    } else if (isFile(node) || isSection(node) || isContent(node)) {
+    } else {
       if (!node.sections) node.sections = [];
       if (!node.contents) node.contents = [];
     }

@@ -53,7 +53,7 @@ export class NodeFactory {
 
   static createSectionsFromText(text: string, id: number) {
     return text.split('\n').map((text) => {
-      return NodeFactory.createSection({ name: text, text, parent_id: id });
+      return new ContentNode({ name: text, text, parent_id: id });
     });
   }
 }

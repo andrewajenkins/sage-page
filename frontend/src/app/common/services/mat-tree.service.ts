@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ServiceLogger } from '../logger/loggers';
 import { FileTreeComponent } from '../../file-tree-panel/file-tree/file-tree.component';
-import { isFile, isFolder } from '../models/file-tree.model';
-import { ContentNode, isContent, isSection } from '../models/content-node.model';
+import { ContentNode } from '../models/content-node.model';
 import { NodeService } from './node.service';
 
 @Injectable({
@@ -41,9 +40,9 @@ export class MatTreeService {
       }
     }
     treeData.forEach((node: ContentNode) => {
-      if (isFolder(node)) {
+      if (node.isFolder()) {
         return this.insertData(data, node.subNodes);
-      } else if (isSection(node)) {
+      } else if (node.isSection()) {
         return this.insertData(data, node.sections);
       }
     });
@@ -66,9 +65,9 @@ export class MatTreeService {
   populateMap(dataNodes: ContentNode[], state: Map<number, boolean>) {
     dataNodes?.forEach((node) => {
       state.set(node.id as number, this.fileTreeComponent.treeControl.isExpanded(node));
-      if (isFolder(node)) {
+      if (node.isFolder()) {
         this.populateMap(node.subNodes, state);
-      } else if (isFile(node) || isSection(node) || isContent(node)) {
+      } else if (node.isContentNode() || node.isContent()) {
         this.populateMap(node.sections, state);
       }
     });
@@ -87,9 +86,9 @@ export class MatTreeService {
         } else {
           this.fileTreeComponent.treeControl.collapse(node);
         }
-        if (isFolder(node)) {
+        if (node.isFolder()) {
           this.applyMap(node.subNodes, savedState);
-        } else if (isFile(node) || isSection(node) || isContent(node)) {
+        } else if (node.isContentNode() || node.isContent()) {
           this.applyMap(node.sections, savedState);
         }
       }

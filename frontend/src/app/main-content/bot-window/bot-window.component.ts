@@ -18,7 +18,6 @@ import { ComponentLogger } from '../../common/logger/loggers';
 import { ContentAction, isFlagCommand, StateAction } from '../../common/models/command.model';
 import { CommandService } from '../../common/services/command.service';
 import { ChatLogEntry, ContentNode } from '../../common/models/content-node.model';
-import { NodeFactory } from '../../common/utils/node.factory';
 import { Chat } from './chat.model';
 import { NodeService } from '../../common/services/node.service';
 
@@ -85,7 +84,7 @@ export class BotWindowComponent implements OnInit {
         id: this.log.length,
         role: 'Query:',
         content: [
-          NodeFactory.createSection({
+          new ContentNode({
             type: 'section',
             name: query,
             selected: false,
@@ -115,7 +114,7 @@ export class BotWindowComponent implements OnInit {
       if (content.startsWith('```')) {
         if (insideCodeBlock) {
           newContents.push(
-            NodeFactory.createSection({
+            new ContentNode({
               name: codeType + ' code',
               text: code,
             })
@@ -131,7 +130,7 @@ export class BotWindowComponent implements OnInit {
         code += content + '\n';
       } else {
         newContents.push(
-          NodeFactory.createSection({
+          new ContentNode({
             name: content,
             text: content.trim(),
             selected: false,

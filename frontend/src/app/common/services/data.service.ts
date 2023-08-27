@@ -2,18 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ServiceLogger } from '../logger/loggers';
-import { isFile } from '../models/file-tree.model';
-import { ChatLogEntry, ContentNode, isSection } from '../models/content-node.model';
-import { getDummyFile } from '../utils/node.factory';
+import { ChatLogEntry, ContentNode } from '../models/content-node.model';
 
 const url = 'http://localhost:4200/api';
 
-// export interface ApiResponse {
-//   id: number;
-//   tree: FileTreeNode[];
-//   node: FileTreeFile;
-// }
-//
 @Injectable({
   providedIn: 'root',
 })
@@ -49,7 +41,7 @@ export class DataService {
       parent_id: node.parent_id,
       type: node.type,
     };
-    if (isFile(node) || isSection(node)) {
+    if (node.isFile() || node.isSection()) {
       updateNode['text'] = node.text;
     }
     console.log('UPDATE_NODE:', updateNode);
@@ -71,10 +63,10 @@ export class DataService {
   getFile(fileID: number): Observable<ContentNode> {
     return this.getNode(fileID).pipe(
       map((newNode) => {
-        if (isFile(newNode)) {
+        if (newNode.isFile()) {
           newNode.sections = [];
           return newNode;
-        } else return getDummyFile();
+        } else return new ContentNode({});
       })
     );
   }

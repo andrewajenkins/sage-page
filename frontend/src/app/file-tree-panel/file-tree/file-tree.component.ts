@@ -2,13 +2,12 @@ import { Component } from '@angular/core';
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { ComponentLogger } from '../../common/logger/loggers';
-import { isFile, isFolder } from '../../common/models/file-tree.model';
 import { isNodeCommand, NodeAction, StateAction } from '../../common/models/command.model';
 import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { ContentNode, isSection } from '../../common/models/content-node.model';
+import { ContentNode } from '../../common/models/content-node.model';
 import { FileTreeActionHandler } from './file-tree-action-handler';
 import { NotificationService } from '../../common/services/notification.service';
 import { assembleTree } from '../../common/utils/tree-utils';
@@ -28,9 +27,9 @@ export class FileTreeComponent {
 
   dataSource = new MatTreeNestedDataSource<ContentNode>();
   treeControl = new NestedTreeControl<ContentNode>((node) => {
-    if (isFolder(node)) {
+    if (node.isFolder()) {
       return node.subNodes;
-    } else if (node.type == 'heading' || isSection(node) || isFile(node)) {
+    } else if (node.isContentNode()) {
       return node.sections;
     }
     return [];
@@ -124,7 +123,7 @@ export class FileTreeComponent {
     return this.currentElement && node.id === this.nodeService.currentNode?.id;
   }
   hasSub = (_: number, node: ContentNode) => {
-    if (isFolder(node)) return node.subNodes.filter((subNode) => this.isValid(subNode)).length > 0;
+    if (node.isFolder()) return node.subNodes.filter((subNode) => this.isValid(subNode)).length > 0;
     else {
       return node.sections.filter((subNode) => this.isValid(subNode)).length > 0;
     }
@@ -145,6 +144,6 @@ export class FileTreeComponent {
   }
 
   isValid(node: ContentNode) {
-    return isFolder(node) || isFile(node) || node.generated;
+    return node.isFolder || node.isFile() || node.generated;
   }
 }

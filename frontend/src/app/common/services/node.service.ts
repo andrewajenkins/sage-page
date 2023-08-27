@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CommandService } from './command.service';
 import { StateAction } from '../models/command.model';
-import { isContentNode, isFile } from '../models/file-tree.model';
-import { ContentNode, isSection } from '../models/content-node.model';
+import { ContentNode } from '../models/content-node.model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +22,7 @@ export class NodeService {
   private _currentFile!: ContentNode;
   set currentNode(value: ContentNode | undefined) {
     this._currentNode = value;
-    if (isContentNode(this._currentNode) && isFile(this._currentNode)) {
+    if (this._currentNode?.isFile()) {
       this.currentFile = this._currentNode;
     }
     this.commandService.perform({
@@ -39,7 +38,7 @@ export class NodeService {
     if (!this._currentNode) {
       return false;
     }
-    return isFile(this._currentNode) || isSection(this._currentNode) || !!this._currentFile;
+    return this._currentNode.isContentNode() || !!this._currentFile;
   }
 
   set currentFile(value: ContentNode) {

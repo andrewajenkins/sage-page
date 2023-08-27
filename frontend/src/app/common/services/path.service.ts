@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CommandService } from './command.service';
-import { ContentNode } from '../models/file-tree.model';
+import { ContentNode } from '../models/content-node.model';
 
 @Injectable({
   providedIn: 'root',

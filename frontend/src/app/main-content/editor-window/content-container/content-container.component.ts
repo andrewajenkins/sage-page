@@ -13,15 +13,14 @@ import {
   NodeAction,
   StateAction,
 } from '../../../common/models/command.model';
-import { ContentNode, isSection } from '../../../common/models/content-node.model';
+import { ContentNode } from '../../../common/models/content-node.model';
 import { NodeService } from '../../../common/services/node.service';
-import { isContentNode, isFile, isFolder } from '../../../common/models/file-tree.model';
 import { assembleTree, buildMapV2, parseNodes, recursiveDeleteNode } from '../../../common/utils/tree-utils';
 import { remove } from 'lodash';
-import { NodeFactory } from '../../../common/utils/node.factory';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { DataService } from '../../../common/services/data.service';
 import { MatTreeService } from '../../../common/services/mat-tree.service';
+import { NodeFactory } from '../../../common/utils/node.factory';
 
 @Component({
   selector: 'app-content-container',
@@ -56,7 +55,7 @@ export class ContentContainerComponent {
         }
       };
       if (isSectionsCommand(cmd) && cmd.action === ContentAction.ADD_SECTIONS) {
-        if (this.nodeService.hasCurrent() && isContentNode(this.nodeService.currentNode)) {
+        if (this.nodeService.hasCurrent() && this.nodeService.currentNode) {
           this.nodeService.currentNode.sections.push(...cmd.sections);
         }
         this.scrollDown();
@@ -70,7 +69,7 @@ export class ContentContainerComponent {
           });
           return;
         }
-        if (isFile(currentNode) || isSection(currentNode)) {
+        if (currentNode.isContentNode()) {
           const parseResult = parseNodes(currentNode as ContentNode);
           const sectionNodes = buildMapV2(parseResult as ContentNode);
           currentNode.sections = sectionNodes;
@@ -87,13 +86,13 @@ export class ContentContainerComponent {
             value: 'Failed to generate sections, current node is not a file or section',
           });
       } else if (isNodeCommand(cmd) && cmd.action === NodeAction.LOAD_NODE) {
-        if (isFolder(cmd.node)) this.section = undefined;
-        if (isFile(cmd.node) || isSection(cmd.node)) this.section = cmd.node;
+        if (cmd.node.isFolder()) this.section = undefined;
+        if (cmd.node.isContentNode()) this.section = cmd.node;
       } else if (isContentCommand(cmd) && cmd.action === NodeAction.DELETE_NODE) {
         if (cmd.content.id) {
           recursiveDeleteNode(this.section as ContentNode, cmd.content.id);
         }
-        if (isContentNode(this.section) && (isSection(this.section) || isFile(this.section))) {
+        if (this.section?.isContentNode()) {
           remove(this.section.sections, (section) => section.text === cmd.content.text);
           remove(this.section.contents, (content) => content.text === cmd.content.text);
         }
@@ -109,7 +108,7 @@ export class ContentContainerComponent {
           index = section.contents.findIndex((section) => section.id === cmd.section.id);
           console.log('content index:', index);
         }
-        const newSection = NodeFactory.createSection({
+        const newSection = new ContentNode({
           editable: true,
           parent_id: section.id as number,
         });
@@ -163,9 +162,7 @@ export class ContentContainerComponent {
         if (!this.section) notifyPickSection();
 
         if (this.nodeService.acceptsContent()) {
-          this.section!.contents.unshift(
-            NodeFactory.createSection({ parent_id: this.section!.id as number, editable: true })
-          );
+          this.section!.contents.unshift(new ContentNode({ parent_id: this.section!.id as number, editable: true }));
         } else throw new Error("Can't add section - no node selected in file tree!");
       } else if (cmd.action === EditorAction.UPLOAD) {
         if (!this.section) notifyPickSection();

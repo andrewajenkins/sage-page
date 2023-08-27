@@ -10,7 +10,6 @@ import { DataService } from '../../common/services/data.service';
 import { Injectable } from '@angular/core';
 import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
-import { NodeFactory } from '../../common/utils/node.factory';
 import { assembleTree } from '../../common/utils/tree-utils';
 import { ContentNode } from '../../common/models/content-node.model';
 
@@ -44,7 +43,7 @@ export class FileTreeActionHandler {
       } else if (isValueCommand(cmd) && action === NodeAction.CREATE_FILE) {
         const currentNode = this.nodeService.currentNode;
         if (!currentNode) return;
-        const newNode: ContentNode = NodeFactory.createFile({
+        const newNode: ContentNode = new ContentNode({
           name: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
           text: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
           parent_id: currentNode.id as number,
