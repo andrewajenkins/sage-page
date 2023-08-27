@@ -1,5 +1,8 @@
+import { generateRandomAlphanumeric } from '../utils/uuid';
+
 export class ContentNode {
   id!: number;
+  feId: string;
   editable!: boolean;
   name!: string;
   parent_id!: number;
@@ -12,8 +15,10 @@ export class ContentNode {
   depth?: number;
   focused?: boolean;
   generated?: boolean;
+  orderId?: number;
 
   constructor(newNode: Partial<ContentNode>) {
+    this.feId = generateRandomAlphanumeric(10);
     this.id = newNode.id || -1;
     this.editable = newNode.editable || false;
     this.name = newNode.name || 'DEFAULT_NAME';
@@ -27,6 +32,7 @@ export class ContentNode {
     this.depth = newNode.depth;
     this.focused = newNode.focused;
     this.generated = newNode.generated;
+    this.orderId = newNode.orderId;
   }
 
   isSection(): boolean {

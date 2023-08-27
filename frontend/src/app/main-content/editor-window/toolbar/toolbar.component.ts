@@ -3,8 +3,7 @@ import { CommandService } from '../../../common/services/command.service';
 import { ComponentLogger } from '../../../common/logger/loggers';
 import { EditorAction } from '../../../common/models/command.model';
 import { MarkdownExportService } from '../../../common/services/markdown-export.service';
-import { NodeService } from '../../../common/services/node.service';
-import { ContentNode } from '../../../common/models/content-node.model';
+import { TreeService } from '../../../common/services/tree.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -16,7 +15,7 @@ export class ToolbarComponent {
   constructor(
     private commandService: CommandService,
     private markdownExportService: MarkdownExportService,
-    private nodeService: NodeService
+    private treeService: TreeService
   ) {}
   saveFile() {
     this.commandService.perform({ action: EditorAction.SAVE_CONTENT });
@@ -28,8 +27,8 @@ export class ToolbarComponent {
     this.commandService.perform({ action: EditorAction.COPY_SELECTED });
   }
   exportFile() {
-    if (this.nodeService.currentFile) {
-      this.markdownExportService.downloadMarkdown(this.nodeService.currentFile, 'test.md');
+    if (this.treeService.currentNode?.isFile()) {
+      this.markdownExportService.downloadMarkdown(this.treeService.currentNode, 'test.md');
     } else throw new Error("Can't export file - none selected!");
   }
 

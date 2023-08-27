@@ -14,12 +14,11 @@ import {
   StateAction,
 } from '../../../common/models/command.model';
 import { ContentNode } from '../../../common/models/content-node.model';
-import { NodeService } from '../../../common/services/node.service';
-import { assembleTree, buildMapV2, parseNodes, recursiveDeleteNode } from '../../../common/utils/tree-utils';
+import { recursiveDeleteNode } from '../../../common/utils/tree-utils';
 import { remove } from 'lodash';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { DataService } from '../../../common/services/data.service';
-import { MatTreeService } from '../../../common/services/mat-tree.service';
+import { TreeService } from '../../../common/services/tree.service';
 import { NodeFactory } from '../../../common/utils/node.factory';
 
 @Component({
@@ -35,10 +34,9 @@ export class ContentContainerComponent {
 
   constructor(
     private commandService: CommandService,
-    private nodeService: NodeService,
     private clipboard: Clipboard,
     private dataService: DataService,
-    private matTreeService: MatTreeService,
+    private treeService: TreeService,
     private cdRef: ChangeDetectorRef
   ) {}
 
@@ -54,37 +52,14 @@ export class ContentContainerComponent {
           throw new Error('No section selected');
         }
       };
+      const currentNode = this.treeService.currentNode;
       if (isSectionsCommand(cmd) && cmd.action === ContentAction.ADD_SECTIONS) {
-        if (this.nodeService.hasCurrent() && this.nodeService.currentNode) {
-          this.nodeService.currentNode.sections.push(...cmd.sections);
+        if (currentNode) {
+          currentNode.sections.push(...cmd.sections);
         }
         this.scrollDown();
       } else if (cmd.action === EditorAction.SAVE_CONTENT) {
-        if (!this.nodeService.currentNode) return;
-        const currentNode = this.nodeService.currentNode;
-        if (!this.hasNewSections(currentNode)) {
-          this.commandService.perform({
-            action: StateAction.NOTIFY,
-            value: 'Nothing to save',
-          });
-          return;
-        }
-        if (currentNode.isContentNode()) {
-          const parseResult = parseNodes(currentNode as ContentNode);
-          const sectionNodes = buildMapV2(parseResult as ContentNode);
-          currentNode.sections = sectionNodes;
-          console.log('currentNode:', currentNode);
-          this.dataService.createSections(currentNode as ContentNode).subscribe((fileTree: any) => {
-            const { nodeMap, rootNodes } = assembleTree(fileTree, this.nodeService.currentNode as ContentNode);
-            this.nodeService.nodeMap = nodeMap;
-            for (let node of nodeMap.values()) this.dataService.updateNode(node).subscribe((node) => {});
-            this.matTreeService.refreshTree(rootNodes as ContentNode[]);
-          });
-        } else
-          this.commandService.perform({
-            action: StateAction.NOTIFY,
-            value: 'Failed to generate sections, current node is not a file or section',
-          });
+        this.treeService.updateNodes();
       } else if (isNodeCommand(cmd) && cmd.action === NodeAction.LOAD_NODE) {
         if (cmd.node.isFolder()) this.section = undefined;
         if (cmd.node.isContentNode()) this.section = cmd.node;
@@ -161,7 +136,7 @@ export class ContentContainerComponent {
       } else if (cmd.action === EditorAction.ADD_NEW_SECTION) {
         if (!this.section) notifyPickSection();
 
-        if (this.nodeService.acceptsContent()) {
+        if (this.treeService.currentNode?.isContentNode()) {
           this.section!.contents.unshift(new ContentNode({ parent_id: this.section!.id as number, editable: true }));
         } else throw new Error("Can't add section - no node selected in file tree!");
       } else if (cmd.action === EditorAction.UPLOAD) {
@@ -175,10 +150,6 @@ export class ContentContainerComponent {
         });
       }
     });
-  }
-
-  hasNewSections(node) {
-    return !!node.sections?.some((section) => !section.generated);
   }
 
   scrollDown() {

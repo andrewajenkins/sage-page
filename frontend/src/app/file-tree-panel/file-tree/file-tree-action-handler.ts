@@ -8,9 +8,7 @@ import {
 import { CommandService } from '../../common/services/command.service';
 import { DataService } from '../../common/services/data.service';
 import { Injectable } from '@angular/core';
-import { NodeService } from '../../common/services/node.service';
-import { MatTreeService } from '../../common/services/mat-tree.service';
-import { assembleTree } from '../../common/utils/tree-utils';
+import { TreeService } from '../../common/services/tree.service';
 import { ContentNode } from '../../common/models/content-node.model';
 
 @Injectable({
@@ -22,15 +20,14 @@ export class FileTreeActionHandler {
   constructor(
     private commandService: CommandService,
     private dataService: DataService,
-    private nodeService: NodeService,
-    private matTreeService: MatTreeService
+    private treeService: TreeService
   ) {}
   init() {
     this.commandService.action$.subscribe((cmd) => {
       const action = cmd.action;
-      this.matTreeService.saveTreeState();
+      this.treeService.saveTreeState();
+      const currentNode = this.treeService.currentNode;
       if (isValueCommand(cmd) && action === NodeAction.CREATE_FOLDER) {
-        const currentNode = this.nodeService.hasCurrent() ? this.nodeService.currentNode : undefined;
         const newNode: any = {
           name: cmd.value || '' + this.fileIndex++,
           subNodes: [],
@@ -38,10 +35,9 @@ export class FileTreeActionHandler {
           parent_id: currentNode?.id as number,
         };
         this.dataService.createNode(newNode).subscribe((resp) => {
-          this.handleTreeUpdate(resp);
+          this.treeService.handleTreeUpdate(resp);
         });
       } else if (isValueCommand(cmd) && action === NodeAction.CREATE_FILE) {
-        const currentNode = this.nodeService.currentNode;
         if (!currentNode) return;
         const newNode: ContentNode = new ContentNode({
           name: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
@@ -50,22 +46,20 @@ export class FileTreeActionHandler {
           depth: 0,
         });
         this.dataService.createNode(newNode).subscribe((resp) => {
-          this.handleTreeUpdate(resp);
+          this.treeService.handleTreeUpdate(resp);
         });
       } else if (isContentCommand(cmd) && action === NodeAction.DELETE_NODE) {
-        if (this.nodeService.currentNode && cmd.content.id == this.nodeService.currentNode.id)
-          this.setNodeNotSelected();
+        if (this.treeService.currentNode && cmd.content.id == currentNode?.id) this.setNodeNotSelected();
         this.dataService.deleteNode(cmd.content).subscribe((resp) => {
-          this.handleTreeUpdate(resp);
+          this.treeService.handleTreeUpdate(resp);
         });
       } else if (action === NodeAction.DELETE_CURRENT_NODE) {
-        const currentNode = this.nodeService.currentNode;
         if (!currentNode) return;
         this.dataService.deleteNode(currentNode).subscribe((resp) => {
           this.setNodeNotSelected();
-          if (this.nodeService.currentNode && this.nodeService.currentNode.id) {
-            this.handleTreeUpdate(resp);
-            this.nodeService.currentNode = undefined;
+          if (currentNode && currentNode.id) {
+            this.treeService.handleTreeUpdate(resp);
+            this.treeService.currentNode = undefined;
             this.commandService.perform({
               action: StateAction.SET_NODE_SELECTED,
               flag: false,
@@ -73,9 +67,9 @@ export class FileTreeActionHandler {
           }
         });
       } else if (isValueCommand(cmd) && action === NodeAction.EDIT_NODE_NAME) {
-        if (this.nodeService.currentNode) {
-          this.nodeService.currentNode.name = cmd.value;
-          this.dataService.updateNode(this.nodeService.currentNode).subscribe((resp) => {});
+        if (currentNode) {
+          currentNode.name = cmd.value;
+          this.dataService.updateNode(currentNode).subscribe((resp) => {});
         }
       } else if (isNodeCommand(cmd) && action === NodeAction.UPDATE_NODE) {
         this.dataService.updateNode(cmd.node).subscribe((resp) => {});
@@ -88,10 +82,5 @@ export class FileTreeActionHandler {
       // node: currentNode,
       flag: false,
     });
-  }
-  handleTreeUpdate(resp: any) {
-    const { nodeMap, rootNodes } = assembleTree(resp, this.nodeService.currentNode as ContentNode);
-    const tree = [...nodeMap.entries()].map((v, k) => v[1]).filter((node) => node.parent_id == null);
-    this.matTreeService.refreshTree(rootNodes as ContentNode[]);
   }
 }

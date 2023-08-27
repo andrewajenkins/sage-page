@@ -18,6 +18,9 @@ const ignoreList = [
   'onMouseDown',
   'saveTreeState',
   'scrollDown',
+  'currentNode',
+  'nodeMap',
+  'previousNode',
 ];
 const isTestMode = true;
 export function ComponentLogger() {

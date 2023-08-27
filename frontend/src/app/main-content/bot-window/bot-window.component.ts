@@ -19,7 +19,7 @@ import { ContentAction, isFlagCommand, StateAction } from '../../common/models/c
 import { CommandService } from '../../common/services/command.service';
 import { ChatLogEntry, ContentNode } from '../../common/models/content-node.model';
 import { Chat } from './chat.model';
-import { NodeService } from '../../common/services/node.service';
+import { TreeService } from '../../common/services/tree.service';
 
 @Component({
   selector: 'app-bot-window',
@@ -43,7 +43,7 @@ export class BotWindowComponent implements OnInit {
     private formBuilder: FormBuilder,
     private cdRef: ChangeDetectorRef,
     private commandService: CommandService,
-    private nodeService: NodeService
+    private treeService: TreeService
   ) {}
 
   ngOnInit() {
@@ -65,7 +65,8 @@ export class BotWindowComponent implements OnInit {
       if (isFlagCommand(cmd) && cmd.action === StateAction.SET_FILE_SELECTED) {
         this.contentSectionSelected = cmd.flag as boolean;
       } else if (isFlagCommand(cmd) && cmd.action === StateAction.SET_NODE_SELECTED) {
-        if (this.nodeService.acceptsContent()) this.contentSectionSelected = cmd.flag as boolean;
+        const currentNode = this.treeService.currentNode;
+        if (currentNode?.isFile() || currentNode?.isSection()) this.contentSectionSelected = cmd.flag as boolean;
       }
     });
     this.scrollDown();

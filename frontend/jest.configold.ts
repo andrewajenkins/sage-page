@@ -1,4 +1,31 @@
-import 'jest-preset-angular/setup-jest';
+// import 'jest-preset-angular/setup-jest';
+const esModules = ['lodash-es', 'nanoid'].join('|');
+module.exports = {
+  preset: 'jest-preset-angular',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/src/test/support/setup-jest.ts'],
+};
+//
+//  testPathIgnorePatterns: ['<rootDir>/node_modules/'],
+//  transform: {
+//    '^.+\\.(ts|js|html)$': 'ts-jest',
+//  },
+//  transformIgnorePatterns: [`/node_modules/(?!${esModules})`],
+//  moduleNameMapper: {
+//    '^lodash-es(/(.*)|$)': 'lodash$1',
+//    '^nanoid(/(.*)|$)': 'nanoid$1',
+//  },
+//  globals: {
+//    'ts-jest': {
+//      tsConfig: '<rootDir>/tsconfig.spec.json',
+//      stringifyContentPathRegex: '\\.(html|svg)$',
+//      astTransformers: [
+//        'jest-preset-angular/build/InlineFilesTransformer',
+//        'jest-preset-angular/build/StripStylesTransformer',
+//      ],
+//    },
+//    // Add any other configuration options here
+//  },
 
 // /**
 //  * For a detailed explanation regarding each configuration property, visit:
