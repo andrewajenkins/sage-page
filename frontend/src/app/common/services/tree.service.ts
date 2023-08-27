@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ServiceLogger } from '../logger/loggers';
-import { FileTreeComponent } from '../../file-tree-panel/file-tree/file-tree.component';
 import { ContentNode } from '../models/content-node.model';
 import { Tree } from '../models/tree.model';
-import { assembleTree, buildMapV2, parseNodes } from '../utils/tree-utils';
 import { DataService } from './data.service';
 import { StateAction } from '../models/command.model';
 import { CommandService } from './command.service';
 import { TreeState } from '../models/tree-state.model';
+import { TreeBuilderV6Service } from './tree-builder-v6.service';
+import { cloneDeep } from 'lodash';
 
 @Injectable({
   providedIn: 'root',
@@ -47,13 +47,17 @@ export class TreeService {
   set treeState(value: TreeState) {
     this._treeState = value;
   }
-  constructor(private dataService: DataService, private commandService: CommandService) {}
+  constructor(
+    private dataService: DataService,
+    private commandService: CommandService,
+    private treeBuilder: TreeBuilderV6Service
+  ) {}
 
   initialize(): Promise<void> {
     this._tree = new Tree();
     this._treeState = new TreeState(this._tree.dataSource, this._tree.treeControl);
     this.dataService.getFileTree().subscribe((fileTree) => {
-      const { nodeMap, rootNodes } = assembleTree(fileTree, this._tree.currentNode as ContentNode);
+      const { nodeMap, rootNodes } = this.treeBuilder.assembleTree(this._tree.currentNode!, fileTree);
       this.nodeMap = nodeMap;
       for (let node of nodeMap.values()) this.dataService.updateNode(node).subscribe((node) => {});
       this._treeState.refreshTree(rootNodes as ContentNode[]);
@@ -79,12 +83,13 @@ export class TreeService {
       return;
     }
     if (currentNode.isContentNode()) {
-      const parseResult = parseNodes(currentNode as ContentNode);
-      const sectionNodes = buildMapV2(parseResult as ContentNode);
-      currentNode.sections = sectionNodes;
+      // const parseResult = parseNodes(currentNode as ContentNode);
+      // const sectionNodes = buildMapV2(parseResult as ContentNode);
+      const { rootNodes } = this.treeBuilder.buildTree(currentNode, cloneDeep(currentNode.sections));
+      currentNode.sections = rootNodes;
       console.log('currentNode:', currentNode);
-      this.dataService.createSections(currentNode as ContentNode).subscribe((fileTree: any) => {
-        const { nodeMap, rootNodes } = assembleTree(fileTree, currentNode as ContentNode);
+      this.dataService.createSections(currentNode.sections).subscribe((fileTree: any) => {
+        const { nodeMap, rootNodes } = this.treeBuilder.assembleTree(currentNode, fileTree);
         this.nodeMap = nodeMap;
         for (let node of nodeMap.values()) this.dataService.updateNode(node).subscribe((node) => {});
         this._treeState.refreshTree(rootNodes as ContentNode[]);
@@ -96,7 +101,7 @@ export class TreeService {
       });
   }
   handleTreeUpdate(resp: any) {
-    const { nodeMap, rootNodes } = assembleTree(resp, this.currentNode as ContentNode);
+    const { nodeMap, rootNodes } = this.treeBuilder.assembleTree(this.currentNode!, resp);
     const tree = [...nodeMap.entries()].map((v, k) => v[1]).filter((node) => node.parent_id == null);
     this._treeState.refreshTree(rootNodes as ContentNode[]);
   }

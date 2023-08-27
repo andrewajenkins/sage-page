@@ -26,9 +26,9 @@ class DatabaseService {
     await this.db.getRepository("TreeNode").save(createNode);
     return this.getFileTree();
   }
-  async createNodes(parent) {
+  async createNodes(sections) {
     if (!this.db) throw new Error("Database not initialized");
-    for (let node of parent.sections) {
+    for (let node of sections) {
       console.log("createNodes: inserting node:", node.text);
       if ((node.type == "file" || node.type == "section") && !node.depth)
         throw new Error("Bad node: " + JSON.stringify(node));

@@ -79,7 +79,7 @@ export class DataService {
     return this.http.post<ContentNode[]>(url + '/conversation', log);
   }
 
-  createSections(contentSection: ContentNode) {
-    return this.http.post<ContentNode[]>(url + '/nodes', contentSection);
+  createSections(contentSection: ContentNode[]) {
+    return this.http.post<void>(url + '/nodes', contentSection);
   }
 }

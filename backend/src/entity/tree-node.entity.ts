@@ -13,11 +13,9 @@ export class TreeNode {
   @Column({ nullable: true })
   parent_id!: number;
   @Column({ nullable: true })
-  lexType!: string;
-  @Column({ nullable: true })
   depth!: number;
   @Column({ nullable: true })
-  lexDepth!: number;
+  feId!: string;
   content!: TreeNode[];
   sections!: TreeNode[];
   @Column({ nullable: true })
