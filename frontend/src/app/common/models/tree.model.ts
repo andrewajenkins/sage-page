@@ -9,13 +9,17 @@ export class Tree {
   treeControl: NestedTreeControl<ContentNode, ContentNode>;
   nodeMap!: Map<number, ContentNode>;
 
-  constructor(
-    dataSource: MatTreeNestedDataSource<ContentNode>,
-    treeControl: NestedTreeControl<ContentNode, ContentNode>
-  ) {
-    this.dataSource = dataSource;
-    this.treeControl = treeControl;
-    this.currentNode = dataSource.data[0];
+  constructor() {
+    this.dataSource = new MatTreeNestedDataSource<ContentNode>();
+    this.treeControl = new NestedTreeControl<ContentNode>((node) => {
+      if (node.isFolder()) {
+        return node.subNodes;
+      } else if (node.isContentNode()) {
+        return node.sections;
+      }
+      return [];
+    });
+    this.currentNode = this.dataSource.data[0];
     this.nodeMap = new Map<number, ContentNode>();
   }
 }

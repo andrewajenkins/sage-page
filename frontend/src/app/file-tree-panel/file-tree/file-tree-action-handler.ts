@@ -25,7 +25,7 @@ export class FileTreeActionHandler {
   init() {
     this.commandService.action$.subscribe((cmd) => {
       const action = cmd.action;
-      this.treeService.saveTreeState();
+      this.treeService.treeState.saveTreeState();
       const currentNode = this.treeService.currentNode;
       if (isValueCommand(cmd) && action === NodeAction.CREATE_FOLDER) {
         const newNode: any = {

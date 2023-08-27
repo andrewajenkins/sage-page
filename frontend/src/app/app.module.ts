@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -50,6 +50,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { QueryInputComponent } from './main-content/bot-window/query-input/query-input.component';
 import { HighlightDirective } from './file-tree-panel/file-tree/highlight.directive';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { TreeService } from './common/services/tree.service';
 
 @NgModule({
   declarations: [
@@ -119,6 +120,12 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
       multi: true,
     },
     FileTreeActionHandler,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (treeService: TreeService) => () => treeService.initialize(),
+      deps: [TreeService],
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })

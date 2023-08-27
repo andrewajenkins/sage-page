@@ -2,55 +2,62 @@ import { Injectable } from '@angular/core';
 import { ServiceLogger } from '../logger/loggers';
 import { FileTreeComponent } from '../../file-tree-panel/file-tree/file-tree.component';
 import { ContentNode } from '../models/content-node.model';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { NestedTreeControl } from '@angular/cdk/tree';
 import { Tree } from '../models/tree.model';
 import { assembleTree, buildMapV2, parseNodes } from '../utils/tree-utils';
 import { DataService } from './data.service';
 import { StateAction } from '../models/command.model';
 import { CommandService } from './command.service';
+import { TreeState } from '../models/tree-state.model';
 
 @Injectable({
   providedIn: 'root',
 })
 @ServiceLogger()
 export class TreeService {
-  private fileTreeComponent!: FileTreeComponent;
-  private state!: Map<number, boolean>;
-  private tree!: Tree;
+  private _tree!: Tree;
+  private _treeState!: TreeState;
   get nodeMap(): Map<number, ContentNode> {
-    return this.tree?.nodeMap;
+    return this._tree?.nodeMap;
   }
   set nodeMap(value: Map<number, ContentNode>) {
-    this.tree.nodeMap = value;
+    this._tree.nodeMap = value;
   }
   get currentNode(): ContentNode | undefined {
-    return this.tree?.currentNode;
+    return this._tree?.currentNode;
   }
   set currentNode(value: ContentNode | undefined) {
-    this.tree.currentNode = value;
+    this._tree.currentNode = value;
   }
   get previousNode(): any {
-    return this.tree?.previousNode;
+    return this._tree?.previousNode;
   }
   set previousNode(value: any) {
-    this.tree.previousNode = value;
+    this._tree.previousNode = value;
+  }
+  get treeState(): TreeState {
+    return this._treeState;
+  }
+  get tree(): Tree {
+    return this._tree;
+  }
+
+  set tree(value: Tree) {
+    this._tree = value;
+  }
+  set treeState(value: TreeState) {
+    this._treeState = value;
   }
   constructor(private dataService: DataService, private commandService: CommandService) {}
 
-  registerComponent(
-    component,
-    dataSource: MatTreeNestedDataSource<ContentNode>,
-    treeControl: NestedTreeControl<ContentNode, ContentNode>
-  ) {
-    this.fileTreeComponent = component;
-    this.tree = new Tree(dataSource, treeControl);
+  initialize(): Promise<void> {
+    this._tree = new Tree();
+    this._treeState = new TreeState(this._tree.dataSource, this._tree.treeControl);
     this.dataService.getFileTree().subscribe((fileTree) => {
-      const { nodeMap, rootNodes } = assembleTree(fileTree, this.tree.currentNode as ContentNode);
+      const { nodeMap, rootNodes } = assembleTree(fileTree, this._tree.currentNode as ContentNode);
       this.nodeMap = nodeMap;
       for (let node of nodeMap.values()) this.dataService.updateNode(node).subscribe((node) => {});
-      this.refreshTree(rootNodes as ContentNode[]);
-      const treeControl = this.tree.treeControl;
+      this._treeState.refreshTree(rootNodes as ContentNode[]);
+      const treeControl = this._tree.treeControl;
       if (treeControl.dataNodes && treeControl.dataNodes.length > 0) {
         treeControl.expandAll();
         treeControl.dataNodes?.forEach((node) => {
@@ -58,87 +65,11 @@ export class TreeService {
         });
       }
     });
-  }
-  refreshTree(data?: ContentNode[]) {
-    let temp, expandCurrent;
-    if (!data || data.length == 0) temp = this.fileTreeComponent.dataSource.data;
-    else {
-      temp = this.fileTreeComponent.dataSource.data;
-      if ((expandCurrent = !this.isRootData(data))) {
-        this.insertData(data!, temp);
-      } else temp = data;
-    }
-    this.fileTreeComponent.dataSource.data = [];
-    this.fileTreeComponent.dataSource.data = temp!;
-    this.fileTreeComponent.treeControl.dataNodes = temp!;
-    this.applyTreeState(this.state);
-    if (expandCurrent) this.fileTreeComponent.treeControl.expand(this.tree.currentNode!);
-  }
-  insertData(data: ContentNode[], treeData: ContentNode[]) {
-    const targetNode = data[0] as ContentNode;
-    for (let i = 0; i < treeData.length; i++) {
-      if (treeData[i].id === targetNode.id) {
-        treeData.splice(i, 1, targetNode);
-        return;
-      }
-    }
-    treeData.forEach((node: ContentNode) => {
-      if (node.isFolder()) {
-        return this.insertData(data, node.subNodes);
-      } else if (node.isSection()) {
-        return this.insertData(data, node.sections);
-      }
-    });
-  }
-  isRootData(data) {
-    return !data[0]?.parent_id;
-  }
-  deleteNode(id) {
-    this.fileTreeComponent.dataSource.data;
-    this.fileTreeComponent.treeControl.dataNodes = this.fileTreeComponent.treeControl.dataNodes.filter(
-      (node) => node.id === id
-    );
+    return Promise.resolve();
   }
 
-  saveTreeState() {
-    const state = new Map<number, boolean>();
-    this.populateMap(this.fileTreeComponent.treeControl.dataNodes, state);
-    this.state = state;
-  }
-  populateMap(dataNodes: ContentNode[], state: Map<number, boolean>) {
-    dataNodes?.forEach((node) => {
-      state.set(node.id as number, this.fileTreeComponent.treeControl.isExpanded(node));
-      if (node.isFolder()) {
-        this.populateMap(node.subNodes, state);
-      } else if (node.isContentNode() || node.isContent()) {
-        this.populateMap(node.sections, state);
-      }
-    });
-  }
-  applyTreeState(savedState: Map<number, boolean>) {
-    if (!savedState) return;
-    this.applyMap(this.fileTreeComponent.treeControl.dataNodes, savedState);
-  }
-  applyMap(dataNodes: ContentNode[], savedState: Map<number, boolean>) {
-    console.log('dataNodes:', dataNodes);
-    if (!dataNodes) return;
-    dataNodes?.forEach((node) => {
-      if (node.id) {
-        if (savedState.get(node.id)) {
-          this.fileTreeComponent.treeControl.expand(node);
-        } else {
-          this.fileTreeComponent.treeControl.collapse(node);
-        }
-        if (node.isFolder()) {
-          this.applyMap(node.subNodes, savedState);
-        } else if (node.isContentNode() || node.isContent()) {
-          this.applyMap(node.sections, savedState);
-        }
-      }
-    });
-  }
   updateNodes() {
-    const currentNode = this.tree.currentNode;
+    const currentNode = this._tree.currentNode;
     if (!currentNode) return;
     if (!this.hasNewSections(currentNode)) {
       this.commandService.perform({
@@ -156,7 +87,7 @@ export class TreeService {
         const { nodeMap, rootNodes } = assembleTree(fileTree, currentNode as ContentNode);
         this.nodeMap = nodeMap;
         for (let node of nodeMap.values()) this.dataService.updateNode(node).subscribe((node) => {});
-        this.refreshTree(rootNodes as ContentNode[]);
+        this._treeState.refreshTree(rootNodes as ContentNode[]);
       });
     } else
       this.commandService.perform({
@@ -167,9 +98,17 @@ export class TreeService {
   handleTreeUpdate(resp: any) {
     const { nodeMap, rootNodes } = assembleTree(resp, this.currentNode as ContentNode);
     const tree = [...nodeMap.entries()].map((v, k) => v[1]).filter((node) => node.parent_id == null);
-    this.refreshTree(rootNodes as ContentNode[]);
+    this._treeState.refreshTree(rootNodes as ContentNode[]);
   }
   hasNewSections(node) {
     return !!node.sections?.some((section) => !section.generated);
+  }
+
+  collapseAll() {
+    if (this._tree.currentNode) this.treeState.collapseAll(this._tree.currentNode);
+  }
+
+  expandAll() {
+    if (this._tree.currentNode) this.treeState.expandAll(this._tree.currentNode);
   }
 }

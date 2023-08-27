@@ -22,27 +22,16 @@ export class FileTreeComponent {
   highlightNode!: ContentNode | undefined;
   currentElement!: HTMLElement;
   curr!: ContentNode | undefined;
-
-  dataSource = new MatTreeNestedDataSource<ContentNode>();
-  treeControl = new NestedTreeControl<ContentNode>((node) => {
-    if (node.isFolder()) {
-      return node.subNodes;
-    } else if (node.isContentNode()) {
-      return node.sections;
-    }
-    return [];
-  });
+  dataSource!: MatTreeNestedDataSource<ContentNode>;
+  treeControl!: NestedTreeControl<ContentNode>;
 
   // TODO temp remove
   constructor(
     private commandService: CommandService,
-    // private nodeService: NodeService,
     private treeService: TreeService,
-    private dataService: DataService,
     private fileHandler: FileTreeActionHandler, // keep, needs init
     private notificationService: NotificationService // keep, needs init
   ) {
-    this.treeService.registerComponent(this, this.dataSource, this.treeControl);
     this.fileHandler.init();
     this.notificationService.init();
     this.curr = this.treeService.currentNode;
@@ -50,24 +39,19 @@ export class FileTreeComponent {
       const currentNode = this.treeService.currentNode;
       if (currentNode) {
         if (cmd.action === StateAction.COLLAPSE_FILE_TREE_ALL) {
-          this.treeControl.dataNodes = this.dataSource.data;
-          this.treeControl.getDescendants(currentNode).forEach((node) => {
-            this.treeControl.expand(node);
-          });
-          this.treeControl.expand(currentNode);
+          this.treeService.collapseAll();
         } else if (cmd.action === StateAction.EXPAND_FILE_TREE_ALL) {
-          this.treeControl.dataNodes = this.dataSource.data;
-          this.treeControl.getDescendants(currentNode).forEach((node) => {
-            this.treeControl.collapse(node);
-          });
-          this.treeControl.collapse(currentNode);
+          this.treeService.expandAll();
         } else if (isNodeCommand(cmd) && cmd.action === NodeAction.LOAD_NODE) {
           this.nodeSelectHighlight(cmd.node);
         }
       }
     });
   }
-  ngOnInit() {}
+  ngOnInit() {
+    this.dataSource = this.treeService.tree.dataSource;
+    this.treeControl = this.treeService.tree.treeControl;
+  }
   nodeHighlight(event: MouseEvent, newNode: ContentNode) {
     const previousNode = this.highlightNode;
     const currentNode = this.treeService.currentNode;
@@ -125,7 +109,7 @@ export class FileTreeComponent {
 
   getSectionSymbol(node) {
     if (node.subNodes?.length > 0 || node.sections?.length > 0)
-      return this.treeControl.isExpanded(node) ? 'chevron_right' : 'expand_more';
+      return this.treeService.treeState.isExpanded(node) ? 'chevron_right' : 'expand_more';
     else return '';
   }
 
