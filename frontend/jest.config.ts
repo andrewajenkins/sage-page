@@ -1,9 +1,10 @@
 // import 'jest-preset-angular/setup-jest';
-const esModules = ['lodash-es', 'nanoid'].join('|');
+// const esModules = ['lodash-es', 'nanoid'].join('|');
 module.exports = {
   preset: 'jest-preset-angular',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/test/support/setup-jest.ts'],
+  'run-in-band': false,
 };
 //
 //  testPathIgnorePatterns: ['<rootDir>/node_modules/'],

@@ -2,14 +2,14 @@ import { ContentNode } from '../../../app/common/models/content-node.model';
 
 export const outNestedFolders = [
   {
-    id: 1,
+    feId: '1',
     type: 'folder',
     name: 'root-folder',
     subNodes: [
       {
-        id: 2,
+        feId: '2',
         type: 'folder',
-        parent_id: 1,
+        parent_id: '1',
         subNodes: [],
       },
     ],
@@ -18,20 +18,20 @@ export const outNestedFolders = [
 
 export const outNestedFoldersFile = [
   {
-    id: 1,
+    feId: '1',
     type: 'folder',
     name: 'root-folder',
     subNodes: [
       {
-        id: 2,
+        feId: '2',
         type: 'folder',
-        parent_id: 1,
+        parent_id: '1',
         name: 'sub-folder',
         subNodes: [
           {
-            id: 3,
+            feId: '3',
             type: 'file',
-            parent_id: 2,
+            parent_id: '2',
             name: 'sub-file',
             contents: [],
             sections: [],
@@ -44,26 +44,26 @@ export const outNestedFoldersFile = [
 
 export const outRootFileContent = [
   {
-    id: 1,
+    feId: '1',
     type: 'folder',
     name: 'root-folder',
     subNodes: [
       {
-        id: 2,
+        feId: '2',
         type: 'file',
-        parent_id: 1,
+        parent_id: '1',
         name: 'sub-file',
         sections: [],
         contents: [
           {
-            id: 3,
-            type: 'content1',
-            parent_id: 2,
+            feId: '3',
+            type: 'content',
+            parent_id: '2',
           },
           {
-            id: 4,
-            type: 'content2',
-            parent_id: 2,
+            feId: '4',
+            type: 'content',
+            parent_id: '2',
           },
         ],
       },
@@ -73,33 +73,30 @@ export const outRootFileContent = [
 
 export const outRootFileHeaders = [
   {
-    id: 1,
+    feId: '1',
     type: 'folder',
     name: 'root-folder',
     subNodes: [
       {
-        id: 2,
+        feId: '2',
         type: 'file',
-        parent_id: 1,
+        parent_id: '1',
         name: 'sub-file',
-        depth: 0,
         contents: [],
         sections: [
           {
-            id: 3,
+            feId: '3',
             name: 'heading1',
             type: 'heading',
-            parent_id: 2,
-            depth: 1,
+            parent_id: '2',
             sections: [],
             contents: [],
           },
           {
-            id: 4,
+            feId: '4',
             name: 'heading2',
             type: 'heading',
-            parent_id: 2,
-            depth: 1,
+            parent_id: '2',
             sections: [],
             contents: [],
           },
@@ -111,45 +108,42 @@ export const outRootFileHeaders = [
 
 export const outRootFileHeadersContent = [
   {
-    id: 1,
+    feId: '1',
     type: 'folder',
     name: 'root-folder',
     subNodes: [
       {
-        id: 2,
+        feId: '2',
         type: 'file',
-        parent_id: 1,
+        parent_id: '1',
         name: 'sub-file',
-        depth: 0,
         contents: [],
         sections: [
           {
-            id: 3,
+            feId: '3',
             name: 'heading1',
             type: 'heading',
-            parent_id: 2,
-            depth: 1,
+            parent_id: '2',
             sections: [],
             contents: [
               {
-                id: 5,
-                type: 'content1',
-                parent_id: 3,
+                feId: '5',
+                type: 'content',
+                parent_id: '3',
               },
             ],
           },
           {
-            id: 4,
+            feId: '4',
             name: 'heading2',
             type: 'heading',
-            parent_id: 2,
-            depth: 1,
+            parent_id: '2',
             sections: [],
             contents: [
               {
-                id: 6,
-                type: 'content2',
-                parent_id: 4,
+                feId: '6',
+                type: 'content',
+                parent_id: '4',
               },
             ],
           },
@@ -161,30 +155,27 @@ export const outRootFileHeadersContent = [
 
 export const outNestedHeaders = [
   {
-    id: 1,
+    feId: '1',
     type: 'folder',
     name: 'root-folder',
     subNodes: [
       {
-        id: 2,
+        feId: '2',
         type: 'file',
-        parent_id: 1,
+        parent_id: '1',
         name: 'sub-file',
-        depth: 0,
         sections: [
           {
-            id: 3,
+            feId: '3',
             name: 'heading1',
             type: 'heading',
-            parent_id: 2,
-            depth: 1,
+            parent_id: '2',
             sections: [
               {
-                id: 4,
+                feId: '4',
                 name: 'heading2',
                 type: 'heading',
-                parent_id: 3,
-                depth: 2,
+                parent_id: '3',
               },
             ],
           },
@@ -196,30 +187,27 @@ export const outNestedHeaders = [
 
 export const outUpdatedNestedHeader = [
   {
-    id: 1,
+    feId: '1',
     type: 'folder',
     name: 'root-folder',
     subNodes: [
       {
-        id: 2,
+        feId: '2',
         type: 'file',
-        parent_id: 1,
+        parent_id: '1',
         name: 'sub-file',
-        depth: 0,
         sections: [
           {
-            id: 3,
+            feId: '3',
             name: 'heading 1',
             type: 'heading',
-            parent_id: 2,
-            depth: 1,
+            parent_id: '2',
             sections: [
               {
-                id: 4,
+                feId: '4',
                 name: 'heading 2',
                 type: 'heading',
-                parent_id: 3,
-                depth: 2,
+                parent_id: '3',
               },
             ],
           },

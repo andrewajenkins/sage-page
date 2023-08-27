@@ -11,7 +11,7 @@ import { ServiceLogger } from '../logger/loggers';
 export class TreeBuilderV6Service {
   constructor(private dataService: DataService) {}
 
-  assembleTree(currentNode: ContentNode, nodeDatas: ContentNode[]) {
+  assembleTree(nodeDatas: ContentNode[]) {
     const rootNodes: ContentNode[] = [];
     const nodeMap = new Map<string, ContentNode>();
     if (!nodeDatas || nodeDatas.length == 0) return { nodeMap, rootNodes };
