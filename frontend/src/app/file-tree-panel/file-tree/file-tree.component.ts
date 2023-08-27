@@ -8,7 +8,7 @@ import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { ContentNode, isSection } from '../../common/models/section.model';
+import { ContentNode, isSection } from '../../common/models/content-node.model';
 import { FileTreeActionHandler } from './file-tree-action-handler';
 import { NotificationService } from '../../common/services/notification.service';
 import { assembleTree } from '../../common/utils/tree-utils';

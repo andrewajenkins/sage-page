@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnChanges, ViewChild } from '@angular/core';
 
-import { ContentNode, dummySection } from '../../common/models/section.model';
+import { ContentNode, dummySection } from '../../common/models/content-node.model';
 import { NodeAction } from '../../common/models/command.model';
 import { CommandService } from '../../common/services/command.service';
 

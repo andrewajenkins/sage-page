@@ -1,5 +1,5 @@
 import { buildMapV2, parseNodes } from '../../app/common/utils/tree-utils';
-import { ContentNode } from '../../app/common/models/section.model';
+import { ContentNode } from '../../app/common/models/content-node.model';
 import { deepEqualWithDebug } from '../support/test-utils';
 import * as data from './golden';
 import { NodeFactory } from '../../app/common/utils/node.factory';

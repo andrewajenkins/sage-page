@@ -1,4 +1,4 @@
-import { ContentNode } from './section.model';
+import { ContentNode } from './content-node.model';
 
 // }
 export function isFolder(node: ContentNode): boolean {

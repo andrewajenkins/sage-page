@@ -1,4 +1,4 @@
-import { ContentNode } from '../models/section.model';
+import { ContentNode } from '../models/content-node.model';
 import { cloneDeep } from 'lodash';
 
 const dummyFile: any = {

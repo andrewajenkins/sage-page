@@ -1,4 +1,4 @@
-import { ContentNode } from '../../../app/common/models/section.model';
+import { ContentNode } from '../../../app/common/models/content-node.model';
 
 export const outNestedFolders = [
   {

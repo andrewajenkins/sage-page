@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { NodeAction, isNodeCommand } from '../../common/models/command.model';
 import { NodeService } from '../../common/services/node.service';
 import { getPath } from '../../common/utils/tree-utils';
-import { ContentNode } from '../../common/models/section.model';
+import { ContentNode } from '../../common/models/content-node.model';
 
 @Component({
   selector: 'app-nav-banner',

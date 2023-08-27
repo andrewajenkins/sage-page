@@ -13,7 +13,7 @@ import {
   NodeAction,
   StateAction,
 } from '../../../common/models/command.model';
-import { ContentNode, isSection } from '../../../common/models/section.model';
+import { ContentNode, isSection } from '../../../common/models/content-node.model';
 import { NodeService } from '../../../common/services/node.service';
 import { isContentNode, isFile, isFolder } from '../../../common/models/file-tree.model';
 import { assembleTree, buildMapV2, parseNodes, recursiveDeleteNode } from '../../../common/utils/tree-utils';

@@ -17,7 +17,7 @@ import { cloneDeep } from 'lodash';
 import { ComponentLogger } from '../../common/logger/loggers';
 import { ContentAction, isFlagCommand, StateAction } from '../../common/models/command.model';
 import { CommandService } from '../../common/services/command.service';
-import { ChatLogEntry, ContentNode } from '../../common/models/section.model';
+import { ChatLogEntry, ContentNode } from '../../common/models/content-node.model';
 import { NodeFactory } from '../../common/utils/node.factory';
 import { Chat } from './chat.model';
 import { NodeService } from '../../common/services/node.service';

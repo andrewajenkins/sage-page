@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CommandService } from './command.service';
 import { StateAction } from '../models/command.model';
 import { isContentNode, isFile } from '../models/file-tree.model';
-import { ContentNode, isSection } from '../models/section.model';
+import { ContentNode, isSection } from '../models/content-node.model';
 
 @Injectable({
   providedIn: 'root',

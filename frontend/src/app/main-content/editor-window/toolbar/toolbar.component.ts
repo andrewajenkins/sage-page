@@ -4,7 +4,7 @@ import { ComponentLogger } from '../../../common/logger/loggers';
 import { EditorAction } from '../../../common/models/command.model';
 import { MarkdownExportService } from '../../../common/services/markdown-export.service';
 import { NodeService } from '../../../common/services/node.service';
-import { ContentNode } from '../../../common/models/section.model';
+import { ContentNode } from '../../../common/models/content-node.model';
 
 @Component({
   selector: 'app-toolbar',

@@ -12,7 +12,7 @@ import { NodeService } from '../../common/services/node.service';
 import { MatTreeService } from '../../common/services/mat-tree.service';
 import { NodeFactory } from '../../common/utils/node.factory';
 import { assembleTree } from '../../common/utils/tree-utils';
-import { ContentNode } from '../../common/models/section.model';
+import { ContentNode } from '../../common/models/content-node.model';
 
 @Injectable({
   providedIn: 'root',

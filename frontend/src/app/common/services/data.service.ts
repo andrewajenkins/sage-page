@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ServiceLogger } from '../logger/loggers';
 import { isFile } from '../models/file-tree.model';
-import { ChatLogEntry, ContentNode, isSection } from '../models/section.model';
+import { ChatLogEntry, ContentNode, isSection } from '../models/content-node.model';
 import { getDummyFile } from '../utils/node.factory';
 
 const url = 'http://localhost:4200/api';

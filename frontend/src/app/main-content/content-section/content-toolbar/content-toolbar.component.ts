@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommandService } from '../../../common/services/command.service';
 import { EditorAction, NodeAction } from '../../../common/models/command.model';
-import { ContentNode } from '../../../common/models/section.model';
+import { ContentNode } from '../../../common/models/content-node.model';
 
 @Component({
   selector: 'app-content-toolbar',

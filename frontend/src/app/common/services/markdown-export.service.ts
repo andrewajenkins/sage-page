@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ContentNode } from '../models/section.model';
+import { ContentNode } from '../models/content-node.model';
 
 @Injectable({
   providedIn: 'root',

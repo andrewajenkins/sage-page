@@ -1,4 +1,4 @@
-import { ContentNode, isContent, isSection } from '../models/section.model';
+import { ContentNode, isContent, isSection } from '../models/content-node.model';
 import { cloneDeep, remove } from 'lodash';
 import { isFile, isFolder } from '../models/file-tree.model';
 

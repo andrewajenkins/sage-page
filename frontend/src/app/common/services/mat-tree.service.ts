@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ServiceLogger } from '../logger/loggers';
 import { FileTreeComponent } from '../../file-tree-panel/file-tree/file-tree.component';
 import { isFile, isFolder } from '../models/file-tree.model';
-import { ContentNode, isContent, isSection } from '../models/section.model';
+import { ContentNode, isContent, isSection } from '../models/content-node.model';
 import { NodeService } from './node.service';
 
 @Injectable({
