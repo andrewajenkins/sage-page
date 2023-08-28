@@ -8,7 +8,7 @@ export const outFileContents = {
   name: 'sub-file',
   type: 'file',
   parent_id: 'folder-id',
-  sections: [
+  contents: [
     {
       name: 'Some text',
       text: 'Some text',

@@ -83,17 +83,9 @@ export class TreeService {
       return;
     }
     if (currentNode.isContentNode()) {
-      // const parseResult = parseNodes(currentNode as ContentNode);
-      // const sectionNodes = buildMapV2(parseResult as ContentNode);
-      const { rootNodes } = this.treeBuilder.buildTree(currentNode, cloneDeep(currentNode.sections));
-      currentNode.sections = rootNodes;
+      this.treeBuilder.buildTree(currentNode, cloneDeep(currentNode.sections));
+      this._treeState.refreshTree();
       console.log('currentNode:', currentNode);
-      this.dataService.createSections(currentNode.sections).subscribe((fileTree: any) => {
-        const { nodeMap, rootNodes } = this.treeBuilder.assembleTree(fileTree, currentNode);
-        this.nodeMap = nodeMap;
-        for (let node of nodeMap.values()) this.dataService.updateNode(node).subscribe((node) => {});
-        this._treeState.refreshTree(rootNodes as ContentNode[]);
-      });
     } else
       this.commandService.perform({
         action: StateAction.NOTIFY,
@@ -110,7 +102,9 @@ export class TreeService {
     this._treeState.refreshTree();
   }
   hasNewSections(node) {
-    return !!node.sections?.some((section) => !section.generated);
+    return (
+      !!node.sections?.some((section) => !section.generated) || !!node.contents?.some((content) => !content.generated)
+    );
   }
 
   collapseAll() {

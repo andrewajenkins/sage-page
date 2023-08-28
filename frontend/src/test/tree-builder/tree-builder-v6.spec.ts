@@ -7,15 +7,21 @@ import { TreeService } from '../../app/common/services/tree.service';
 import { ContentNode } from '../../app/common/models/content-node.model';
 import { FileTreeComponent } from '../../app/file-tree-panel/file-tree/file-tree.component';
 import { CommandService } from '../../app/common/services/command.service';
-import { NodeAction } from '../../app/common/models/command.model';
+import { ContentAction, EditorAction, NodeAction } from '../../app/common/models/command.model';
 import { of } from 'rxjs';
 import { DataService } from '../../app/common/services/data.service';
 import { FileTreeActionHandler } from '../../app/file-tree-panel/file-tree/file-tree-action-handler';
+import { sampleLongText, saveContentLarge } from './golden';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { ContentContainerComponent } from '../../app/main-content/editor-window/content-container/content-container.component';
+import { NodeFactory } from '../../app/common/utils/node.factory';
+import { deepEqualWithDebug } from '../support/test-utils';
 
 const dataServiceMock = {
   createNode: jest.fn(),
   getFileTree: jest.fn(),
   deleteNode: jest.fn(),
+  createSections: jest.fn(),
 };
 
 describe('TreeBuilderV6Service', () => {
@@ -24,12 +30,13 @@ describe('TreeBuilderV6Service', () => {
   let commandService: CommandService;
   let actionHandler: FileTreeActionHandler;
   let fixture: ComponentFixture<FileTreeComponent>;
-  let fileTree: FileTreeComponent;
+  let containerFixture: ComponentFixture<ContentContainerComponent>;
+  let clipboard: Clipboard;
   let fileTreeElement: HTMLElement;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [FileTreeComponent],
+      declarations: [FileTreeComponent, ContentContainerComponent],
       imports: [AppModule, HttpClientTestingModule],
       providers: [
         TreeBuilderV6Service,
@@ -41,15 +48,17 @@ describe('TreeBuilderV6Service', () => {
     });
     jest.spyOn(dataServiceMock, 'getFileTree').mockReturnValue(of([]));
     jest.spyOn(dataServiceMock, 'deleteNode').mockReturnValue(of([]));
-    builderService = TestBed.inject(TreeBuilderV6Service);
-    treeService = TestBed.inject(TreeService);
-    treeService.initialize = jest.fn();
+    fixture = TestBed.createComponent(FileTreeComponent);
+    fileTreeElement = fixture.nativeElement;
+    containerFixture = TestBed.createComponent(ContentContainerComponent);
+    containerFixture.detectChanges();
     actionHandler = TestBed.inject(FileTreeActionHandler);
     actionHandler.init();
+    builderService = TestBed.inject(TreeBuilderV6Service);
+    clipboard = TestBed.inject(Clipboard);
     commandService = TestBed.inject(CommandService);
-    fixture = TestBed.createComponent(FileTreeComponent);
-    fileTree = fixture.componentInstance;
-    fileTreeElement = fixture.nativeElement;
+    treeService = TestBed.inject(TreeService);
+    treeService.initialize = jest.fn();
   });
 
   it('should be created', () => {
@@ -105,9 +114,8 @@ describe('TreeBuilderV6Service', () => {
     });
     describe('file', () => {
       beforeEach(() => {
-        const newNode = { name: 'root-file', type: 'file', text: 'root-file' };
+        const newNode = { name: 'root-file', type: 'file', text: 'root-file', depth: 0 };
         const newNodeWithId = { ...newNode, parent_id: folderNodeWithId.feId };
-
         dataServiceMock.createNode.mockReturnValue(of([folderNodeWithId, newNodeWithId]));
         treeService.currentNode = treeService.tree.dataSource.data[0];
         commandService.perform({ action: NodeAction.CREATE_FILE, value: 'root-file' });
@@ -133,6 +141,28 @@ describe('TreeBuilderV6Service', () => {
         });
         fixture.detectChanges();
         expect(fileTreeElement.querySelector('.node-name')?.textContent).not.toContain('root-file');
+      });
+      it('should save content', () => {
+        treeService.currentNode = treeService.tree.dataSource.data[0].subNodes[0];
+        dataServiceMock.createSections.mockReturnValue(of([]));
+        commandService.perform({
+          action: ContentAction.ADD_SECTIONS,
+          sections: NodeFactory.createSectionsFromText(sampleLongText, treeService.currentNode.feId),
+        });
+        fixture.detectChanges();
+        commandService.perform({
+          action: EditorAction.SAVE_CONTENT,
+        });
+        fixture.detectChanges();
+        // expect(fileTreeElement.textContent).toContain('Chapter 1: Ancient Philosophy ');
+        // expect(fileTreeElement.textContent).toContain('Section 1: Pre-Socratic Philosophy');
+        // expect(fileTreeElement.textContent).toContain('Conclusion');
+        // expect(treeService.currentNode.contents[0].name).toContain("Here's a general outline");
+        // expect(treeService.currentNode.sections[0].sections[1].sections[0].text).toContain(
+        //   '### Section 1: Pre-Socratic Philosophy'
+        // );
+        // expect(treeService.currentNode.sections[0].sections[1].sections[0].depth).toBe(3);
+        expect(deepEqualWithDebug(treeService.currentNode, saveContentLarge)).toBe(true);
       });
     });
   });

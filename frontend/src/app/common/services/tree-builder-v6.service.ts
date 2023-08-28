@@ -125,7 +125,7 @@ export class TreeBuilderV6Service {
         node.generated = true;
         node.type = 'content';
         node.parent_id = parent.feId;
-        parent.sections.push(node);
+        parent.contents.push(node);
         updateSections.push(cloneDeep(node));
         nodeMap.set(node.feId, node);
       }

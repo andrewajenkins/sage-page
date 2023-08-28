@@ -11,7 +11,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DataService } from '../../app/common/services/data.service';
 import { of } from 'rxjs';
 
-const testsToRun = [];
+const testsToRun = ['FileContents'];
 const dataServiceMock = {
   createSections: jest.fn(),
   getFileTree: jest.fn(),
@@ -45,12 +45,12 @@ describe('buildMap', () => {
   }
 });
 function getCurrentNode(data) {
-  return {
+  return new ContentNode({
     feId: 'file-id',
     type: 'file',
     parent_id: 'folder-id',
     name: 'sub-file',
     depth: 1,
     sections: [...data],
-  } as unknown as ContentNode;
+  });
 }

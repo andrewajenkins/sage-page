@@ -17,7 +17,6 @@ import { ContentNode } from '../../../common/models/content-node.model';
 import { recursiveDeleteNode } from '../../../common/utils/tree-utils';
 import { remove } from 'lodash';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { DataService } from '../../../common/services/data.service';
 import { TreeService } from '../../../common/services/tree.service';
 import { NodeFactory } from '../../../common/utils/node.factory';
 
@@ -35,7 +34,6 @@ export class ContentContainerComponent {
   constructor(
     private commandService: CommandService,
     private clipboard: Clipboard,
-    private dataService: DataService,
     private treeService: TreeService,
     private cdRef: ChangeDetectorRef
   ) {}

@@ -73,11 +73,6 @@ export class BotWindowComponent implements OnInit {
     this.sendQuery(); // TODO remove
   }
 
-  triggerResize() {
-    // Wait for changes to be applied, then trigger textarea resize.
-    this._ngZone.onStable.pipe(take(1)).subscribe(() => this.autosize.resizeToFitContent(true));
-  }
-
   sendQuery(query?) {
     this.botWindowService.postQuery(this.form.get('modelControl')?.value, query).subscribe((response) => {
       const chat = new Chat(query, response);
