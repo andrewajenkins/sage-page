@@ -75,6 +75,7 @@ export class BotWindowComponent implements OnInit {
 
   sendQuery(query?) {
     this.botWindowService.postQuery(this.form.get('modelControl')?.value, query).subscribe((response) => {
+      const newContents = this.parseResults(response);
       const chat = new Chat(query, response);
       this.log.push({
         id: this.log.length,
@@ -87,7 +88,6 @@ export class BotWindowComponent implements OnInit {
           }),
         ],
       });
-      const newContents = this.parseResults(response);
       this.log.push({
         role: 'Sage:',
         content: newContents,

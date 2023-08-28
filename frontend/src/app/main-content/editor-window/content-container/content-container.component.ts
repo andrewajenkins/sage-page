@@ -74,11 +74,11 @@ export class ContentContainerComponent {
       } else if (isValueCommand(cmd) && isSectionCommand(cmd) && cmd.action === EditorAction.CREATE_SECTION) {
         if (!this.section) notifyPickSection();
         const section = this.section!;
-        let index = section.sections.findIndex((section) => section.id === cmd.section.id);
+        let index = section.sections.findIndex((section) => section.feId === cmd.section.feId);
         console.log('sections index:', index);
         const array = index >= 0 ? section.sections : section.contents;
         if (index < 0) {
-          index = section.contents.findIndex((section) => section.id === cmd.section.id);
+          index = section.contents.findIndex((section) => section.feId === cmd.section.feId);
           console.log('content index:', index);
         }
         const newSection = new ContentNode({
