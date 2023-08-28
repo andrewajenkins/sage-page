@@ -228,19 +228,18 @@ function parse(node: ContentNode) {
   return node;
 }
 export function getPath(node: ContentNode, nodeMap) {
-  return [];
-  // let curr: FileTreeNode = node;
-  // const path: FileTreeNode[] = [];
-  // console.log('equality:', !nodeMap, nodeMap === undefined);
-  // if (!nodeMap || !curr) {
-  //   console.warn('getPath: no nodeMap or node:', nodeMap, curr);
-  //   return [];
-  // }
-  // while (!isFolder(curr)) {
-  //   console.log('getPath: curr:', curr);
-  //   path.unshift(curr);
-  //   if (!curr.parent_id) throw new Error('getPath: no parent_id: ' + JSON.stringify(curr));
-  //   curr = nodeMap.get(curr.parent_id) as FileTreeNode;
-  // }
-  // return path;
+  let curr: ContentNode = node;
+  const path: ContentNode[] = [];
+  console.log('equality:', !nodeMap, nodeMap === undefined);
+  if (!nodeMap || !curr) {
+    console.warn('getPath: no nodeMap or node:', nodeMap, curr);
+    return [];
+  }
+  while (!curr.isFolder()) {
+    console.log('getPath: curr:', curr);
+    path.unshift(curr);
+    if (!curr.parent_id) throw new Error('getPath: no parent_id: ' + JSON.stringify(curr));
+    curr = nodeMap.get(curr.parent_id) as ContentNode;
+  }
+  return path;
 }
