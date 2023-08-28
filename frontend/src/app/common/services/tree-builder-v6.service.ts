@@ -26,18 +26,31 @@ export class TreeBuilderV6Service {
     rootNodes: ContentNode[]
   ) {
     for (let node of nodes) {
-      const isCurrentRoot = currentNode && node.feId === currentNode.feId;
+      const isCurrentRoot = false; // NYI - currentNode && node.feId === currentNode.feId; Need backend to only send back changed nodes for this to work.
       if (node.isFolder()) {
         if (!node.hasParent() || isCurrentRoot) {
           rootNodes.push(node);
           nodeMap.set(node.feId, node);
-        } else this.getNodeParent(node, nodeMap)?.subNodes.push(node);
+        } else {
+          const parent = this.getNodeParent(node, nodeMap);
+          if (!parent) {
+            console.error('getNodeParent: no parent found. Deleting node:', JSON.stringify(node));
+            this.dataService.deleteNode(node).subscribe((result) => {});
+            continue;
+          }
+          parent?.subNodes.push(node);
+        }
       } else if (node.isFile()) {
         if (isCurrentRoot) {
           rootNodes.push(node);
           nodeMap.set(node.feId, node);
         } else {
           const parent = this.getNodeParent(node, nodeMap);
+          if (!parent) {
+            console.error('getNodeParent: no parent found. Deleting node:', JSON.stringify(node));
+            this.dataService.deleteNode(node).subscribe((result) => {});
+            continue;
+          }
           parent?.subNodes.push(node);
         }
       } else {
@@ -47,10 +60,20 @@ export class TreeBuilderV6Service {
             nodeMap.set(node.feId, node);
           } else {
             const parent = this.getNodeParent(node, nodeMap); // Get the parent at the previous depth
+            if (!parent) {
+              console.error('getNodeParent: no parent found. Deleting node:', JSON.stringify(node));
+              this.dataService.deleteNode(node).subscribe((result) => {});
+              continue;
+            }
             parent.sections.push(node);
           }
         } else {
           const parent = this.getNodeParent(node, nodeMap);
+          if (!parent) {
+            console.error('getNodeParent: no parent found. Deleting node:', JSON.stringify(node));
+            this.dataService.deleteNode(node).subscribe((result) => {});
+            continue;
+          }
           parent.contents.push(node);
         }
       }
@@ -59,7 +82,6 @@ export class TreeBuilderV6Service {
   }
   private getNodeParent(node, nodeMap) {
     const result = nodeMap.get(node.parent_id);
-    if (!result) throw new Error('getNodeParent: no parent found for node:' + JSON.stringify(node));
     return result;
   }
   private initNodes(nodeDatas) {
