@@ -27,24 +27,9 @@ export class Tree {
   }
 
   insert(rootNodes: ContentNode[], currentNode: ContentNode | undefined) {
-    if (currentNode) {
-      const replaceNode = (nodes: ContentNode[]) => {
-        for (let i = 0; i < nodes.length; i++) {
-          if (nodes[i].feId === currentNode.feId) {
-            nodes.splice(i, 1, ...rootNodes);
-            return;
-          }
-        }
-        for (let node of nodes) {
-          if (node.isFolder()) {
-            replaceNode(node.subNodes);
-          } else if (node.isContentNode()) {
-            replaceNode(node.sections);
-          }
-        }
-      };
-      replaceNode(this.dataSource.data);
-    } else this.dataSource.data.splice(0, 1, ...rootNodes);
+    if (!currentNode) this.dataSource.data = rootNodes;
+    else if (currentNode.isFolder()) currentNode.subNodes.push(...rootNodes);
+    else currentNode.sections.push(...rootNodes);
   }
 
   deleteNode(targetNode: ContentNode | undefined) {

@@ -94,11 +94,6 @@ export class TreeService {
         value: 'Failed to generate sections, current node is not a file or section',
       });
   }
-  handleTreeUpdate(resp: any) {
-    const { nodeMap, rootNodes } = this.treeBuilder.assembleTree(resp, this.currentNode);
-    this._tree.insert(rootNodes, this.currentNode);
-    this._treeState.refreshTree();
-  }
   deleteNode(node: ContentNode) {
     this._tree.deleteNode(node);
     this._treeState.refreshTree();
@@ -116,5 +111,11 @@ export class TreeService {
 
   expandAll() {
     if (this._tree.currentNode) this.treeState.expandAll(this._tree.currentNode);
+  }
+
+  createNode(newNode: ContentNode) {
+    this._tree.insert([newNode], this.currentNode);
+    this._treeState.refreshTree();
+    this.dataService.createNode(newNode).subscribe((resp) => {});
   }
 }

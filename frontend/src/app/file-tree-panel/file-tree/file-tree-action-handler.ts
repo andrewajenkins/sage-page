@@ -34,11 +34,13 @@ export class FileTreeActionHandler {
           type: 'folder',
           parent_id: currentNode?.feId,
         });
-        this.dataService.createNode(newNode).subscribe((resp) => {
-          this.treeService.handleTreeUpdate(resp);
-        });
+        this.treeService.createNode(newNode);
       } else if (isValueCommand(cmd) && action === NodeAction.CREATE_FILE) {
-        if (!currentNode) return;
+        if (!currentNode)
+          return this.commandService.perform({
+            action: StateAction.NOTIFY,
+            value: 'Create file failed because no folder selected',
+          });
         const newNode: ContentNode = new ContentNode({
           name: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
           text: cmd.value || 'DEFAULT_NAME_' + this.fileIndex++,
@@ -46,9 +48,7 @@ export class FileTreeActionHandler {
           depth: 0,
           type: 'file',
         });
-        this.dataService.createNode(newNode).subscribe((resp) => {
-          this.treeService.handleTreeUpdate(resp);
-        });
+        this.treeService.createNode(newNode);
       } else if (isContentCommand(cmd) && action === NodeAction.DELETE_NODE) {
         if (this.treeService.currentNode && cmd.content.feId == currentNode?.feId) this.setNodeNotSelected();
         this.dataService.deleteNode(cmd.content).subscribe((resp) => {

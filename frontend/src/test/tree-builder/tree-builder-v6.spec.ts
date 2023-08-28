@@ -53,7 +53,6 @@ describe('TreeBuilderV6Service', () => {
     containerFixture = TestBed.createComponent(ContentContainerComponent);
     containerFixture.detectChanges();
     actionHandler = TestBed.inject(FileTreeActionHandler);
-    actionHandler.init();
     builderService = TestBed.inject(TreeBuilderV6Service);
     clipboard = TestBed.inject(Clipboard);
     commandService = TestBed.inject(CommandService);
@@ -65,33 +64,28 @@ describe('TreeBuilderV6Service', () => {
     expect(builderService).toBeTruthy();
   });
 
-  it('should create folder', () => {
-    treeService.handleTreeUpdate([new ContentNode({ name: 'root', type: 'folder', text: 'root' })]);
-    fixture.detectChanges();
-    const html = fileTreeElement.innerHTML;
-    const text = fileTreeElement.querySelector('.node-name')?.textContent;
-    expect(fileTreeElement.querySelector('.node-name')?.textContent).toContain('root');
-  });
-
-  it('should create file', () => {
-    const folder = new ContentNode({ name: 'root', type: 'folder', text: 'root' });
-    const file = new ContentNode({ name: 'file', type: 'file', text: 'file', parent_id: folder.feId });
-    treeService.handleTreeUpdate([folder, file]);
-    fixture.detectChanges();
-    const html = fileTreeElement.innerHTML;
-    const text = fileTreeElement.querySelector('.node-name')?.textContent;
-    expect(fileTreeElement.querySelector('.nested-name')?.textContent).toContain('root');
-    expect(fileTreeElement.querySelector('.node-name')?.textContent).toContain('file');
-  });
-
   describe('commands', () => {
-    let folderNodeWithId: Partial<ContentNode>;
+    let folderNode: Partial<ContentNode>;
     beforeEach(() => {
-      const folderNode = { feId: 'abc123', name: 'root-folder', type: 'folder', text: 'root' };
-      folderNodeWithId = { ...folderNode, feId: '123' };
-      dataServiceMock.createNode.mockReturnValue(of([folderNodeWithId]));
+      folderNode = { feId: 'root-file-id', name: 'root-folder', type: 'folder' };
       commandService.perform({ action: NodeAction.CREATE_FOLDER, value: 'root-folder' });
       fixture.detectChanges();
+    });
+
+    it('should create nested folder file', () => {
+      treeService.currentNode = treeService.tree.dataSource.data[0];
+      commandService.perform({ action: NodeAction.CREATE_FOLDER, value: 'nested-folder' });
+
+      treeService.currentNode = treeService.tree.dataSource.data[0].subNodes[0];
+      commandService.perform({ action: NodeAction.CREATE_FILE, value: 'root-file' });
+      fixture.detectChanges();
+
+      const text = fileTreeElement.textContent;
+      expect(fileTreeElement.querySelectorAll('.node-name').length).toBe(1);
+      expect(fileTreeElement.querySelectorAll('.nested-name').length).toBe(2);
+      expect(fileTreeElement.querySelectorAll('.nested-name')[0]?.textContent).toContain('root-folder');
+      expect(fileTreeElement.querySelectorAll('.nested-name')[1]?.textContent).toContain('nested-folder');
+      expect(fileTreeElement.querySelector('.node-name')?.textContent).toContain('file');
     });
 
     describe('folder', () => {
@@ -115,8 +109,8 @@ describe('TreeBuilderV6Service', () => {
     describe('file', () => {
       beforeEach(() => {
         const newNode = { name: 'root-file', type: 'file', text: 'root-file', depth: 0 };
-        const newNodeWithId = { ...newNode, parent_id: folderNodeWithId.feId };
-        dataServiceMock.createNode.mockReturnValue(of([folderNodeWithId, newNodeWithId]));
+        const newNodeWithId = { ...newNode, parent_id: folderNode.feId };
+        dataServiceMock.createNode.mockReturnValue(of([folderNode, newNodeWithId]));
         treeService.currentNode = treeService.tree.dataSource.data[0];
         commandService.perform({ action: NodeAction.CREATE_FILE, value: 'root-file' });
         fixture.detectChanges();
@@ -127,14 +121,14 @@ describe('TreeBuilderV6Service', () => {
         expect(fileTreeElement.querySelector('.node-name')?.textContent).toContain('root-file');
       });
       it('should delete - current', () => {
-        dataServiceMock.deleteNode.mockReturnValue(of([folderNodeWithId]));
+        dataServiceMock.deleteNode.mockReturnValue(of([folderNode]));
         treeService.currentNode = treeService.tree.dataSource.data[0].subNodes[0];
         commandService.perform({ action: NodeAction.DELETE_CURRENT_NODE });
         fixture.detectChanges();
         expect(fileTreeElement.querySelector('.node-name')?.textContent).not.toContain('root-file');
       });
       it('should delete - arbitrary', () => {
-        dataServiceMock.deleteNode.mockReturnValue(of([folderNodeWithId]));
+        dataServiceMock.deleteNode.mockReturnValue(of([folderNode]));
         commandService.perform({
           action: NodeAction.DELETE_NODE,
           content: treeService.tree.dataSource.data[0].subNodes[0],
@@ -154,14 +148,6 @@ describe('TreeBuilderV6Service', () => {
           action: EditorAction.SAVE_CONTENT,
         });
         fixture.detectChanges();
-        // expect(fileTreeElement.textContent).toContain('Chapter 1: Ancient Philosophy ');
-        // expect(fileTreeElement.textContent).toContain('Section 1: Pre-Socratic Philosophy');
-        // expect(fileTreeElement.textContent).toContain('Conclusion');
-        // expect(treeService.currentNode.contents[0].name).toContain("Here's a general outline");
-        // expect(treeService.currentNode.sections[0].sections[1].sections[0].text).toContain(
-        //   '### Section 1: Pre-Socratic Philosophy'
-        // );
-        // expect(treeService.currentNode.sections[0].sections[1].sections[0].depth).toBe(3);
         expect(deepEqualWithDebug(treeService.currentNode, saveContentLarge)).toBe(true);
       });
     });
