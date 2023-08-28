@@ -46,4 +46,24 @@ export class Tree {
       replaceNode(this.dataSource.data);
     } else this.dataSource.data.splice(0, 1, ...rootNodes);
   }
+
+  deleteNode(targetNode: ContentNode | undefined) {
+    const removeNode = (nodes: ContentNode[]) => {
+      for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].feId === targetNode?.feId) {
+          nodes.splice(i, 1);
+          this.currentNode = undefined;
+          return;
+        }
+      }
+      for (let node of nodes) {
+        if (node.isFolder()) {
+          removeNode(node.subNodes);
+        } else if (node.isContentNode()) {
+          removeNode(node.sections);
+        }
+      }
+    };
+    removeNode(this.dataSource.data);
+  }
 }

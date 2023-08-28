@@ -15,6 +15,7 @@ import { FileTreeActionHandler } from '../../app/file-tree-panel/file-tree/file-
 const dataServiceMock = {
   createNode: jest.fn(),
   getFileTree: jest.fn(),
+  deleteNode: jest.fn(),
 };
 
 describe('TreeBuilderV6Service', () => {
@@ -39,6 +40,7 @@ describe('TreeBuilderV6Service', () => {
       ],
     });
     jest.spyOn(dataServiceMock, 'getFileTree').mockReturnValue(of([]));
+    jest.spyOn(dataServiceMock, 'deleteNode').mockReturnValue(of([]));
     builderService = TestBed.inject(TreeBuilderV6Service);
     treeService = TestBed.inject(TreeService);
     treeService.initialize = jest.fn();
@@ -73,7 +75,7 @@ describe('TreeBuilderV6Service', () => {
     expect(fileTreeElement.querySelector('.node-name')?.textContent).toContain('file');
   });
 
-  describe('create folder/file from command', () => {
+  describe('commands', () => {
     let folderNodeWithId: Partial<ContentNode>;
     beforeEach(() => {
       const folderNode = { feId: 'abc123', name: 'root-folder', type: 'folder', text: 'root' };
@@ -83,21 +85,55 @@ describe('TreeBuilderV6Service', () => {
       fixture.detectChanges();
     });
 
-    it('should create folder from command', () => {
-      expect(fileTreeElement.querySelector('.node-name')?.textContent).toContain('root-folder');
+    describe('folder', () => {
+      it('should create', () => {
+        expect(fileTreeElement.querySelector('.node-name')?.textContent).toContain('root-folder');
+      });
+      it('should delete - current', () => {
+        dataServiceMock.deleteNode.mockReturnValue(of([]));
+        treeService.currentNode = treeService.tree.dataSource.data[0];
+        commandService.perform({ action: NodeAction.DELETE_CURRENT_NODE });
+        fixture.detectChanges();
+        expect(fileTreeElement.querySelector('.node-name')?.textContent).toBeUndefined();
+      });
+      it('should delete - arbitrary', () => {
+        dataServiceMock.deleteNode.mockReturnValue(of([]));
+        commandService.perform({ action: NodeAction.DELETE_NODE, content: treeService.tree.dataSource.data[0] });
+        fixture.detectChanges();
+        expect(fileTreeElement.querySelector('.node-name')?.textContent).toBeUndefined();
+      });
     });
+    describe('file', () => {
+      beforeEach(() => {
+        const newNode = { name: 'root-file', type: 'file', text: 'root-file' };
+        const newNodeWithId = { ...newNode, parent_id: folderNodeWithId.feId };
 
-    it('should create file from command', () => {
-      const newNode = { name: 'root-file', type: 'file', text: 'root-file' };
-      const newNodeWithId = { ...newNode, parent_id: folderNodeWithId.feId };
-
-      dataServiceMock.createNode.mockReturnValue(of([folderNodeWithId, newNodeWithId]));
-      treeService.currentNode = treeService.tree.dataSource.data[0];
-      commandService.perform({ action: NodeAction.CREATE_FILE, value: 'root-file' });
-      fixture.detectChanges();
-      const text = fileTreeElement.textContent;
-      expect(fileTreeElement.querySelector('.nested-name')?.textContent).toContain('root-folder');
-      expect(fileTreeElement.querySelector('.node-name')?.textContent).toContain('root-file');
+        dataServiceMock.createNode.mockReturnValue(of([folderNodeWithId, newNodeWithId]));
+        treeService.currentNode = treeService.tree.dataSource.data[0];
+        commandService.perform({ action: NodeAction.CREATE_FILE, value: 'root-file' });
+        fixture.detectChanges();
+        const text = fileTreeElement.textContent;
+      });
+      it('should create', () => {
+        expect(fileTreeElement.querySelector('.nested-name')?.textContent).toContain('root-folder');
+        expect(fileTreeElement.querySelector('.node-name')?.textContent).toContain('root-file');
+      });
+      it('should delete - current', () => {
+        dataServiceMock.deleteNode.mockReturnValue(of([folderNodeWithId]));
+        treeService.currentNode = treeService.tree.dataSource.data[0].subNodes[0];
+        commandService.perform({ action: NodeAction.DELETE_CURRENT_NODE });
+        fixture.detectChanges();
+        expect(fileTreeElement.querySelector('.node-name')?.textContent).not.toContain('root-file');
+      });
+      it('should delete - arbitrary', () => {
+        dataServiceMock.deleteNode.mockReturnValue(of([folderNodeWithId]));
+        commandService.perform({
+          action: NodeAction.DELETE_NODE,
+          content: treeService.tree.dataSource.data[0].subNodes[0],
+        });
+        fixture.detectChanges();
+        expect(fileTreeElement.querySelector('.node-name')?.textContent).not.toContain('root-file');
+      });
     });
   });
 });

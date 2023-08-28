@@ -105,6 +105,10 @@ export class TreeService {
     this._tree.insert(rootNodes, this.currentNode);
     this._treeState.refreshTree();
   }
+  deleteNode(node: ContentNode) {
+    this._tree.deleteNode(node);
+    this._treeState.refreshTree();
+  }
   hasNewSections(node) {
     return !!node.sections?.some((section) => !section.generated);
   }

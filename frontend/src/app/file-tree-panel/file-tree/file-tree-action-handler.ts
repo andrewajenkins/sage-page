@@ -50,22 +50,19 @@ export class FileTreeActionHandler {
           this.treeService.handleTreeUpdate(resp);
         });
       } else if (isContentCommand(cmd) && action === NodeAction.DELETE_NODE) {
-        if (this.treeService.currentNode && cmd.content.id == currentNode?.id) this.setNodeNotSelected();
+        if (this.treeService.currentNode && cmd.content.feId == currentNode?.feId) this.setNodeNotSelected();
         this.dataService.deleteNode(cmd.content).subscribe((resp) => {
-          this.treeService.handleTreeUpdate(resp);
+          this.treeService.deleteNode(cmd.content);
         });
       } else if (action === NodeAction.DELETE_CURRENT_NODE) {
         if (!currentNode) return;
         this.dataService.deleteNode(currentNode).subscribe((resp) => {
           this.setNodeNotSelected();
-          if (currentNode && currentNode.id) {
-            this.treeService.handleTreeUpdate(resp);
-            this.treeService.currentNode = undefined;
-            this.commandService.perform({
-              action: StateAction.SET_NODE_SELECTED,
-              flag: false,
-            });
-          }
+          this.treeService.deleteNode(currentNode);
+          this.commandService.perform({
+            action: StateAction.SET_NODE_SELECTED,
+            flag: false,
+          });
         });
       } else if (isValueCommand(cmd) && action === NodeAction.EDIT_NODE_NAME) {
         if (currentNode) {
