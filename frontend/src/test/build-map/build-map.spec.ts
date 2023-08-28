@@ -38,7 +38,7 @@ describe('buildMap', () => {
     it(title, () => {
       const nodes = NodeFactory.createSectionsFromText(data['in' + title].trim(), 'asdf1234');
       const currentNode = getCurrentNode(nodes);
-      const { nodeMap, rootNodes } = builderService.buildTree(currentNode, cloneDeep(nodes));
+      const { nodeMap, rootNodes } = builderService.buildTree(currentNode);
       const expected = data['out' + title];
       expect(deepEqualWithDebug(currentNode, expected)).toBe(true);
     });

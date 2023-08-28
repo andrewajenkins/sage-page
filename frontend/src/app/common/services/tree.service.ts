@@ -83,8 +83,10 @@ export class TreeService {
       return;
     }
     if (currentNode.isContentNode()) {
-      this.treeBuilder.buildTree(currentNode, cloneDeep(currentNode.sections));
-      this._treeState.refreshTree();
+      this.treeState.saveTreeState();
+      this.treeBuilder.buildTree(currentNode);
+      this.treeState.refreshTree();
+      if (this.tree.currentNode) this.treeState.expandNode(this.tree.currentNode);
       console.log('currentNode:', currentNode);
     } else
       this.commandService.perform({
@@ -100,6 +102,7 @@ export class TreeService {
   deleteNode(node: ContentNode) {
     this._tree.deleteNode(node);
     this._treeState.refreshTree();
+    this.dataService.deleteNode(node).subscribe((resp) => {});
   }
   hasNewSections(node) {
     return (

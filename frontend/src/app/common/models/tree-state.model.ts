@@ -19,26 +19,9 @@ export class TreeState {
     this.dataSource.data = [];
     this.dataSource.data = data!;
     this.treeControl.dataNodes = data!;
-    // this.applyTreeState(this.state);
-    // if (expandCurrent) this.treeControl.expand(this.tree.currentNode!);
+    this.applyTreeState(this.state);
   }
 
-  // private insertData(data: ContentNode[], treeData: ContentNode[]) {
-  //   const targetNode = data[0] as ContentNode;
-  //   for (let i = 0; i < treeData.length; i++) {
-  //     if (treeData[i].id === targetNode.id) {
-  //       treeData.splice(i, 1, targetNode);
-  //       return;
-  //     }
-  //   }
-  //   treeData.forEach((node: ContentNode) => {
-  //     if (node.isFolder()) {
-  //       return this.insertData(data, node.subNodes);
-  //     } else if (node.isSection()) {
-  //       return this.insertData(data, node.sections);
-  //     }
-  //   });
-  // }
   isRootData(data) {
     return !data[0]?.parent_id;
   }
@@ -96,7 +79,10 @@ export class TreeState {
     });
     this.treeControl.collapse(currentNode);
   }
-
+  expandNode(node: ContentNode) {
+    this.treeControl.dataNodes = this.dataSource.data;
+    this.treeControl.collapse(node);
+  }
   isExpanded(node: ContentNode) {
     return this.treeControl.isExpanded(node);
   }

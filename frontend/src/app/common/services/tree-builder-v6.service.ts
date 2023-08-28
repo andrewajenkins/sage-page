@@ -81,7 +81,9 @@ export class TreeBuilderV6Service {
     });
     if (currentNode) nodeMap.set(currentNode?.feId, currentNode);
   }
-  buildTree(parent, nodes) {
+  buildTree(parent) {
+    const nodes = cloneDeep([...parent.contents, ...parent.sections]);
+    parent.contents = [];
     const parsedResults = this.parseNodes(nodes);
     const { nodeMap, rootNodes, updateSections } = this.build(parent, parsedResults);
     this.dataService.createSections(updateSections).subscribe((nodes) => {});
