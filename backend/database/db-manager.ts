@@ -23,6 +23,7 @@ class DatabaseService {
 
   public async createNode(createNode: any) {
     if (!this.db) throw new Error("Database not initialized");
+    console.log("inserting node:", JSON.stringify(createNode));
     await this.db.getRepository("TreeNode").save(createNode);
     return this.getFileTree();
   }

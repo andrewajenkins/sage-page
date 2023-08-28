@@ -11,27 +11,44 @@ import { ServiceLogger } from '../logger/loggers';
 export class TreeBuilderV6Service {
   constructor(private dataService: DataService) {}
 
-  assembleTree(nodeDatas: ContentNode[]) {
+  assembleTree(nodeDatas: ContentNode[], currentNode?: ContentNode) {
     const rootNodes: ContentNode[] = [];
     const nodeMap = new Map<string, ContentNode>();
     if (!nodeDatas || nodeDatas.length == 0) return { nodeMap, rootNodes };
     const nodes = this.initNodes(nodeDatas);
-    this.initMap(nodes, nodeMap);
-    return this.buildFromIds(nodes, nodeMap, rootNodes);
+    this.initMap(nodes, nodeMap, currentNode);
+    return this.buildFromIds(currentNode, nodes, nodeMap, rootNodes);
   }
-  private buildFromIds(nodes: ContentNode[], nodeMap: Map<string, ContentNode>, rootNodes: ContentNode[]) {
+  private buildFromIds(
+    currentNode: ContentNode | undefined,
+    nodes: ContentNode[],
+    nodeMap: Map<string, ContentNode>,
+    rootNodes: ContentNode[]
+  ) {
     for (let node of nodes) {
+      const isCurrentRoot = currentNode && node.feId === currentNode.feId;
       if (node.isFolder()) {
-        if (!node.hasParent()) rootNodes.push(node);
-        else this.getNodeParent(node, nodeMap)?.subNodes.push(node);
+        if (!node.hasParent() || isCurrentRoot) {
+          rootNodes.push(node);
+          nodeMap.set(node.feId, node);
+        } else this.getNodeParent(node, nodeMap)?.subNodes.push(node);
       } else if (node.isFile()) {
-        const parent = this.getNodeParent(node, nodeMap);
-        parent?.subNodes.push(node);
+        if (isCurrentRoot) {
+          rootNodes.push(node);
+          nodeMap.set(node.feId, node);
+        } else {
+          const parent = this.getNodeParent(node, nodeMap);
+          parent?.subNodes.push(node);
+        }
       } else {
         if (node.type === 'heading') {
-          const parent = this.getNodeParent(node, nodeMap); // Get the parent at the previous depth
-          if (!parent.sections) parent.sections = [];
-          parent.sections.push(node);
+          if (isCurrentRoot) {
+            rootNodes.push(node);
+            nodeMap.set(node.feId, node);
+          } else {
+            const parent = this.getNodeParent(node, nodeMap); // Get the parent at the previous depth
+            parent.sections.push(node);
+          }
         } else {
           const parent = this.getNodeParent(node, nodeMap);
           parent.contents.push(node);
@@ -52,7 +69,7 @@ export class TreeBuilderV6Service {
     }
     return nodes;
   }
-  private initMap(nodes: ContentNode[], nodeMap: Map<string, ContentNode>) {
+  private initMap(nodes: ContentNode[], nodeMap: Map<string, ContentNode>, currentNode: ContentNode | undefined) {
     nodes.forEach((node) => {
       if (node.isFolder()) {
         if (!node.subNodes) node.subNodes = [];
@@ -62,6 +79,7 @@ export class TreeBuilderV6Service {
       }
       nodeMap.set(node.feId, node);
     });
+    if (currentNode) nodeMap.set(currentNode?.feId, currentNode);
   }
   buildTree(parent, nodes) {
     const parsedResults = this.parseNodes(nodes);

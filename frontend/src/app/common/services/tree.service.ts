@@ -57,7 +57,7 @@ export class TreeService {
     this._tree = new Tree();
     this._treeState = new TreeState(this._tree.dataSource, this._tree.treeControl);
     this.dataService.getFileTree().subscribe((fileTree) => {
-      const { nodeMap, rootNodes } = this.treeBuilder.assembleTree(fileTree);
+      const { nodeMap, rootNodes } = this.treeBuilder.assembleTree(fileTree, this.currentNode);
       this.nodeMap = nodeMap;
       // for (let node of nodeMap.values()) this.dataService.updateNode(node).subscribe((node) => {});
       this._treeState.refreshTree(rootNodes as ContentNode[]);
@@ -89,7 +89,7 @@ export class TreeService {
       currentNode.sections = rootNodes;
       console.log('currentNode:', currentNode);
       this.dataService.createSections(currentNode.sections).subscribe((fileTree: any) => {
-        const { nodeMap, rootNodes } = this.treeBuilder.assembleTree(fileTree);
+        const { nodeMap, rootNodes } = this.treeBuilder.assembleTree(fileTree, currentNode);
         this.nodeMap = nodeMap;
         for (let node of nodeMap.values()) this.dataService.updateNode(node).subscribe((node) => {});
         this._treeState.refreshTree(rootNodes as ContentNode[]);
@@ -101,9 +101,9 @@ export class TreeService {
       });
   }
   handleTreeUpdate(resp: any) {
-    const { nodeMap, rootNodes } = this.treeBuilder.assembleTree(resp);
-    const tree = [...nodeMap.entries()].map((v, k) => v[1]).filter((node) => node.parent_id == null);
-    this._treeState.refreshTree(rootNodes as ContentNode[]);
+    const { nodeMap, rootNodes } = this.treeBuilder.assembleTree(resp, this.currentNode);
+    this._tree.insert(rootNodes, this.currentNode);
+    this._treeState.refreshTree();
   }
   hasNewSections(node) {
     return !!node.sections?.some((section) => !section.generated);

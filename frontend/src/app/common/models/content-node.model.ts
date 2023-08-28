@@ -1,7 +1,7 @@
 import { generateRandomAlphanumeric } from '../utils/uuid';
 
 export class ContentNode {
-  id!: number;
+  id?: number;
   feId: string;
   editable!: boolean;
   name!: string;
@@ -20,7 +20,7 @@ export class ContentNode {
   constructor(newNode: Partial<ContentNode>) {
     if (!newNode.feId) this.feId = generateRandomAlphanumeric(10);
     else this.feId = newNode.feId;
-    this.id = newNode?.id || -1;
+    this.id = newNode?.id;
     this.editable = newNode?.editable || false;
     this.name = newNode?.name || 'DEFAULT_NAME';
     this.parent_id = newNode?.parent_id || '';

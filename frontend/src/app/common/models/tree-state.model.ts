@@ -16,13 +16,6 @@ export class TreeState {
 
   refreshTree(data?: ContentNode[]) {
     if (!data || data.length == 0) data = this.dataSource.data; //, expandCurrent;
-    // if (!data || data.length == 0) temp = this.dataSource.data;
-    // else {
-    //   temp = this.dataSource.data;
-    //   if ((expandCurrent = !this.isRootData(data))) {
-    //     this.insertData(data!, temp);
-    //   } else temp = data;
-    // }
     this.dataSource.data = [];
     this.dataSource.data = data!;
     this.treeControl.dataNodes = data!;
@@ -46,7 +39,7 @@ export class TreeState {
   //     }
   //   });
   // }
-  private isRootData(data) {
+  isRootData(data) {
     return !data[0]?.parent_id;
   }
 
