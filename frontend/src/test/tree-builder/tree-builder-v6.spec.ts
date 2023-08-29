@@ -108,9 +108,6 @@ describe('TreeBuilderV6Service', () => {
     });
     describe('file', () => {
       beforeEach(() => {
-        const newNode = { name: 'root-file', type: 'file', text: 'root-file', depth: 0 };
-        const newNodeWithId = { ...newNode, parent_id: folderNode.feId };
-        dataServiceMock.createNode.mockReturnValue(of([folderNode, newNodeWithId]));
         treeService.currentNode = treeService.tree.dataSource.data[0];
         commandService.perform({ action: NodeAction.CREATE_FILE, value: 'root-file' });
         fixture.detectChanges();
