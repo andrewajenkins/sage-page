@@ -108,6 +108,9 @@ export class TreeBuilderV6Service {
     parent.contents = [];
     const parsedResults = this.parseNodes(nodes);
     const { nodeMap, rootNodes, updateSections } = this.build(parent, parsedResults);
+    for (let node of updateSections) {
+      if (node.generated) console.warn('Trying to generate an already generated node!', node);
+    }
     this.dataService.createSections(updateSections).subscribe((nodes) => {});
     return { nodeMap, rootNodes };
   }

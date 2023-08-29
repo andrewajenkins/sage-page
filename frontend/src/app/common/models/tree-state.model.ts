@@ -46,7 +46,6 @@ export class TreeState {
     this.applyMap(this.treeControl.dataNodes, savedState);
   }
   private applyMap(dataNodes: ContentNode[], savedState: Map<number, boolean>) {
-    console.log('dataNodes:', dataNodes);
     if (!dataNodes) return;
     dataNodes?.forEach((node) => {
       if (node.id) {

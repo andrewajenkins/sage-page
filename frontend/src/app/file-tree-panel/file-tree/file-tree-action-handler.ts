@@ -55,15 +55,20 @@ export class FileTreeActionHandler {
           this.treeService.deleteNode(cmd.content);
         });
       } else if (action === NodeAction.DELETE_CURRENT_NODE) {
-        if (!currentNode) return;
-        this.dataService.deleteNode(currentNode).subscribe((resp) => {
-          this.setNodeNotSelected();
-          this.treeService.deleteNode(currentNode);
+        if (!currentNode)
           this.commandService.perform({
-            action: StateAction.SET_NODE_SELECTED,
-            flag: false,
+            action: StateAction.NOTIFY,
+            value: 'Please select a node in the file-tree to delete!',
           });
-        });
+        else
+          this.dataService.deleteNode(currentNode).subscribe((resp) => {
+            this.setNodeNotSelected();
+            this.treeService.deleteNode(currentNode);
+            this.commandService.perform({
+              action: StateAction.SET_NODE_SELECTED,
+              flag: false,
+            });
+          });
       } else if (isValueCommand(cmd) && action === NodeAction.EDIT_NODE_NAME) {
         if (currentNode) {
           currentNode.name = cmd.value;
