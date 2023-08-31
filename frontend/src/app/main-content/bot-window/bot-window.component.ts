@@ -43,7 +43,7 @@ export class BotWindowComponent implements OnInit {
     private formBuilder: FormBuilder,
     private cdRef: ChangeDetectorRef,
     private commandService: CommandService,
-    private treeService: TreeService
+    private treeService: TreeService,
   ) {}
 
   ngOnInit() {
@@ -105,7 +105,7 @@ export class BotWindowComponent implements OnInit {
     let code = '';
     let codeType = '';
     for (let i = 0; i < contents.length; i++) {
-      const content = contents[i];
+      const content = contents[i].trim();
       if (!content) continue;
       if (content.startsWith('```')) {
         if (insideCodeBlock) {
@@ -113,7 +113,7 @@ export class BotWindowComponent implements OnInit {
             new ContentNode({
               name: codeType + ' code',
               text: code,
-            })
+            }),
           );
           code = '';
           codeType = '';
@@ -130,7 +130,7 @@ export class BotWindowComponent implements OnInit {
             name: content,
             text: content.trim(),
             selected: false,
-          })
+          }),
         );
       }
     }

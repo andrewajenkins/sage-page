@@ -1,8 +1,7 @@
 import { ContentNode } from '../../app/common/models/content-node.model';
 import { deepEqualWithDebug } from '../support/test-utils';
-import * as data from './golden';
+import * as data from './golden-nested';
 import { NodeFactory } from '../../app/common/utils/node.factory';
-import { cloneDeep } from 'lodash';
 import { TreeBuilderV6Service } from '../../app/common/services/tree-builder-v6.service';
 import { TestBed } from '@angular/core/testing';
 import { FileTreeComponent } from '../../app/file-tree-panel/file-tree/file-tree.component';
@@ -16,7 +15,7 @@ const dataServiceMock = {
   createSections: jest.fn(),
   getFileTree: jest.fn(),
 };
-describe('buildMap', () => {
+describe('buildMapNested', () => {
   let builderService: TreeBuilderV6Service;
 
   beforeEach(() => {
@@ -36,21 +35,40 @@ describe('buildMap', () => {
   console.log('running titles:', titles);
   for (let title of testsToRun.length > 0 ? testsToRun : titles) {
     it(title, () => {
-      const nodes = NodeFactory.createSectionsFromText(data['in' + title].trim(), 'asdf1234');
+      const nodes = NodeFactory.createSectionsFromText(data['in' + title].trim(), 'generated', true);
       const currentNode = getCurrentNode(nodes);
-      const { nodeMap, rootNodes } = builderService.buildTree(currentNode);
+      builderService.buildTree(currentNode);
       const expected = data['out' + title];
       expect(deepEqualWithDebug(currentNode, expected)).toBe(true);
     });
   }
 });
 function getCurrentNode(data) {
-  return new ContentNode({
+  const header2 = new ContentNode({
+    feId: 'header2-id',
+    name: 'Second header',
+    text: '## Second header',
+    type: 'heading',
+    parent_id: 'header1-id',
+    depth: 2,
+    sections: [...data],
+  });
+  const header1 = new ContentNode({
+    feId: 'header1-id',
+    name: 'First header',
+    text: '## First header',
+    type: 'heading',
+    parent_id: 'file-id',
+    depth: 1,
+    sections: [header2],
+  });
+  const rootFile = new ContentNode({
     feId: 'file-id',
     type: 'file',
     parent_id: 'folder-id',
     name: 'sub-file',
     depth: 0,
-    sections: [...data],
+    sections: [header1],
   });
+  return header2;
 }

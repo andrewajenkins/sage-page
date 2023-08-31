@@ -51,13 +51,14 @@ export class NodeFactory {
     };
   }
 
-  static createSectionsFromText(text: string, feId: string) {
-    return text
-      .trim()
-      .split('\n')
-      .map((text) => {
-        return new ContentNode({ name: text, text, parent_id: feId });
-      })
-      .filter((node) => node.text && node.name !== 'DEFAULT_NAME');
+  static createSectionsFromText(inputText: string, feId: string, dynamicIds: boolean = false) {
+    const newSections: ContentNode[] = [];
+    const sectionArrays = inputText.trim().split('\n');
+    for (let i = 0; i < sectionArrays.length; i++) {
+      const text = sectionArrays[i];
+      if (dynamicIds) newSections.push(new ContentNode({ name: text, text, feId: feId + '_' + i }));
+      else newSections.push(new ContentNode({ name: text, text, parent_id: feId }));
+    }
+    return newSections.filter((node) => node.text && node.name !== 'DEFAULT_NAME');
   }
 }

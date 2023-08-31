@@ -106,7 +106,7 @@ export class TreeBuilderV6Service {
   buildTree(parent) {
     const nodes = cloneDeep([...parent.contents, ...parent.sections]);
     parent.contents = [];
-    const parsedResults = this.parseNodes(nodes);
+    const parsedResults = this.parseNodes(nodes, parent.depth);
     const { nodeMap, rootNodes, updateSections } = this.build(parent, parsedResults);
     for (let node of updateSections) {
       if (node.generated) console.warn('Trying to generate an already generated node!', node);
@@ -169,13 +169,16 @@ export class TreeBuilderV6Service {
     }
     return depthMap.get(i);
   }
-  private parseNodes(nodes: ContentNode[]) {
+  private parseNodes(nodes: ContentNode[], parentDepth: number) {
     nodes.forEach((node) => {
       this.parse(node);
     });
+    // promote
     let offset = 100;
     for (let node of nodes) if (node.depth && node.depth < offset) offset = node.depth - 1;
     for (let node of nodes) if (node.depth !== undefined) node.depth -= offset;
+    // demote
+    for (let node of nodes) if (node.depth !== undefined) node.depth += parentDepth;
     return nodes;
   }
   private parse(node: ContentNode) {
