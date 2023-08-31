@@ -27,6 +27,11 @@ class DatabaseService {
     await this.db.getRepository("TreeNode").save(createNode);
     return this.getFileTree();
   }
+  public async createConvoNode(node: any) {
+    if (!this.db) throw new Error("Database not initialized");
+    console.log("inserting convo node:", JSON.stringify(node));
+    await this.db.getRepository("ConvoNode").save(node);
+  }
   async createNodes(sections) {
     if (!this.db) throw new Error("Database not initialized");
     for (let node of sections) {
@@ -47,25 +52,45 @@ class DatabaseService {
     return this.db.getRepository("TreeNode").find();
   }
 
-  public async deleteNode(id: number) {
+  public async deleteNode(feId: number) {
     if (!this.db) throw new Error("Database not initialized");
     await this.db.manager.query(
       `
 WITH RECURSIVE delete_tree AS (
-  SELECT id, parent_id
+  SELECT feId, parent_id
   FROM tree_node
-  WHERE id = $1
+  WHERE feId = $1
   UNION
-  SELECT f.id, f.parent_id
+  SELECT f.feId, f.parent_id
   FROM tree_node f
-  JOIN delete_tree dt ON f.parent_id = dt.id
+  JOIN delete_tree dt ON f.parent_id = dt.feId
 )
 DELETE FROM tree_node
-WHERE id IN (SELECT id FROM delete_tree);
+WHERE feId IN (SELECT feId FROM delete_tree);
     `,
-      [id]
+      [feId]
     );
     return this.getFileTree();
+  }
+
+  async deleteConvoNode(feId: string) {
+    if (!this.db) throw new Error("Database not initialized");
+    await this.db.manager.query(
+      `
+WITH RECURSIVE delete_tree AS (
+  SELECT feId, parent_id
+  FROM convo_node 
+  WHERE feId = $1
+  UNION
+  SELECT f.feId, f.parent_id
+  FROM convo_node f
+  JOIN delete_tree dt ON f.parent_id = dt.feId
+)
+DELETE FROM convo_node
+WHERE feId IN (SELECT feId FROM delete_tree);
+    `,
+      [feId]
+    );
   }
 }
 export default DatabaseService;

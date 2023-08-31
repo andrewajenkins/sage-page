@@ -51,6 +51,8 @@ import { QueryInputComponent } from './main-content/bot-window/query-input/query
 import { HighlightDirective } from './file-tree-panel/file-tree/highlight.directive';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TreeService } from './common/services/tree.service';
+import { ConversationTreeComponent } from './file-tree-panel/conversation-tree/conversation-tree.component';
+import { ConversationTreeMenuComponent } from './file-tree-panel/conversation-tree-menu/conversation-tree-menu.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +74,8 @@ import { TreeService } from './common/services/tree.service';
     ReadablePipe,
     QueryInputComponent,
     HighlightDirective,
+    ConversationTreeComponent,
+    ConversationTreeMenuComponent,
   ],
   imports: [
     BrowserModule,

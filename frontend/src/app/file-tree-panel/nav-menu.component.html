@@ -1,2 +1,11 @@
-<app-file-tree-menu></app-file-tree-menu>
-<app-file-tree></app-file-tree>
+<div style="height: 100%" class="file-tree-panel">
+  <as-split direction="vertical" fxFlex>
+    <as-split-area [size]="50">
+      <app-file-tree></app-file-tree>
+    </as-split-area>
+    <as-split-area [size]="50">
+      <app-conversation-tree-menu></app-conversation-tree-menu>
+      <app-conversation-tree></app-conversation-tree>
+    </as-split-area>
+  </as-split>
+</div>

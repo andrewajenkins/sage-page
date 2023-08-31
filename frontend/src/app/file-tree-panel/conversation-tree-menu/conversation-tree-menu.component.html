@@ -1,0 +1,39 @@
+<mat-toolbar color="whitesmoke" class="menu-toolbar">
+  <span>Conversation Tree</span>
+  <button mat-icon-button auto="create-folder" class="add-folder" (click)="createFolder()" matTooltip="Create a folder">
+    <span class="material-symbols-outlined">create_new_folder</span>
+  </button>
+  <button
+    mat-icon-button
+    auto="create-conversation"
+    class="add-conversation"
+    [disabled]="nodeNotSelected"
+    (click)="createConversation()"
+    matTooltip="Create a conversation">
+    <span class="material-symbols-outlined">chat</span>
+  </button>
+  <button
+    mat-icon-button
+    auto="edit-file"
+    class="edit-file"
+    [disabled]="nodeNotSelected"
+    (click)="editFile()"
+    matTooltip="Select a file/folder to edit name">
+    <span class="material-symbols-outlined">edit</span>
+  </button>
+  <button
+    mat-icon-button
+    auto="delete-file"
+    class="edit-file"
+    [disabled]="nodeNotSelected"
+    (click)="deleteNode()"
+    matTooltip="Delete file or folder">
+    <span class="material-symbols-outlined">delete</span>
+  </button>
+  <button mat-icon-button class="edit-file" (click)="expandAll()" matTooltip="Expand all file tree nodes">
+    <span class="material-symbols-outlined">expand_all</span>
+  </button>
+  <button mat-icon-button class="edit-file" (click)="collapseAll()" matTooltip="Collapse all file tree nodes">
+    <span class="material-symbols-outlined">collapse_all</span>
+  </button>
+</mat-toolbar>

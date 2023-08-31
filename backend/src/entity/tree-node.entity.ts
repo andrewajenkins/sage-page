@@ -14,7 +14,7 @@ export class TreeNode {
   parent_id!: number;
   @Column({ nullable: true })
   depth!: number;
-  @Column({ nullable: true })
+  @Column()
   feId!: string;
   content!: TreeNode[];
   sections!: TreeNode[];

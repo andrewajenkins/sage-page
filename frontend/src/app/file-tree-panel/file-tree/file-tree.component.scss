@@ -52,3 +52,9 @@ mat-tree-node {
 .current-node {
   background-color: var(--mat-standard-button-toggle-selected-state-background-color);
 }
+
+.nested-name, .node-name {
+  max-width: 500px;
+  overflow: hidden;
+  white-space: nowrap
+}

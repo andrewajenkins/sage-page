@@ -27,6 +27,11 @@ app.post("/api/node", async (req: any, res: any) => {
   console.log("1 record inserted: res data:", data);
   res.send(data);
 });
+app.post("/api/convonode", async (req: any, res: any) => {
+  const data = await db.createConvoNode(req.body);
+  console.log("1 record inserted: res data:", data);
+  res.status(200).end();
+});
 app.post("/api/nodes", async (req: any, res: any) => {
   console.log("creating nodes:", req.body);
   const data = await db.createNodes(req.body);
@@ -45,7 +50,13 @@ app.put("/api/node", async (req: any, res: any) => {
 });
 app.delete("/api/node", async (req: any, res: any) => {
   console.log(req.body, req.query);
-  const data = await db.deleteNode(req.body.id);
+  const data = await db.deleteNode(req.body.feId);
+  console.log("1 record deleted: res data:", data);
+  res.send(data);
+});
+app.delete("/api/convonode", async (req: any, res: any) => {
+  console.log(req.body, req.query);
+  const data = await db.deleteConvoNode(req.body.feId);
   console.log("1 record deleted: res data:", data);
   res.send(data);
 });

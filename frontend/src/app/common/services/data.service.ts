@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { ServiceLogger } from '../logger/loggers';
 import { ChatLogEntry, ContentNode } from '../models/content-node.model';
+import { ConvoNode } from '../models/convo.model';
 
 const url = 'http://localhost:4200/api';
 
@@ -49,9 +50,9 @@ export class DataService {
   }
 
   deleteNode(node: ContentNode) {
-    return this.http.delete<ContentNode[]>(url + '/node?id=' + node.id + '&type=' + node.type, {
+    return this.http.delete<ContentNode[]>(url + '/node?feId=' + node.feId + '&type=' + node.type, {
       body: {
-        id: node.id,
+        feId: node.feId,
       },
     });
   }
@@ -81,5 +82,8 @@ export class DataService {
 
   createSections(contentSection: ContentNode[]) {
     return this.http.post<void>(url + '/nodes', contentSection);
+  }
+  deleteConfoNode(node: ConvoNode) {
+    return this.http.delete(url + '/convonode?feId=' + node.feId);
   }
 }

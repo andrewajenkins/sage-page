@@ -3,7 +3,7 @@ import { ContentNode } from './content-node.model';
 interface BaseCommand<TAction> {
   action: TAction;
 }
-export type BaseAction = EditorAction | NodeAction | StateAction | ContentAction;
+export type BaseAction = EditorAction | NodeAction | StateAction | ContentAction | ConvoAction;
 export enum EditorAction {
   SAVE = 'EDITOR_SAVE',
   SELECT_ALL = 'EDITOR_SELECT_ALL',
@@ -36,6 +36,15 @@ export enum StateAction {
   COLLAPSE_FILE_TREE_ALL = 'STATE_COLLAPSE_FILE_TREE_ALL',
   EXPAND_FILE_TREE_ALL = 'STATE_EXPAND_FILE_TREE_ALL',
   NOTIFY = 'STATE_NOTIFY',
+}
+export enum ConvoAction {
+  CREATE_FOLDER = 'CONVO_CREATE_FOLDER',
+  CREATE_CONVO = 'CONVO_CREATE_FILE',
+  EDIT_NODE_NAME = 'CONVO_EDIT_NODE_NAME',
+  DELETE_CURRENT_NODE = 'CONVO_DELETE_CURRENT_NODE',
+  LOAD_NODE = 'CONVO_LOAD_NODE',
+  DELETE_NODE = 'CONVO_DELETE_NODE',
+  UPDATE_NODE = 'CONVO_UPDATE_NODE',
 }
 export enum ContentAction {
   ADD_SECTIONS = 'CONTENT_ADD_SECTIONS',
