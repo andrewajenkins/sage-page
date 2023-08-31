@@ -11,7 +11,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DataService } from '../../app/common/services/data.service';
 import { of } from 'rxjs';
 
-const testsToRun = ['FileContents'];
+const testsToRun = ['MultipleHeaderPromotion'];
 const dataServiceMock = {
   createSections: jest.fn(),
   getFileTree: jest.fn(),
@@ -50,7 +50,7 @@ function getCurrentNode(data) {
     type: 'file',
     parent_id: 'folder-id',
     name: 'sub-file',
-    depth: 1,
+    depth: 0,
     sections: [...data],
   });
 }

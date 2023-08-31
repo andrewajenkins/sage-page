@@ -23,7 +23,7 @@ export class TreeBuilderV6Service {
     currentNode: ContentNode | undefined,
     nodes: ContentNode[],
     nodeMap: Map<string, ContentNode>,
-    rootNodes: ContentNode[]
+    rootNodes: ContentNode[],
   ) {
     for (let node of nodes) {
       const isCurrentRoot = false; // NYI - currentNode && node.feId === currentNode.feId; Need backend to only send back changed nodes for this to work.
@@ -173,6 +173,9 @@ export class TreeBuilderV6Service {
     nodes.forEach((node) => {
       this.parse(node);
     });
+    let offset = 100;
+    for (let node of nodes) if (node.depth && node.depth < offset) offset = node.depth - 1;
+    for (let node of nodes) if (node.depth !== undefined) node.depth -= offset;
     return nodes;
   }
   private parse(node: ContentNode) {
