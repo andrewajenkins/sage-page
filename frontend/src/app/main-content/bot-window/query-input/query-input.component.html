@@ -19,6 +19,7 @@
 <mat-menu #queryOptions="matMenu">
   <button mat-menu-item [matMenuTriggerFor]="queries">Queries</button>
   <button mat-menu-item (click)="prefillQuery('add context', query)">Add context</button>
+  <button mat-menu-item (click)="prefillQuery('add outline', query)">Add outline (under the hood)</button>
 </mat-menu>
 <mat-menu #queries="matMenu">
   <button

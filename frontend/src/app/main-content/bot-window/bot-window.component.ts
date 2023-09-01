@@ -21,6 +21,10 @@ import { ChatLogEntry, ContentNode } from '../../common/models/content-node.mode
 import { Chat } from './chat.model';
 import { TreeService } from '../../common/services/tree.service';
 
+export interface IQuery {
+  query: string;
+  outline?: string;
+}
 @Component({
   selector: 'app-bot-window',
   templateUrl: './bot-window.component.html',
@@ -70,20 +74,20 @@ export class BotWindowComponent implements OnInit {
       }
     });
     this.scrollDown();
-    this.sendQuery(); // TODO remove
+    this.sendQuery({ query: '' }); // TODO remove
   }
 
-  sendQuery(query?) {
-    this.botWindowService.postQuery(this.form.get('modelControl')?.value, query).subscribe((response) => {
+  sendQuery(query: IQuery) {
+    this.botWindowService.postQuery(this.form.get('modelControl')?.value, query!).subscribe((response) => {
       const newContents = this.parseResults(response);
-      const chat = new Chat(query, response);
+      const chat = new Chat(query?.query, response);
       this.log.push({
         id: this.log.length,
         role: 'Query:',
         content: [
           new ContentNode({
             type: 'section',
-            name: query,
+            name: query?.query,
             selected: false,
           }),
         ],

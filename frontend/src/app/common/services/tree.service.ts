@@ -50,7 +50,7 @@ export class TreeService {
   constructor(
     private dataService: DataService,
     private commandService: CommandService,
-    private treeBuilder: TreeBuilderV6Service
+    private treeBuilder: TreeBuilderV6Service,
   ) {}
 
   initialize(): Promise<void> {
@@ -117,5 +117,22 @@ export class TreeService {
     this._tree.insert([newNode], this.currentNode);
     this._treeState.refreshTree();
     this.dataService.createNode(newNode).subscribe((resp) => {});
+  }
+
+  getOutline() {
+    let parent = this.nodeMap.get(this.currentNode!.parent_id);
+    while (!parent!.isFile()) parent = this.nodeMap.get(parent!.parent_id);
+
+    const outline: string[] = [];
+    this.createOutline(parent, outline);
+    return outline.join('\n');
+  }
+
+  private createOutline(currentNode: ContentNode | undefined, outline: any[]): void {
+    console.log(currentNode!.text); // Visit the root
+    outline.push(currentNode!.text);
+    for (const child of currentNode!.sections) {
+      this.createOutline(child, outline);
+    }
   }
 }

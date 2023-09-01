@@ -6,6 +6,7 @@ import { ServiceLogger } from '../../common/logger/loggers';
 import { tap } from 'rxjs/operators';
 import { botResponse } from '../../common/data/data';
 import { Chat } from './chat.model';
+import { IQuery } from './bot-window.component';
 
 interface Model {
   id: string;
@@ -34,7 +35,7 @@ interface RequestResponse {
       };
       finish_reason: string;
       index: number;
-    }
+    },
   ];
 }
 
@@ -61,20 +62,22 @@ export class BotWindowService {
       map((response: ModelResponse) => {
         console.log('models resp:', response);
         return response.data;
-      })
+      }),
     ) as Observable<Model[]>;
     // }
   }
-  postQuery(model = 'gpt-3.5-turbo-16k-0613', query = 'hi bot') {
-    const body = this.prepareRequest(model, query);
-    const options = this.options;
-    options.headers['Content-Type'] = 'application/json';
+  postQuery(model = 'gpt-3.5-turbo-16k-0613', query: IQuery) {
     if (this.BYPASS) {
       this.BYPASS = false;
+      const test = botResponse;
       return of(botResponse);
     } else {
-      this.lastQuery = query;
-      this.log.push(new Chat('user', query));
+      const body = this.prepareRequest(model, query);
+      const options = this.options;
+      options.headers['Content-Type'] = 'application/json';
+      this.lastQuery = query.query;
+      this.log.push(new Chat('user', query.query));
+      console.log('-- request:', body, options);
       return this.sendQuery(body, options);
     }
   }
@@ -83,7 +86,7 @@ export class BotWindowService {
       .post<RequestResponse>('https://api.openai.com/v1/chat/completions', body, options)
       .pipe(this.logResults);
   }
-  prepareRequest(model, query) {
+  prepareRequest(model, query: IQuery) {
     return {
       model: model,
       messages: this.buildMessages(query),
@@ -95,8 +98,8 @@ export class BotWindowService {
     const chat = new Chat('assistant', response);
     this.log.push(chat);
   });
-  buildMessages(query: string) {
-    const messages: any = this.getSystemMessages();
+  buildMessages(query: IQuery) {
+    const messages: any = this.getSystemMessages(query.outline);
     let logIndex = this.log.length - 1;
     while (logIndex >= 0) {
       const chat = this.log[logIndex--];
@@ -104,17 +107,23 @@ export class BotWindowService {
     }
     messages.push({
       role: 'user',
-      content: query,
+      content: query.query,
     });
     return messages;
   }
 
-  private getSystemMessages() {
-    return [
+  private getSystemMessages(outline: string | undefined) {
+    const systemMsg = [
       {
         role: 'system',
-        content: 'Please respond in markdown.',
+        content: `You are a wiki creation chat bot. You will have two types of responses, informative when content is asked for where you will answer in the form of a wiki paragraph(s) or you will respond with a wiki style outline in markdown for the contents of a wiki. If the prompt contains "Current path in our book is" and then a seris of chapters or sections, that means you're writing for one particular part of the wiki. Try not to give general information that will be covered in different sections of the wiki. Try to give specific information only for the described section. So if it says "History of Philosophy, Socrates and Plato, Philosophy and Dialectic" don't give and overview or conclusion because those will be covered in other sections. Please don't include introductions or conclusions. Please don't include the title in the response, we already know what it is. Please don't have a conversational tone like, "Sure! I'll do that for you.". You wouldn't find that in a wiki article.`,
       },
     ];
+    if (outline) {
+      systemMsg[0].content +=
+        `\nHere is the outline for the wiki for reference. Please stick to your assigned topic and don't cover other topics in the outline:\n` +
+        outline;
+    }
+    return systemMsg;
   }
 }
