@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent } from '@angular/common/http';
 import { map, Observable, of } from 'rxjs';
-import { OPENAI_API_KEY, OPENAI_ORG } from '../../../../../tmp/creds';
+import { OPENAI_API_KEY, OPENAI_ORG } from '../../../../tmp/creds';
 import { ServiceLogger } from '../../common/logger/loggers';
 import { tap } from 'rxjs/operators';
 import { botResponse } from '../../common/data/data';
