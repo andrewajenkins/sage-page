@@ -236,6 +236,7 @@ export function getPath(node: ContentNode, nodeMap) {
     return [];
   }
   while (curr && !curr.isFolder()) {
+    console.log('curr:', curr);
     path.unshift(curr);
     if (!curr.parent_id) throw new Error('getPath: no parent_id: ' + JSON.stringify(curr));
     curr = nodeMap.get(curr.parent_id) as ContentNode;

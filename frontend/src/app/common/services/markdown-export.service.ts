@@ -23,13 +23,13 @@ const headers = ['#', '##', '###', '####', '#####', '######'];
 export const dfs = function (file: ContentNode) {
   let result: string[] = [];
   const processNode = (node: ContentNode | ContentNode) => {
-    if (node.text) {
-      result.push(headers[node.depth || -1] + ' ' + node.text + '  \n');
+    if (node.name) {
+      result.push(headers[node.depth || -1] + ' ' + node.name + '  \n');
     }
     if (node.contents) {
       node.contents.forEach((content: ContentNode) => {
-        if (content.text) {
-          result.push(content.text + '  \n');
+        if (content.name) {
+          result.push(content.name + '  \n');
         }
       });
     }

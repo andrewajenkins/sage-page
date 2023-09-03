@@ -179,6 +179,10 @@ export class TreeBuilderV6Service {
     for (let node of nodes) if (node.depth !== undefined) node.depth -= offset;
     // demote
     for (let node of nodes) if (node.depth !== undefined) node.depth += parentDepth;
+    const symbols = ['#', '##', '###', '####', '#####', '######', '-', 'Plain text'];
+    for (let node of nodes) if (node.depth !== undefined && (node.text?.startsWith('#') || node.text?.match(/^[0-9]/))) {
+      node.text = symbols[node.depth] + " " + node.name;
+    }
     return nodes;
   }
   private parse(node: ContentNode) {
