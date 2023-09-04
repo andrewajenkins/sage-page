@@ -1,2 +1,2 @@
 # test 1
-[test-image](favicon.ico)
+![test-image](favicon.ico)
