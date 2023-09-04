@@ -3,11 +3,11 @@ node_modules
 package-lock.json
 
 # Angular
-/frontend/dist/
-/frontend/node_modules
-/frontend/.idea
-/frontend/.vscode
-/frontend/.angular
+/sage_page/dist/
+/sage_page/node_modules
+/sage_page/.idea
+/sage_page/.vscode
+/sage_page/.angular
 .angular
 
 # Express
